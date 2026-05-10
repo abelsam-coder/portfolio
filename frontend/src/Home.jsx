@@ -1,3 +1,4 @@
+import ChatBot from './components/chatbot';
 import Contact from './components/contact';
 import Footer from './components/footer';
 import Header from './components/header';
@@ -17,6 +18,7 @@ export default function Home() {
       <Projects/>
       <Testimony/>
       <Contact/>
+      <ChatBot/>
       <Footer/>
       {/* Your content */}
     </div>

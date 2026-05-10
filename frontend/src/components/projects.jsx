@@ -45,8 +45,8 @@ const Projects = () => {
       images: [samriCollection, ecommerce],
       techStack: ['React.js', 'Django', 'PostgreSQL', 'Stripe', 'Redis'],
       features: ['Product Catalog', 'Shopping Cart', 'Payment Gateway', 'Order Tracking', 'Admin Dashboard'],
-      liveUrl: '#',
-      githubUrl: '#',
+      liveUrl: 'https://frontend-5vi742394-abelala-cs-projects.vercel.app/',
+      githubUrl: 'https://github.com/abelsam-coder/samri-collection-frontend/',
       status: 'Live',
       color: 'from-violet-600 to-purple-600',
       year: '2024'
@@ -60,8 +60,8 @@ const Projects = () => {
       images: [dodai],
       techStack: ['React.js', 'Node.js', 'MongoDB', 'Express.js', 'Docker'],
       features: ['Performance Optimization', 'Modern UI/UX', 'API Integration', 'Cloud Deployment', 'CI/CD Pipeline'],
-      liveUrl: '#',
-      githubUrl: '#',
+      liveUrl: 'https://dodai-umber.vercel.app/',
+      githubUrl: 'https://github.com/abelsam-coder/dodai',
       status: 'Completed',
       color: 'from-blue-600 to-cyan-500',
       year: '2024'
@@ -76,7 +76,7 @@ const Projects = () => {
       techStack: ['React Native', 'Flask', 'Firebase', 'Socket.io', 'Google Maps API'],
       features: ['Online Ordering', 'Table Reservation', 'Digital Menu', 'Delivery Tracking', 'Loyalty Program'],
       liveUrl: '#',
-      githubUrl: '#',
+      githubUrl: 'https://github.com/abelsam-coder/Nano-Cafe',
       status: 'Live',
       color: 'from-orange-500 to-red-500',
       year: '2024'
@@ -91,7 +91,7 @@ const Projects = () => {
       techStack: ['Python', 'Django', 'PostgreSQL', 'WebSockets', 'Celery'],
       features: ['Online Test Handling', 'Auto-Proctoring', 'Question Bank', 'Result Analytics', 'Certificate Generation'],
       liveUrl: '#',
-      githubUrl: '#',
+      githubUrl: 'https://github.com/abelsam-coder/Nesha',
       status: 'Active',
       color: 'from-emerald-600 to-teal-500',
       year: '2023'
@@ -106,7 +106,7 @@ const Projects = () => {
       techStack: ['React.js', 'Django REST', 'PostgreSQL', 'OpenAI API', 'AWS S3'],
       features: ['AI Chatbot Integration', 'CRM System', 'Invoice Management', 'Project Tracking', 'Smart Analytics'],
       liveUrl: '#',
-      githubUrl: '#',
+      githubUrl: 'https://github.com/abelsam-coder/EthioGlobal-digital',
       status: 'Active',
       color: 'from-indigo-600 to-blue-600',
       year: '2023'
@@ -417,7 +417,7 @@ const Projects = () => {
             </a>
             
             <a
-              href="https://github.com"
+              href="https://github.com/abelsam-coder/"
               target="_blank"
               rel="noopener noreferrer"
               className={`

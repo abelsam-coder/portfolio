@@ -1,17 +1,19 @@
 import { useState, useEffect } from 'react';
+import api from '../../api/api';
 
 const Contact = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
+    full_name: '',
     email: '',
     subject: '',
-    projectType: '',
+    project_type: '',
     budget: '',
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
@@ -35,23 +37,99 @@ const Contact = () => {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    // Clear error when user starts typing
+    if (error) setError(null);
   };
 
+  // ✅ UPDATED: Matches Django ProjectInquiry model fields exactly
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    setIsSubmitting(false);
-    setSubmitted(true);
-    
-    // Reset after 5 seconds
-    setTimeout(() => {
-      setSubmitted(false);
-      setFormData({ name: '', email: '', subject: '', projectType: '', budget: '', message: '' });
-    }, 5000);
+    setError(null);
+
+    try {
+      // Make POST request to /message/ endpoint
+      // Field names match Django model exactly
+      const response = await api.post('/message/', {
+        full_name: formData.full_name,
+        email: formData.email,
+        subject: formData.subject,
+        project_type: formData.project_type || null,
+        budget: formData.budget || null,
+        message: formData.message
+      });
+
+      // Check if request was successful
+      if (response.status === 200 || response.status === 201) {
+        setSubmitted(true);
+        
+        // Reset after 5 seconds
+        setTimeout(() => {
+          setSubmitted(false);
+          setFormData({ 
+            full_name: '', 
+            email: '', 
+            subject: '', 
+            project_type: '', 
+            budget: '', 
+            message: '' 
+          });
+        }, 5000);
+      } else {
+        throw new Error('Failed to send message');
+      }
+
+    } catch (err) {
+      console.error('Contact Form Error:', err);
+      
+      // Handle different error types
+      if (err.response) {
+        // Server responded with error status
+        if (err.response.status === 422) {
+          // Validation error from backend
+          const errorData = err.response.data;
+          
+          // Parse Django REST Framework validation errors
+          if (typeof errorData === 'object' && errorData !== null) {
+            // Format field-specific errors
+            const errorMessages = Object.entries(errorData).map(([field, msgs]) => {
+              const fieldName = field.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+              return `${fieldName}: ${Array.isArray(msgs) ? msgs.join(', ') : msgs}`;
+            });
+            setError(errorMessages.join('\n'));
+          } else {
+            setError(errorData.detail || errorData.message || 'Validation failed');
+          }
+        } else if (err.response.status === 429) {
+          // Rate limited
+          setError('Too many requests. Please try again later.');
+        } else {
+          setError(err.response.data?.message || err.response.data?.detail || 'Something went wrong. Please try again.');
+        }
+      } else if (err.request) {
+        // Request made but no response received
+        setError('Network error. Please check your connection and try again.');
+      } else {
+        // Error setting up request
+        setError('An unexpected error occurred. Please try again.');
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Reset form manually
+  const resetForm = () => {
+    setSubmitted(false);
+    setError(null);
+    setFormData({ 
+      full_name: '', 
+      email: '', 
+      subject: '', 
+      project_type: '', 
+      budget: '', 
+      message: '' 
+    });
   };
 
   const contactInfo = [
@@ -62,8 +140,8 @@ const Contact = () => {
         </svg>
       ),
       label: 'Email',
-      value: 'abelsamuel@email.com',
-      href: 'mailto:abelsamuel@email.com'
+      value: 'abelsamuel841@email.com',
+      href: 'mailto:abelsamuel841@email.com'
     },
     {
       icon: (
@@ -72,8 +150,8 @@ const Contact = () => {
         </svg>
       ),
       label: 'Phone',
-      value: '+251 9XX XXX XXX',
-      href: 'tel:+2519XXXXXXXX'
+      value: '+251 957576652',
+      href: 'tel:+251957576652'
     },
     {
       icon: (
@@ -83,7 +161,7 @@ const Contact = () => {
         </svg>
       ),
       label: 'Location',
-      value: 'Addis Ababa, Ethiopia',
+      value: 'Hawassa, Ethiopia',
       href: '#'
     }
   ];
@@ -219,22 +297,7 @@ const Contact = () => {
                     Send Email
                   </a>
                   
-                  <a
-                    href="#"
-                    className={`
-                      flex items-center justify-center gap-2 w-full px-6 py-3.5 
-                      rounded-xl font-semibold text-sm border transition-all duration-300 hover:-translate-y-0.5
-                      ${isDarkMode 
-                        ? 'border-slate-700 text-slate-300 hover:bg-slate-800' 
-                        : 'border-white/30 text-white hover:bg-white/10'
-                      }
-                    `}
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                    </svg>
-                    Schedule Call
-                  </a>
+                 
                 </div>
               </div>
             </div>
@@ -318,6 +381,30 @@ const Contact = () => {
               }
             `}>
               
+              {/* Error Message Display */}
+              {error && (
+                <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20">
+                  <div className="flex items-start gap-3">
+                    <svg className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-red-500">Error</p>
+                      <p className="text-sm text-red-400 mt-1 whitespace-pre-line">{error}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setError(null)}
+                      className="text-red-400 hover:text-red-300"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              )}
+
               {submitted ? (
                 /* Success Message */
                 <div className="text-center py-16">
@@ -330,17 +417,32 @@ const Contact = () => {
                     </svg>
                   </div>
                   <h3 className={`text-2xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
-                    Message Sent Successfully!
+                    Message Sent Successfully! 🎉
                   </h3>
-                  <p className={`${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                  <p className={`${isDarkMode ? 'text-slate-400' : 'text-slate-600'} mb-6`}>
                     Thank you for reaching out. I'll get back to you soon!
                   </p>
+                  
+                  {/* Send Another Button */}
+                  <button
+                    type="button"
+                    onClick={resetForm}
+                    className={`
+                      px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300
+                      ${isDarkMode 
+                        ? 'bg-slate-800 text-slate-300 hover:bg-slate-700' 
+                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                      }
+                    `}
+                  >
+                    Send Another Message
+                  </button>
                 </div>
               ) : (
                 <>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     
-                    {/* Name Input */}
+                    {/* ✅ UPDATED: Full Name - matches Django model field */}
                     <div>
                       <label className={`
                         block text-sm font-medium mb-2
@@ -350,17 +452,20 @@ const Contact = () => {
                       </label>
                       <input
                         type="text"
-                        name="name"
-                        value={formData.name}
+                        name="full_name"
+                        value={formData.full_name}
                         onChange={handleChange}
                         required
+                        maxLength={150}
                         placeholder="John Doe"
+                        disabled={isSubmitting}
                         className={`
                           w-full px-4 py-3 rounded-xl text-sm border focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all
                           ${isDarkMode 
                             ? 'bg-slate-800/50 border-slate-700 text-white placeholder-slate-500' 
                             : 'bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400'
                           }
+                          ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}
                         `}
                       />
                     </div>
@@ -380,12 +485,14 @@ const Contact = () => {
                         onChange={handleChange}
                         required
                         placeholder="john@example.com"
+                        disabled={isSubmitting}
                         className={`
                           w-full px-4 py-3 rounded-xl text-sm border focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all
                           ${isDarkMode 
                             ? 'bg-slate-800/50 border-slate-700 text-white placeholder-slate-500' 
                             : 'bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400'
                           }
+                          ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}
                         `}
                       />
                     </div>
@@ -405,20 +512,23 @@ const Contact = () => {
                       value={formData.subject}
                       onChange={handleChange}
                       required
+                      maxLength={200}
                       placeholder="Project Inquiry"
+                      disabled={isSubmitting}
                       className={`
                         w-full px-4 py-3 rounded-xl text-sm border focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all
                         ${isDarkMode 
                           ? 'bg-slate-800/50 border-slate-700 text-white placeholder-slate-500' 
                           : 'bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400'
                         }
+                        ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}
                       `}
                     />
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     
-                    {/* Project Type */}
+                    {/* ✅ UPDATED: Project Type - matches Django PROJECT_TYPES choices */}
                     <div>
                       <label className={`
                         block text-sm font-medium mb-2
@@ -427,52 +537,58 @@ const Contact = () => {
                         Project Type
                       </label>
                       <select
-                        name="projectType"
-                        value={formData.projectType}
+                        name="project_type"
+                        value={formData.project_type}
                         onChange={handleChange}
+                        disabled={isSubmitting}
                         className={`
                           w-full px-4 py-3 rounded-xl text-sm border focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all appearance-none cursor-pointer
                           ${isDarkMode 
                             ? 'bg-slate-800/50 border-slate-700 text-white' 
                             : 'bg-slate-50 border-slate-200 text-slate-900'
                           }
+                          ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}
                         `}
                       >
                         <option value="">Select type</option>
+                        {/* ✅ Values match Django model choices exactly */}
                         <option value="web">Web Development</option>
                         <option value="mobile">Mobile App</option>
-                        <option value="ecommerce">E-Commerce</option>
-                        <option value="security">Cybersecurity</option>
-                        <option value="ml">Machine Learning</option>
+                        <option value="ai">AI / Machine Learning</option>
+                        <option value="cyber">Cybersecurity</option>
+                        <option value="api">API Development</option>
                         <option value="other">Other</option>
                       </select>
                     </div>
 
-                    {/* Budget Range */}
+                    {/* ✅ UPDATED: Budget Range - matches Django BUDGET_RANGES (ETB) */}
                     <div>
                       <label className={`
                         block text-sm font-medium mb-2
                         ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}
                       `}>
-                        Budget Range
+                        Budget Range (ETB)
                       </label>
                       <select
                         name="budget"
                         value={formData.budget}
                         onChange={handleChange}
+                        disabled={isSubmitting}
                         className={`
                           w-full px-4 py-3 rounded-xl text-sm border focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all appearance-none cursor-pointer
                           ${isDarkMode 
                             ? 'bg-slate-800/50 border-slate-700 text-white' 
                             : 'bg-slate-50 border-slate-200 text-slate-900'
                           }
+                          ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}
                         `}
                       >
                         <option value="">Select budget</option>
-                        <option value="small">$500 - $2,000</option>
-                        <option value="medium">$2,000 - $5,000</option>
-                        <option value="large">$5,000 - $10,000</option>
-                        <option value="enterprise">$10,000+</option>
+                        {/* ✅ Values match Django model choices exactly */}
+                        <option value="low">Under 100,000 ETB</option>
+                        <option value="mid">100,000 - 300,000 ETB</option>
+                        <option value="high">300,000 - 600,000 ETB</option>
+                        <option value="enterprise">600,000+ ETB</option>
                       </select>
                     </div>
                   </div>
@@ -492,12 +608,14 @@ const Contact = () => {
                       required
                       rows="5"
                       placeholder="Tell me about your project..."
+                      disabled={isSubmitting}
                       className={`
                         w-full px-4 py-3 rounded-xl text-sm border focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all resize-none
                         ${isDarkMode 
                           ? 'bg-slate-800/50 border-slate-700 text-white placeholder-slate-500' 
                           : 'bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400'
                         }
+                        ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}
                       `}
                     />
                   </div>

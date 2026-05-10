@@ -187,58 +187,7 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Newsletter / Contact */}
-          <div>
-            <h4 className="text-white font-semibold text-sm uppercase tracking-wider mb-6">
-              Stay Updated
-            </h4>
-            <p className="text-slate-400 text-sm mb-4">
-              Subscribe to get updates on my latest projects and tech articles.
-            </p>
-            
-            <form className="space-y-3" onSubmit={(e) => e.preventDefault()}>
-              <div className="relative">
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="
-                    w-full px-4 py-3 pr-12 rounded-xl text-sm
-                    bg-slate-800 border border-slate-700
-                    text-white placeholder-slate-500
-                    focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/50
-                    transition-all duration-300
-                  "
-                />
-                <button
-                  type="submit"
-                  className="
-                    absolute right-2 top-1/2 -translate-y-1/2
-                    p-2 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-500
-                    text-white hover:from-blue-500 hover:to-cyan-400
-                    transition-all duration-300 hover:scale-105
-                  "
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
-                  </svg>
-                </button>
-              </div>
-            </form>
-
-            {/* Tech Stack Mini */}
-            <div className="mt-6 pt-6 border-t border-slate-800">
-              <p className="text-slate-500 text-xs uppercase tracking-wider mb-3">
-                Tech Stack
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {['React', 'Python', 'Django', 'Node.js', 'ML'].map((tech, idx) => (
-                  <span key={idx} className="px-2.5 py-1 rounded-md bg-slate-800 text-slate-400 text-xs font-medium">
-                    {tech}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
+        
         </div>
 
         {/* Bottom Bar */}
@@ -250,22 +199,9 @@ const Footer = () => {
             <a href="#home" className="hover:text-white transition-colors">
               Abel Samuel
             </a>
-            . All rights reserved. Built with{' '}
-            <span className="text-red-500">❤</span> using React & Tailwind CSS.
+            . All rights reserved. 
           </p>
 
-          {/* Legal Links */}
-          <div className="flex items-center gap-6">
-            {footerLinks.legal.map((link, index) => (
-              <a
-                key={index}
-                href={link.href}
-                className="text-slate-500 text-sm hover:text-white transition-colors duration-200"
-              >
-                {link.name}
-              </a>
-            ))}
-          </div>
 
           {/* Back to Top */}
           <a

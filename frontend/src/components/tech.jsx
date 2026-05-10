@@ -1,411 +1,696 @@
 import { useState, useEffect } from 'react';
 
 const Tech = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [hoveredSkill, setHoveredSkill] = useState(null);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    setIsVisible(true);
     
-    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-      setIsDarkMode(true);
-    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.1 }
+    );
 
-    const observer = new MutationObserver(() => {
-      setIsDarkMode(document.documentElement.classList.contains('dark'));
-    });
-    
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class']
-    });
-
+    const section = document.getElementById('tech');
+    if (section) observer.observe(section);
     return () => observer.disconnect();
   }, []);
 
-  // Development Skills with Icons
+  // Development Skills with ORIGINAL COLOR LOGOS
   const devSkills = [
     {
       name: 'HTML5',
-      icon: (
-        <svg viewBox="0 0 24 24" className="w-8 h-8" fill="#E34F26">
-          <path d="M1.5 0h21l-1.91 21.563L11.977 24l-8.564-2.438L1.5 0zm7.031 9.75l-.232-2.718 10.059.003.23-2.622L5.412 4.41l.698 8.01h9.126l-.326 3.426-2.91.804-2.955-.81-.188-2.11H6.248l.33 4.171L12 19.351l5.379-1.443.744-8.157H8.531z"/>
-        </svg>
-      ),
-      color: 'from-orange-500 to-red-500',
-      level: 95
+      logo: 'https://upload.wikimedia.org/wikipedia/commons/6/61/HTML5_logo_and_wordmark.svg',
+      color: 'from-orange-500 to-red-600',
+      shadowColor: 'rgba(249,115,22,0.4)',
+      level: 95,
+      category: 'Frontend',
+      showOriginal: true
     },
     {
       name: 'CSS3',
-      icon: (
-        <svg viewBox="0 0 24 24" className="w-8 h-8" fill="#1572B6">
-          <path d="M1.5 0h21l-1.91 21.563L11.977 24l-8.565-2.438L1.5 0zm17.09 4.413L5.41 4.41l.213 2.622 10.125.002-.255 2.716h-6.64l.24 2.573h6.182l-.366 3.523-2.91.804-2.956-.81-.188-2.11h-2.61l.29 4.112L12 19.351l5.373-1.443.744-8.158H8.531l-.234-2.613L18.59 4.413z"/>
-        </svg>
-      ),
+      logo: 'https://upload.wikimedia.org/wikipedia/commons/6/62/CSS3_logo.svg',
       color: 'from-blue-500 to-blue-700',
-      level: 95
+      shadowColor: 'rgba(59,130,246,0.4)',
+      level: 95,
+      category: 'Frontend',
+      showOriginal: true
     },
     {
       name: 'JavaScript',
-      icon: (
-        <svg viewBox="0 0 24 24" className="w-8 h-8" fill="#F7DF1E">
-          <path d="M0 0h24v24H0V0zm22.034 18.276c-.175-1.095-.888-2.015-3.003-2.873-.736-.345-1.554-.585-1.797-1.14-.091-.33-.105-.51-.046-.701.154-.646.915-.84 1.515-.669.396.126.759.505.912.984.093.14.186.28.28.42 1.069-.63 1.069-.63 1.814-1.057-.28-.434-.422-.62-.606-.805-.652-.727-1.525-1.1-2.934-1.072l-.73.094c-.7.168-1.37.532-1.76 1.013-1.172 1.329-.84 3.65.587 4.61.716.49 1.77.82 2.69 1.05.89.245 1.192.405 1.39.72.245.39.178.78-.145 1.02-.47.345-1.218.315-1.85-.08-.48-.29-.79-.83-1.01-1.52l-1.87.74c.14.43.32.82.54 1.15.99 1.46 3.47 1.95 5.28 1.15.68-.28 1.27-.71 1.67-1.28.88-1.27.98-3.07.28-4.32z"/>
-        </svg>
-      ),
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg',
       color: 'from-yellow-400 to-yellow-600',
-      level: 90
+      shadowColor: 'rgba(234,179,8,0.4)',
+      level: 90,
+      category: 'Language',
+      showOriginal: true
     },
     {
       name: 'React',
-      icon: (
-        <svg viewBox="0 0 24 24" className="w-8 h-8" fill="#61DAFB">
-          <path d="M14.23 12.004a2.236 2.236 0 0 1-2.235 2.236 2.236 2.236 0 0 1-2.236-2.236 2.236 2.236 0 0 1 2.235-2.236 2.236 2.236 0 0 1 2.236 2.236zm2.648-10.69c-1.346 0-3.107.96-4.888 2.622-1.78-1.653-3.542-2.602-4.887-2.602-.31 0-.6.045-.87.129C3.23 2.26 2.573 5.437 3.35 9.36c-3.08 1.39-4.97 3.305-4.97 5.054 0 1.757 1.905 3.68 5.003 5.074-.773 3.94-.11 7.116 2.883 7.904.27.085.563.128.874.128 1.345 0 3.107-.96 4.888-2.624 1.78 1.654 3.542 2.603 4.887 2.603.31 0 .6-.044.87-.128 2.993-.788 3.656-3.965 2.883-7.904 3.085-1.388 4.97-3.304 4.97-5.054 0-1.75-1.91-3.67-5.004-5.058.776-3.926.114-7.103-2.88-7.89a2.74 2.74 0 0 0-.869-.13zm-.005 1.09v.006c.225 0 .424.035.6.106 1.516.4 2.176 2.61 1.665 5.293-.13.71-.322 1.456-.57 2.228-1.55-.48-3.236-.837-5.005-1.06a38.307 38.307 0 0 1-3.614-4.56c1.59-1.445 3.085-2.38 4.418-2.547.17-.02.34-.03.51-.03zm-9.772.012c.167 0 .34.01.506.03 1.333.166 2.828 1.102 4.418 2.546A37.402 37.402 0 0 0 8.4 8.835c-1.77.223-3.456.58-5.006 1.06-.248-.772-.435-1.508-.57-2.216-.512-2.684.148-4.894 1.66-5.293.177-.07.38-.105.606-.105zm4.882 3.85c.51.686 1.01 1.397 1.49 2.136-1.395-.174-2.81-.27-4.236-.27-1.425 0-2.84.096-4.236.27.48-.74.98-1.45 1.49-2.136.92-1.23 1.855-2.35 2.746-3.316.89.966 1.826 2.086 2.746 3.316zM5.67 12c-.71-1.16-1.34-2.31-1.88-3.42 1.17-.264 2.42-.48 3.73-.645.53.74 1.06 1.51 1.58 2.31-.52.8-1.05 1.57-1.58 2.31-1.31-.165-2.56-.38-3.73-.645zm.95 4.46c.48-.74.98-1.45 1.49-2.136.92-1.23 1.855-2.35 2.746-3.316.89.966 1.826 2.086 2.746 3.316.51.686 1.01 1.397 1.49 2.136-1.395.174-2.81.27-4.236.27-1.425 0-2.84-.096-4.236-.27zm8.86-1.565c-.52-.8-1.05-1.57-1.58-2.31.53-.74 1.06-1.51 1.58-2.31 1.31.165 2.56.38 3.73.645-.54 1.11-1.17 2.26-1.88 3.42-1.17.264-2.42.48-3.73.645zm1.87-5.205c-.53-.74-1.06-1.51-1.58-2.31.52-.8 1.05-1.57 1.58-2.31 1.31.165 2.56.38 3.73.645-.54 1.11-1.17 2.26-1.88 3.42-1.17.264-2.42.48-3.73.645zM12 8.11c.74.93 1.46 1.89 2.14 2.89-.68 1-1.4 1.96-2.14 2.89-.74-.93-1.46-1.89-2.14-2.89.68-1 1.4-1.96 2.14-2.89z"/>
-        </svg>
-      ),
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg',
       color: 'from-cyan-400 to-blue-500',
-      level: 88
+      shadowColor: 'rgba(34,211,238,0.4)',
+      level: 88,
+      category: 'Framework',
+      showOriginal: true
     },
     {
-      name: 'Tailwind',
-      icon: (
-        <svg viewBox="0 0 24 24" className="w-8 h-8" fill="#06B6D4">
-          <path d="M12.001 4.8c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624C13.666 10.618 15.027 12 18.001 12c3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C16.337 6.182 14.976 4.8 12.001 4.8zm-6 7.2c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624 1.177 1.194 2.538 2.576 5.512 2.576 3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C10.337 13.382 8.976 12 6.001 12z"/>
-        </svg>
-      ),
+      name: 'Tailwind CSS',
+      logo: 'https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg',
       color: 'from-cyan-400 to-teal-500',
-      level: 92
+      shadowColor: 'rgba(6,182,212,0.4)',
+      level: 92,
+      category: 'Styling',
+      showOriginal: true
     },
     {
       name: 'Python',
-      icon: (
-        <svg viewBox="0 0 24 24" className="w-8 h-8" fill="#3776AB">
-          <path d="M14.25.18l.9.2.73.26.59.3.45.32.34.34.25.34.16.33.1.3.04.26.02.2-.01.13V8.5l-.05.63-.13.55-.21.46-.26.38-.3.31-.33.25-.35.19-.35.14-.33.1-.3.07-.26.04-.21.02H8.77l-.69.05-.59.14-.5.22-.41.27-.33.32-.27.35-.2.36-.15.37-.1.35-.07.32-.04.27-.02.21v3.06H3.17l-.21-.03-.28-.07-.32-.12-.35-.18-.36-.26-.36-.36-.35-.46-.32-.59-.28-.73-.21-.88-.14-1.05-.05-1.23.06-1.22.16-1.04.24-.87.32-.71.36-.57.4-.44.42-.33.42-.24.4-.16.36-.1.32-.05.24-.01h.16l.06.01h8.16v-.83H6.18l-.01-2.75-.02-.37.05-.34.11-.31.17-.28.25-.26.31-.23.38-.2.44-.18.51-.15.58-.12.64-.1.71-.06.77-.04.84-.02 1.27.05zm-6.3 1.98l-.23.33-.08.41.08.41.23.34.33.22.41.09.41-.09.33-.22.23-.34.08-.41-.08-.41-.23-.33-.33-.22-.41-.09-.41.09zm13.09 3.95l.28.06.32.12.35.18.36.27.36.35.35.47.32.59.28.73.21.88.14 1.04.05 1.23-.06 1.23-.16 1.04-.24.86-.32.71-.36.57-.4.45-.42.33-.42.24-.4.16-.36.1-.32.05-.24.02-.16-.01h-8.22v.82h5.84l.01 2.76.02.36-.05.34-.11.31-.17.29-.25.25-.31.24-.38.2-.44.17-.51.15-.58.13-.64.09-.71.07-.77.04-.84.01-1.27-.04-1.07-.14-.9-.2-.73-.25-.59-.3-.45-.33-.34-.34-.25-.34-.16-.33-.1-.3-.04-.25-.02-.2.01-.13v-5.34l.05-.64.13-.54.21-.46.26-.38.3-.32.33-.24.35-.2.35-.14.33-.1.3-.06.26-.04.21-.02.13-.01h5.84l.69-.05.59-.14.5-.21.41-.28.33-.32.27-.35.2-.36.15-.36.1-.35.07-.32.04-.28.02-.21V6.07h2.09l.14.01zm-6.47 14.25l-.23.33-.08.41.08.41.23.33.33.23.41.08.41-.08.33-.23.23-.33.08-.41-.08-.41-.23-.33-.33-.23-.41-.08-.41.08z"/>
-        </svg>
-      ),
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg',
       color: 'from-blue-500 to-yellow-500',
-      level: 85
+      shadowColor: 'rgba(59,130,246,0.4)',
+      level: 85,
+      category: 'Language',
+      showOriginal: true
     },
     {
       name: 'Django',
-      icon: (
-        <svg viewBox="0 0 24 24" className="w-8 h-8" fill="#092E20">
-          <path d="M10.55 5.925v3.155h4.278V19.05h3.71V9.08h4.278V5.925H10.55zM.002 9.08v9.97h3.71V9.08H.001zm1.855-4.155C.832 4.925 0 5.75 0 6.78c0 1.03.832 1.855 1.857 1.855 1.023 0 1.854-.825 1.854-1.855 0-1.03-.83-1.855-1.854-1.855z"/>
-        </svg>
-      ),
-      color: 'from-green-700 to-green-900',
-      level: 82
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg',
+      color: 'from-green-600 to-green-800',
+      shadowColor: 'rgba(22,163,74,0.4)',
+      level: 82,
+      category: 'Framework',
+      showOriginal: true
     },
     {
       name: 'Flask',
-      icon: (
-        <svg viewBox="0 0 24 24" className="w-8 h-8" fill="currentColor">
-          <path d="M17.5 0h-11C5.1 0 4 .1 4 1.5v21C4 23.9 5.1 24 6.5 24h11c1.4 0 2.5-.1 2.5-1.5v-21C20 .1 18.9 0 17.5 0zM7 2h10v20H7V2zm2 16h6v2H9v-2z"/>
-        </svg>
-      ),
-      color: 'from-gray-600 to-gray-800',
-      level: 80
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg',
+      color: 'from-gray-500 to-gray-700',
+      shadowColor: 'rgba(107,114,128,0.4)',
+      level: 80,
+      category: 'Framework',
+      showOriginal: true
     },
     {
       name: 'React Native',
-      icon: (
-        <svg viewBox="0 0 24 24" className="w-8 h-8" fill="#61DAFB">
-          <path d="M14.23 12.004a2.236 2.236 0 0 1-2.235 2.236 2.236 2.236 0 0 1-2.236-2.236 2.236 2.236 0 0 1 2.235-2.236 2.236 2.236 0 0 1 2.236 2.236zm2.648-10.69c-1.346 0-3.107.96-4.888 2.622-1.78-1.653-3.542-2.602-4.887-2.602-.31 0-.6.045-.87.129C3.23 2.26 2.573 5.437 3.35 9.36c-3.08 1.39-4.97 3.305-4.97 5.054 0 1.757 1.905 3.68 5.003 5.074-.773 3.94-.11 7.116 2.883 7.904.27.085.563.128.874.128 1.345 0 3.107-.96 4.888-2.624 1.78 1.654 3.542 2.603 4.887 2.603.31 0 .6-.044.87-.128 2.993-.788 3.656-3.965 2.883-7.904 3.085-1.388 4.97-3.304 4.97-5.054 0-1.75-1.91-3.67-5.004-5.058.776-3.926.114-7.103-2.88-7.89a2.74 2.74 0 0 0-.869-.13z"/>
-        </svg>
-      ),
-      color: 'from-blue-400 to-purple-500',
-      level: 78
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg',
+      color: 'from-blue-400 to-purple-600',
+      shadowColor: 'rgba(99,102,241,0.4)',
+      level: 78,
+      category: 'Mobile',
+      showOriginal: true
     },
     {
-      name: 'API Dev',
-      icon: (
-        <svg viewBox="0 0 24 24" className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-          <polyline points="22,6 12,13 2,6"/>
-        </svg>
-      ),
-      color: 'from-green-500 to-emerald-600',
-      level: 88
+      name: 'Node.js',
+      logo: 'https://upload.wikimedia.org/wikipedia/commons/d/d9/Node.js_logo.svg',
+      color: 'from-green-500 to-green-700',
+      shadowColor: 'rgba(34,197,94,0.4)',
+      level: 86,
+      category: 'Runtime',
+      showOriginal: true
     }
   ];
 
-  // Hacking/Cybersecurity Skills with Icons
+  // Cybersecurity Skills 
   const hackingSkills = [
     {
       name: 'Kali Linux',
-      icon: (
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center text-white font-bold text-sm">
-          K
-        </div>
-      ),
+      logo: 'https://upload.wikimedia.org/wikipedia/commons/2/2b/Kali-dragon-icon.svg',
       color: 'from-blue-700 to-blue-900',
-      level: 90
+      shadowColor: 'rgba(29,78,216,0.5)',
+      level: 90,
+      category: 'OS',
+      showOriginal: true
     },
     {
-      name: 'Pentesting',
-      icon: (
-        <svg viewBox="0 0 24 24" className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2">
-          <circle cx="12" cy="12" r="10"/>
-          <line x1="12" y1="8" x2="12" y2="12"/>
-          <line x1="12" y1="16" x2="12.01" y2="16"/>
-        </svg>
-      ),
+      name: 'Penetration Testing',
+      logo: 'https://cdn-icons-png.flaticon.com/512/2092/2092663.png',
       color: 'from-red-600 to-red-800',
-      level: 88
+      shadowColor: 'rgba(220,38,38,0.5)',
+      level: 88,
+      category: 'Security',
+      showOriginal: false
     },
     {
-      name: 'Network Sec',
-      icon: (
-        <svg viewBox="0 0 24 24" className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2">
-          <rect x="2" y="2" width="20" height="8" rx="2"/>
-          <rect x="2" y="14" width="20" height="8" rx="2"/>
-          <circle cx="6" cy="6" r="1"/><circle cx="6" cy="18" r="1"/>
-        </svg>
-      ),
+      name: 'Network Security',
+      logo: 'https://cdn-icons-png.flaticon.com/512/3064/3064197.png',
       color: 'from-indigo-500 to-purple-700',
-      level: 85
+      shadowColor: 'rgba(99,102,241,0.5)',
+      level: 85,
+      category: 'Security',
+      showOriginal: false
     },
     {
-      name: 'Forensics',
-      icon: (
-        <svg viewBox="0 0 24 24" className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-          <polyline points="14 2 14 8 20 8"/>
-          <line x1="16" y1="13" x2="8" y2="13"/>
-          <line x1="16" y1="17" x2="8" y2="17"/>
-        </svg>
-      ),
+      name: 'Digital Forensics',
+      logo: 'https://cdn-icons-png.flaticon.com/512/2885/2885417.png',
       color: 'from-amber-600 to-orange-700',
-      level: 80
+      shadowColor: 'rgba(217,119,6,0.5)',
+      level: 80,
+      category: 'Forensics',
+      showOriginal: false
     },
     {
-      name: 'Social Eng.',
-      icon: (
-        <svg viewBox="0 0 24 24" className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-          <circle cx="9" cy="7" r="4"/>
-          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-        </svg>
-      ),
+      name: 'Social Engineering',
+      logo: 'https://cdn-icons-png.flaticon.com/512/1077/1077063.png',
       color: 'from-pink-500 to-rose-600',
-      level: 82
+      shadowColor: 'rgba(236,72,153,0.5)',
+      level: 82,
+      category: 'Security',
+      showOriginal: false
     },
     {
-      name: 'Ethical Hack',
-      icon: (
-        <svg viewBox="0 0 24 24" className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-        </svg>
-      ),
+      name: 'Ethical Hacking',
+      logo: 'https://cdn-icons-png.flaticon.com/512/2913/2913156.png',
       color: 'from-green-600 to-teal-700',
-      level: 87
+      shadowColor: 'rgba(16,185,129,0.5)',
+      level: 87,
+      category: 'Security',
+      showOriginal: false
     },
     {
-      name: 'Vuln Assess.',
-      icon: (
-        <svg viewBox="0 0 24 24" className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-        </svg>
-      ),
+      name: 'Vulnerability Assessment',
+      logo: 'https://cdn-icons-png.flaticon.com/512/471/471662.png',
       color: 'from-yellow-500 to-amber-600',
-      level: 84
+      shadowColor: 'rgba(245,158,11,0.5)',
+      level: 84,
+      category: 'Security',
+      showOriginal: false
     },
     {
       name: 'Web Security',
-      icon: (
-        <svg viewBox="0 0 24 24" className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2">
-          <circle cx="12" cy="12" r="10"/>
-          <line x1="2" y1="12" x2="22" y2="12"/>
-          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-        </svg>
-      ),
+      logo: 'https://cdn-icons-png.flaticon.com/512/2920/2920349.png',
       color: 'from-violet-500 to-purple-700',
-      level: 86
+      shadowColor: 'rgba(139,92,246,0.5)',
+      level: 86,
+      category: 'Security',
+      showOriginal: false
     },
     {
-      name: 'Wireless Hack',
-      icon: (
-        <svg viewBox="0 0 24 24" className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M5 12.55a11 11 0 0 1 14.08 0"/>
-          <path d="M1.42 9a16 16 0 0 1 21.16 0"/>
-          <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
-          <line x1="12" y1="20" x2="12.01" y2="20"/>
-        </svg>
-      ),
+      name: 'Wireless Hacking',
+      logo: 'https://cdn-icons-png.flaticon.com/512/93/93158.png',
       color: 'from-sky-500 to-blue-600',
-      level: 78
+      shadowColor: 'rgba(14,165,233,0.5)',
+      level: 78,
+      category: 'Network',
+      showOriginal: false
+    },
+    {
+      name: 'Metasploit',
+      logo: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFwAAABcCAMAAADUMSJqAAAAYFBMVEX///8AAABGRkaxsbHz8/P29vYiIiJQUFBqampubm5YWFjl5eXp6enOzs76+voVFRXa2to+Pj4ICAjExMQoKCg1NTUvLy+IiIgaGhqhoaGAgIB5eXleXl6qqqq9vb2SkpL98sGMAAADGElEQVRoge2Za5OrIAyGoV63Xmq1Vq1t/f//ctuCiC4BAu7M2ZnzfrT4VEMSkkiISWVWPIOhu5/7+i16ao/d8Hg2VWS8VausGdLkQgH1yX16Vi7csHqkIFbWKZmKHAHOn93RhrvocHtYvUI2tDjwrPhW6MnVdHYjM/UdzG+sjGzgPwH4wZ/9Mv9/uAP8xFU7wRMdvK7CWVVnRE2FUNWa4ZdSulIYnj6Qb/8yw+NVsqu09LVPo+Ek09A38YKHkzCG2NtQd4CTEEgKP9KIC5yEiYr9M8U6wUmkiC5F+naDE3LfslVnjyucpCt0rzzXGPyIh5ObxL6EyiXucDIJdgucxx5wMsxs9XP7wcnjc/O5hH63gF/Am0mgZXvCSQM62g5wkul+9IVrhYQ3k4FXjtJqpLcEdNSy85ZKfomG07uGXbyWS/AUDacHcA8+fu8HhyKyHKkSbp0VA5anMsXakOd4X7jqZKh6uhecNpuVjUiRO8DX1Y+UfneB00FaJx8cu8AlSkh3hy8u84fh9W/Cf/PJ838U3v9ZeC0t3x1OneF3LZxNLKRKEAdnPQLU5HrCrxZw6dzBwakWzmwuNYAoeMQuQAc0M5qUuVHwgl2AahHmS1IdJMOXrQDgvH6Hyih2wrTQk5dvRWHZqOGs4KIdAB+262U4ILG4ZM6y7dmFKvbzwwnO36cGGxP250uMYeB8zAlXrqzrWbp6BHzeZVV1xu3GZghiSxHwL9ODC8PNO24P5ytjqI38iJWuc/lmDZ+Nsi37NobhDpWj4NF1/caQuDuydtMWzocarR5NhMekCDjfTPUsYy1ewo7W8LnmtRrPj4JuBYc7BKW62TJPM7zkmbaGowewjMWT88iIrdnLbMVW4AxGKQuDSDoi5wWiXbPQDYd+Kbf+7mKaPiiVmrlvBWaSSpOZDB9rRpm39eT04Y+puurZ0IjRTvP8AGCj3FuhG8xOPdFE5OCfcnLBrQp1POmPNGup4umKyFQGjVs2NptotUmT+GyiVSGzHSMeViY+TcceUQkp4ons4Bs5an0Mrx/AeihLYsPn97W+Ac6tKWrr1rhZAAAAAElFTkSuQmCC',
+      color: 'from-teal-600 to-emerald-700',
+      shadowColor: 'rgba(20,184,166,0.5)',
+      level: 85,
+      category: 'Tool',
+      showOriginal: true
     }
   ];
 
-  const SkillCard = ({ skill }) => (
-    <div className={`
-      group p-4 rounded-2xl border backdrop-blur-sm transition-all duration-300
-      hover:scale-105 hover:shadow-lg cursor-default
-      ${isDarkMode 
-        ? 'bg-slate-800/40 border-slate-700/50 hover:border-slate-600' 
-        : 'bg-white/60 border-slate-200 hover:border-slate-300 hover:shadow-xl'
-      }
-    `}>
-      {/* Icon */}
-      <div className={`mb-3 bg-gradient-to-br ${skill.color} rounded-xl p-2 w-fit text-white shadow-md`}>
-        {skill.icon}
+  // Additional Tools - UPDATED: Removed MongoDB & Nginx, Added Supabase, Fixed security tool logos
+  const tools = [
+    { 
+      name: 'Git', 
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg',
+      color: '#F05032',
+      showOriginal: true
+    },
+    { 
+      name: 'GitHub', 
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg',
+      color: '#181717',
+      showOriginal: true
+    },
+    { 
+      name: 'VS Code', 
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg',
+      color: '#007ACC',
+      showOriginal: true
+    },
+    { 
+      name: 'Linux', 
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg',
+      color: '#FCC624',
+      showOriginal: true
+    },
+    { 
+      name: 'Docker', 
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg',
+      color: '#2496ED',
+      showOriginal: true
+    },
+    { 
+      name: 'PostgreSQL', 
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg',
+      color: '#4169E1',
+      showOriginal: true
+    },
+    // ❌ REMOVED MongoDB
+    // ❌ REMOVED Nginx
+    
+    { 
+      name: 'AWS', 
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg',
+      color: '#FF9900',
+      showOriginal: true
+    },
+    
+    // ✅ NEW: Supabase (replaces Firebase)
+    { 
+      name: 'Supabase', 
+      logo: 'https://supabase.com/favicon/supabase-logo-icon-dark.svg',
+      color: '#3ECF8E',
+      showOriginal: true
+    },
+    
+    { 
+      name: 'Redis', 
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg',
+      color: '#DC382D',
+      showOriginal: true
+    },
+    
+    // ✅ FIXED: Wireshark - Official Shark Fin Logo
+    { 
+      name: 'Wireshark', 
+      logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Wireshark_icon_new.png/960px-Wireshark_icon_new.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail&_=20230509085415',
+      color: '#1679A1',
+      showOriginal: true
+    },
+    
+    // ✅ FIXED: Burp Suite - Official PortSwigger Logo  
+    { 
+      name: 'Burp Suite', 
+      logo: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFwAAABcCAMAAADUMSJqAAAAhFBMVEUwMDDrXjL19fX////4+Pj7+/ssLCznXTEZGRn07eu4uLhMTEz06OXqUxz2x777///rWikAAADHx8ciIiIQEBDNzc0ICAjmVSLT09Py19Gvr69FRUXnWiu+vr777OgdHR3z3tnc3Nzp6elYWFhnZ2dzc3OHh4ednZ3xua3mTQ7lSAD00svnrBBqAAACYElEQVRoge3Z226jMBAGYIIPkGwoJZADhUDa9Lh9//dbH4i0SbHxjEFVJOYil5/+YIOHIQjcK14RQh6ShXMB7Bn/BTzbTIcXT4SxdBpc2JSl5d7ddsezFQlpekrqCfBiQ8IwLZMIYLvi2l4n9fg4jw9M2Kc9zHbCeY6zXXCePyv7sY5Gx3nwouwabA/jwqZyLeG5h/G8UjYm9yCeV6G0mxq6lg54fqaXa4Kw7Xh+VrmXuNx2vH0Vt6XIjbVtePzGlB1hbQsevxFP24wX78Km6dLDNuJj2Ca8+JA287MNeKbtMMLclwO4OC5HyN2Py+Oyy+1l9+HFUdp0Xe8fe8rvgM42yqaNrvV1LT89+hbebpmyGWOEpeJXPF3+K5+miLeHi02IlCm9xike18dlZ0ud3hY+Oa9eiLV88KA6/7FUdSRejSi3VbHyw611v28Wd41PuqAzPuMzPuO/gl/1llCc0WZpqfDkhatmJjSU6AHrqXC6Xly1kji8v9IbG4YfLd2StG9bYAgeVIZuKdjKuV2zuG2vQbihZ9qpf9T8nK3B8N5Ss0zyM/cYeLwx5B4BF7nl9a77XmdGyE2ZaZbpn1vswZNhruGfm5pngl62npNKe3y82DKr7YPHW5U7Mc8H8PZuKLcH3mr7yzbXwNrZwWG+i82t7PIrss5jcPZO23u7jcK7eXpp2SdovPsOUCYDuTH4JbdtD2Lx7jvA0FqicB4/O60lBudc239dbOgBvQPkBuJd7m+33EC81fbwHkTgrRxmpt8u+wSOxysaMqc9iMKZHKC5z44xuKsNxe/3hQs2hvoHDI9AkOGP4psAAAAASUVORK5CYII=',
+      color: '#FF6633',
+      showOriginal: true
+    },
+    
+    // ✅ FIXED: Nmap - Official Logo (better quality)
+    { 
+      name: 'Nmap', 
+      logo: 'https://upload.wikimedia.org/wikipedia/commons/7/73/Logo_nmap.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail_unscaled&_=20230731104508',
+      color: '#4682B4',
+      showOriginal: false
+    },
+    
+    { 
+      name: 'TensorFlow', 
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg',
+      color: '#FF6F00',
+      showOriginal: true
+    },
+    { 
+      name: 'TypeScript', 
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg',
+      color: '#3178C6',
+      showOriginal: true
+    },
+    { 
+      name: 'Ubuntu', 
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ubuntu/ubuntu-plain.svg',
+      color: '#E95420',
+      showOriginal: true
+    }
+  ];
+
+  // SkillCard Component with Dual Mode Support
+  const SkillCard = ({ skill, index }) => (
+    <div 
+      className={`
+        group relative overflow-hidden rounded-3xl
+        bg-white/[0.03] backdrop-blur-xl border border-white/[0.08]
+        p-6 transition-all duration-700 cursor-pointer
+        hover:bg-white/[0.07] hover:border-blue-400/30
+        hover:shadow-[0_25px_60px_rgba(59,130,246,0.15)]
+        hover:-translate-y-2
+        ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}
+      `}
+      style={{ transitionDelay: `${index * 100}ms` }}
+      onMouseEnter={() => setHoveredSkill(skill.name)}
+      onMouseLeave={() => setHoveredSkill(null)}
+    >
+      {/* Background gradient on hover */}
+      <div className={`absolute inset-0 bg-gradient-to-br ${skill.color} opacity-0 group-hover:opacity-10 transition-opacity duration-700 -z-10`}></div>
+      
+      {/* Glow effect behind card */}
+      <div 
+        className="absolute -inset-px rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-xl -z-20"
+        style={{ background: `linear-gradient(to bottom right, ${skill.shadowColor}, transparent)` }}
+      ></div>
+
+      {/* Logo Container - DUAL MODE SUPPORT */}
+      <div className="relative mb-5">
+        
+        {/* MODE 1: Original Color Logos */}
+        {skill.showOriginal ? (
+          <div className={`
+            relative w-16 h-16 rounded-2xl p-2.5
+            bg-slate-900/80 border border-white/10
+            flex items-center justify-center
+            shadow-lg transform transition-all duration-500
+            group-hover:scale-110 group-hover:rotate-3
+          `}
+          style={{ boxShadow: `0 10px 30px ${skill.shadowColor}` }}
+          >
+            <img 
+              src={skill.logo} 
+              alt={skill.name}
+              className="w-full h-full object-contain"
+              style={{ filter: 'none' }}
+            />
+            
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            
+            <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+              style={{ boxShadow: `inset 0 0 20px ${skill.shadowColor}` }}
+            ></div>
+          </div>
+        ) : (
+          /* MODE 2: Inverted White Icons */
+          <div className={`
+            relative w-16 h-16 rounded-2xl p-3
+            bg-gradient-to-br ${skill.color}
+            flex items-center justify-center
+            shadow-lg transform transition-all duration-500
+            group-hover:scale-110 group-hover:rotate-3
+          `}
+          style={{ boxShadow: `0 10px 30px ${skill.shadowColor}` }}
+          >
+            <img 
+              src={skill.logo} 
+              alt={skill.name}
+              className="w-full h-full object-contain filter brightness-0 invert"
+            />
+            
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          </div>
+        )}
+        
+        {/* Category Badge */}
+        <span className="
+          absolute -top-2 -right-2 px-2.5 py-1 rounded-full
+          text-[10px] font-bold uppercase tracking-wider
+          bg-slate-800/80 backdrop-blur-sm border border-white/10 text-slate-400
+        ">
+          {skill.category}
+        </span>
       </div>
 
-      {/* Name */}
-      <h4 className={`text-sm font-semibold mb-2 ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+      {/* Skill Name */}
+      <h4 className="text-base font-bold text-white mb-3 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-300 group-hover:to-cyan-300 transition-all duration-300">
         {skill.name}
       </h4>
 
       {/* Progress Bar */}
-      <div className={`
-        h-1.5 rounded-full overflow-hidden
-        ${isDarkMode ? 'bg-slate-700/50' : 'bg-slate-200'}
-      `}>
-        <div 
-          className={`h-full bg-gradient-to-r ${skill.color} rounded-full transition-all duration-1000`}
-          style={{ width: `${skill.level}%` }}
-        />
+      <div className="relative mb-3">
+        <div className="h-2 rounded-full bg-white/[0.05] backdrop-blur-sm border border-white/10 overflow-hidden">
+          <div 
+            className={`
+              h-full rounded-full bg-gradient-to-r ${skill.color} relative overflow-hidden
+              transition-all duration-1500 ease-out
+              ${isVisible ? '' : 'w-0'}
+            `}
+            style={{ width: `${skill.level}%` }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full animate-shimmer"></div>
+            <div className="absolute inset-0 blur-sm" style={{ background: `linear-gradient(to right, ${skill.shadowColor}, transparent)` }}></div>
+          </div>
+        </div>
+        
+        <span 
+          className={`absolute bottom-0 left-0 w-0 h-[2px] rounded-full bg-gradient-to-r ${skill.color} transition-all duration-700 ${hoveredSkill === skill.name ? 'w-full' : ''}`}
+          style={hoveredSkill === skill.name ? { boxShadow: `0 0 10px ${skill.shadowColor}` } : {}}
+        ></span>
       </div>
 
-      {/* Level */}
-      <p className={`text-xs mt-1.5 font-medium ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
-        {skill.level}% Proficiency
-      </p>
+      {/* Level Text */}
+      <div className="flex items-center justify-between">
+        <p className="text-xs font-semibold text-transparent bg-clip-text bg-gradient-to-r from-slate-400 to-slate-500">
+          Proficiency
+        </p>
+        <span className={`text-sm font-black text-transparent bg-clip-text bg-gradient-to-r ${skill.color}`}>
+          {skill.level}%
+        </span>
+      </div>
+
+      {/* Bottom accent line */}
+      <div 
+        className={`absolute bottom-0 left-6 right-6 h-[2px] rounded-full bg-gradient-to-r ${skill.color} scale-x-0 group-hover:scale-x-100 transition-transform duration-700 origin-left`}
+        style={{ boxShadow: `0 0 8px ${skill.shadowColor}` }}
+      ></div>
     </div>
   );
 
   return (
-    <section id="tech" className={`
-      py-20 transition-colors duration-300
-      ${isDarkMode ? 'bg-slate-950' : 'bg-slate-50'}
-    `}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="tech" className="relative min-h-screen py-32 overflow-hidden bg-slate-950">
+      
+      {/* BACKGROUND EFFECTS */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[-20%] right-[-15%] w-[600px] h-[600px] bg-blue-600/15 rounded-full blur-[150px] animate-float-orb"></div>
+        <div className="absolute bottom-[-20%] left-[-15%] w-[500px] h-[500px] bg-purple-600/12 rounded-full blur-[130px] animate-float-orb-delayed"></div>
+        <div className="absolute top-[40%] left-[40%] w-[400px] h-[400px] bg-cyan-600/10 rounded-full blur-[120px] animate-pulse-slow"></div>
+
+        <div 
+          className="absolute inset-0 opacity-[0.02]"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(59,130,246,.3) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(59,130,246,.3) 1px, transparent 1px)
+            `,
+            backgroundSize: '60px 60px'
+          }}
+        ></div>
+
+        <div className="absolute inset-0 bg-radial-dark"></div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
         
-        {/* Header */}
-        <div className="text-center mb-16">
-          <span className={`
-            inline-block px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4
-            ${isDarkMode ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-blue-100 text-blue-600 border border-blue-200'}
-          `}>
-            Technical Skills
-          </span>
-          <h2 className={`
-            text-3xl md:text-4xl lg:text-5xl font-bold mb-4
-            ${isDarkMode ? 'text-white' : 'text-slate-900'}
-          `}>
-            Technologies & Tools
+        {/* HEADER SECTION */}
+        <div className="text-center mb-24 space-y-6">
+          
+          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-400/20 backdrop-blur-xl relative">
+            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 shadow-lg shadow-blue-500/30">
+              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <span className="text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-cyan-300 uppercase tracking-wider">
+              Technical Arsenal
+            </span>
+            
+            <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-[2px] bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full shadow-[0_0_10px_rgba(59,130,246,0.6)]"></span>
+          </div>
+
+          <h2 className="text-5xl md:text-6xl lg:text-7xl font-black tracking-tight">
+            <span className="block text-white">Technologies</span>
+            <span className="relative inline-block mt-2">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-400 to-purple-400 drop-shadow-[0_0_40px_rgba(59,130,246,0.5)]">
+                & Expertise
+              </span>
+              
+              <span className="absolute inset-0 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-400 to-purple-400 blur-[20px] opacity-60"></span>
+              
+              <span className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-cyan-400 to-purple-500 rounded-full shadow-[0_0_20px_rgba(59,130,246,0.8)]"></span>
+            </span>
           </h2>
-          <p className={`
-            max-w-2xl mx-auto text-base
-            ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}
-          `}>
-            My expertise spans across software development and cybersecurity domains
+
+          <p className="max-w-2xl mx-auto text-lg text-slate-400 font-light leading-relaxed">
+            A comprehensive toolkit spanning{' '}
+            <span className="text-white font-medium">full-stack development</span>,{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400 font-medium">cybersecurity</span>, and{' '}
+            <span className="text-white font-medium">emerging technologies</span>
           </p>
         </div>
 
-        {/* Development Section */}
-        <div className="mb-12">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center text-white font-bold shadow-lg">
-              D
-            </div>
-            <h3 className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
-              Development Stack
-            </h3>
-          </div>
+        {/* DEVELOPMENT SECTION */}
+        <div className="mb-24">
           
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {devSkills.map((skill, index) => (
-              <SkillCard key={index} skill={skill} />
-            ))}
-          </div>
-        </div>
-
-        {/* Cybersecurity Section */}
-        <div className="mb-12">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-600 to-orange-500 flex items-center justify-center text-white font-bold shadow-lg">
-              S
-            </div>
-            <h3 className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
-              Security & Hacking
-            </h3>
-          </div>
-          
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {hackingSkills.map((skill, index) => (
-              <SkillCard key={index} skill={skill} />
-            ))}
-          </div>
-        </div>
-
-        {/* Additional Tools */}
-        <div className={`
-          mt-16 p-8 rounded-3xl backdrop-blur-xl border text-center
-          ${isDarkMode ? 'bg-slate-900/80 border-slate-800' : 'bg-white/80 border-slate-200'}
-        `}>
-          <h3 className={`text-lg font-bold mb-6 ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
-            Other Tools & Technologies
-          </h3>
-          
-          <div className="flex flex-wrap justify-center gap-3 max-w-3xl mx-auto">
-            {[
-              { name: 'Git', color: '#F05032' },
-              { name: 'GitHub', color: '#181717' },
-              { name: 'VS Code', color: '#007ACC' },
-              { name: 'Linux', color: '#FCC624' },
-              { name: 'Docker', color: '#2496ED' },
-              { name: 'PostgreSQL', color: '#4169E1' },
-              { name: 'MongoDB', color: '#47A248' },
-              { name: 'AWS', color: '#FF9900' },
-              { name: 'Wireshark', color: '#1679A1' },
-              { name: 'Burp Suite', color: '#FF6633' },
-              { name: 'Metasploit', color: '#2596CD' },
-              { name: 'Nmap', color: '#4682B4' }
-            ].map((tool, index) => (
-              <div
-                key={index}
-                className={`
-                  flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium border
-                  transition-all duration-300 hover:scale-105
-                  ${isDarkMode 
-                    ? 'bg-slate-800/60 border-slate-700 text-slate-300 hover:border-slate-600' 
-                    : 'bg-slate-100 border-slate-200 text-slate-700 hover:border-slate-300'
-                  }
-                `}
-              >
-                <span 
-                  className="w-3 h-3 rounded-full"
-                  style={{ backgroundColor: tool.color }}
-                />
-                {tool.name}
+          <div className="flex items-center gap-5 mb-12 group/header-dev">
+            <div className="relative">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center shadow-[0_10px_40px_rgba(37,99,235,0.4)] transform transition-all duration-500 group-hover/header-dev:scale-110 group-hover/header-dev:rotate-6">
+                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                </svg>
               </div>
+              
+              <div className="absolute inset-0 rounded-2xl bg-blue-500/20 animate-ping opacity-20"></div>
+            </div>
+            
+            <div className="flex-1">
+              <h3 className="text-2xl md:text-3xl font-bold text-white mb-1">
+                Development Stack
+              </h3>
+              <p className="text-sm text-slate-500 font-medium">Building modern applications</p>
+            </div>
+            
+            <div className="hidden md:block flex-1 h-px bg-gradient-to-r from-blue-500/30 via-transparent to-transparent"></div>
+            
+            <div className="px-4 py-2 rounded-full bg-blue-500/10 border border-blue-400/20 backdrop-blur-sm">
+              <span className="text-sm font-black text-blue-400">{devSkills.length} Skills</span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+            {devSkills.map((skill, index) => (
+              <SkillCard key={skill.name} skill={skill} index={index} />
             ))}
           </div>
         </div>
 
-        {/* Stats Footer */}
-        <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[
-            { num: '9+', label: 'Dev Skills' },
-            { num: '9+', label: 'Security Skills' },
-            { num: '12+', label: 'Tools' },
-            { num: '3+', label: 'Years Exp' }
-          ].map((stat, i) => (
-            <div key={i} className={`
-              p-5 rounded-2xl text-center border backdrop-blur-sm
-              ${isDarkMode ? 'bg-slate-900/60 border-slate-800' : 'bg-white/70 border-slate-200'}
-            `}>
-              <p className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
-                {stat.num}
-              </p>
-              <p className={`text-xs mt-1 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
-                {stat.label}
-              </p>
+        {/* CYBERSECURITY SECTION */}
+        <div className="mb-24">
+          
+          <div className="flex items-center gap-5 mb-12 group/header-sec">
+            <div className="relative">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-600 to-orange-500 flex items-center justify-center shadow-[0_10px_40px_rgba(220,38,38,0.4)] transform transition-all duration-500 group-hover/header-sec:scale-110 group-hover/header-sec:-rotate-6">
+                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              
+              <div className="absolute inset-0 rounded-2xl bg-red-500/20 animate-ping opacity-20"></div>
             </div>
-          ))}
+            
+            <div className="flex-1">
+              <h3 className="text-2xl md:text-3xl font-bold text-white mb-1">
+                Security & Hacking
+              </h3>
+              <p className="text-sm text-slate-500 font-medium">Cybersecurity expertise</p>
+            </div>
+            
+            <div className="hidden md:block flex-1 h-px bg-gradient-to-r from-red-500/30 via-transparent to-transparent"></div>
+            
+            <div className="px-4 py-2 rounded-full bg-red-500/10 border border-red-400/20 backdrop-blur-sm">
+              <span className="text-sm font-black text-red-400">{hackingSkills.length} Skills</span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+            {hackingSkills.map((skill, index) => (
+              <SkillCard key={skill.name} skill={skill} index={index + devSkills.length} />
+            ))}
+          </div>
         </div>
+
+        {/* TOOLS & TECHNOLOGIES SECTION */}
+        <div className="relative">
+          
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-400/20 backdrop-blur-xl mb-6">
+              <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+              </svg>
+              <span className="text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-pink-300 uppercase tracking-wider">
+                Additional Toolkit
+              </span>
+            </div>
+            
+            <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">
+              Tools & Technologies
+            </h3>
+            <p className="text-slate-500 text-sm max-w-md mx-auto">
+              Professional tools I use daily
+            </p>
+          </div>
+
+          <div className="relative p-10 rounded-[2rem] bg-white/[0.02] backdrop-blur-2xl border border-white/[0.08] overflow-hidden">
+            
+            <div className="absolute inset-0 opacity-[0.02]" style={{
+              backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+              backgroundSize: '30px 30px'
+            }}></div>
+            
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-purple-500/5 pointer-events-none"></div>
+
+            <div className="relative z-10 flex flex-wrap justify-center gap-4">
+              {tools.map((tool, index) => (
+                <div
+                  key={tool.name}
+                  className="
+                    group/tool relative flex items-center gap-3
+                    px-6 py-3.5 rounded-2xl
+                    bg-white/[0.04] backdrop-blur-xl border border-white/[0.08]
+                    hover:bg-white/[0.08] hover:border-white/20
+                    transition-all duration-500
+                    hover:scale-105 hover:-translate-y-1
+                    hover:shadow-[0_15px_40px_rgba(0,0,0,0.3)]
+                  "
+                  style={{ animationDelay: `${index * 50}ms` }}
+                >
+                  
+                  <div className="relative w-7 h-7 flex items-center justify-center bg-slate-800/60 rounded-lg p-1">
+                    <img 
+                      src={tool.logo} 
+                      alt={tool.name}
+                      className="w-full h-full object-contain"
+                      style={{ filter: tool.showOriginal ? 'none' : 'brightness(0) invert' }}
+                    />
+                    
+                    <span 
+                      className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-slate-900 shadow-lg"
+                      style={{ backgroundColor: tool.color, boxShadow: `0 0 10px ${tool.color}60` }}
+                    ></span>
+                  </div>
+                  
+                  <span className="text-sm font-semibold text-slate-300 group-hover/tool:text-white transition-colors duration-300">
+                    {tool.name}
+                  </span>
+                  
+                  <span className="absolute bottom-2 left-6 right-6 h-[1.5px] rounded-full bg-gradient-to-r from-transparent via-white/40 to-transparent scale-x-0 group-hover/tool:scale-x-100 transition-transform duration-500"></span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+     
+
       </div>
+
+      {/* CUSTOM ANIMATIONS */}
+      <style jsx>{`
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+        .animate-shimmer {
+          animation: shimmer 2s infinite;
+        }
+
+        @keyframes float-orb {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          33% { transform: translate(30px, -30px) scale(1.05); }
+          66% { transform: translate(-20px, 20px) scale(0.95); }
+        }
+        .animate-float-orb {
+          animation: float-orb 20s ease-in-out infinite;
+        }
+
+        @keyframes float-orb-delayed {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          33% { transform: translate(-30px, 30px) scale(1.05); }
+          66% { transform: translate(20px, -20px) scale(0.95); }
+        }
+        .animate-float-orb-delayed {
+          animation: float-orb-delayed 25s ease-in-out infinite;
+        }
+
+        @keyframes pulse-slow {
+          0%, 100% { opacity: 0.1; transform: scale(1); }
+          50% { opacity: 0.15; transform: scale(1.1); }
+        }
+        .animate-pulse-slow {
+          animation: pulse-slow 8s ease-in-out infinite;
+        }
+
+        .bg-radial-dark {
+          background: radial-gradient(circle at center, transparent 0%, rgba(2,6,23,0.6) 100%);
+        }
+      `}</style>
     </section>
   );
 };
