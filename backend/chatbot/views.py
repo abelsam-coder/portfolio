@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated,AllowAny
 from .rag import search_data
 from .groq_service import ask_groq
+from .models import AiQ
 
 class ChatView(APIView):
     permission_classes = [AllowAny]
@@ -14,7 +15,7 @@ class ChatView(APIView):
             return Response({
                 "reply": "You can talk to a human by contacting Abel Samuel at abelsamuel841@gmail.com or calling 0957576652. You can also contact Natinael Birhanu at nati@gmail.com or call 0956564545."
             })
-
+        AiQ.objects.create(message=message)
         # normal AI flow
         results = search_data(message)
         context = "\n".join([r["content"] for r in results])

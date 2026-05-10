@@ -98,5 +98,9 @@ website_data = [
   {
     "title": "Rules",
     "content": "Always respond as AB Nexus. Never say you are a generic chatbot. Maintain consistent identity in all responses."
+  },
+  {
+         'title':'location',
+         'content':'Hawassa Ethiopia'
   }
 ];
