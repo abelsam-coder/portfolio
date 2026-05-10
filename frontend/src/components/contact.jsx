@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+
+import { useState } from 'react';
 import api from '../../api/api';
 
 const Contact = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [formData, setFormData] = useState({
     full_name: '',
     email: '',
@@ -14,26 +14,6 @@ const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-      setIsDarkMode(true);
-    }
-
-    const observer = new MutationObserver(() => {
-      setIsDarkMode(document.documentElement.classList.contains('dark'));
-    });
-    
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class']
-    });
-
-    return () => observer.disconnect();
-  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -96,7 +76,7 @@ const Contact = () => {
               const fieldName = field.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
               return `${fieldName}: ${Array.isArray(msgs) ? msgs.join(', ') : msgs}`;
             });
-            setError(errorMessages.join('\n'));
+            setError(errorMessages.join(''));
           } else {
             setError(errorData.detail || errorData.message || 'Validation failed');
           }
@@ -215,30 +195,18 @@ const Contact = () => {
   ];
 
   return (
-    <section id="contact" className={`
-      py-20 transition-colors duration-300
-      ${isDarkMode ? 'bg-slate-950' : 'bg-slate-50'}
-    `}>
+    <section id="contact" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
         <div className="text-center mb-16">
-          <span className={`
-            inline-block px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4
-            ${isDarkMode ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-blue-100 text-blue-600 border border-blue-200'}
-          `}>
+          <span className="inline-block px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4 bg-blue-100 text-blue-600 border border-blue-200">
             Get In Touch
           </span>
-          <h2 className={`
-            text-3xl md:text-4xl lg:text-5xl font-bold mb-4
-            ${isDarkMode ? 'text-white' : 'text-slate-900'}
-          `}>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-slate-900">
             Let's Work Together
           </h2>
-          <p className={`
-            max-w-2xl mx-auto text-base
-            ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}
-          `}>
+          <p className="max-w-2xl mx-auto text-base text-slate-600">
             Have a project in mind? Let's discuss how I can help bring your ideas to life.
           </p>
         </div>
@@ -249,34 +217,26 @@ const Contact = () => {
           <div className="lg:col-span-2 space-y-8">
             
             {/* Hire Me Card */}
-            <div className={`
-              relative p-8 rounded-3xl overflow-hidden backdrop-blur-xl border
-              ${isDarkMode 
-                ? 'bg-gradient-to-br from-slate-900 to-slate-900/80 border-slate-800' 
-                : 'bg-gradient-to-br from-blue-600 to-cyan-500 border-transparent'
-              }
-            `}>
+            <div className="relative p-8 rounded-3xl overflow-hidden backdrop-blur-xl border bg-gradient-to-br from-blue-600 to-cyan-500 border-transparent">
               
               {/* Background Pattern */}
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2" />
               
               <div className="relative">
-                <h3 className={`text-2xl font-bold mb-3 ${isDarkMode ? 'text-white' : 'text-white'}`}>
+                <h3 className="text-2xl font-bold mb-3 text-white">
                   Hire Me
                 </h3>
-                <p className={`text-sm leading-relaxed mb-6 ${isDarkMode ? 'text-slate-400' : 'text-white/90'}`}>
+                <p className="text-sm leading-relaxed mb-6 text-white/90">
                   I'm available for freelance projects and full-time opportunities. Let's build something amazing together!
                 </p>
 
                 {/* Availability Status */}
-                <div className={`flex items-center gap-3 p-4 rounded-2xl mb-6 ${
-                  isDarkMode ? 'bg-slate-800/50' : 'bg-white/20 backdrop-blur-sm'
-                }`}>
+                <div className="flex items-center gap-3 p-4 rounded-2xl mb-6 bg-white/20 backdrop-blur-sm">
                   <span className="relative flex h-3 w-3">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
                   </span>
-                  <span className={`text-sm font-medium ${isDarkMode ? 'text-slate-300' : 'text-white'}`}>
+                  <span className="text-sm font-medium text-white">
                     Available for new projects
                   </span>
                 </div>
@@ -308,34 +268,24 @@ const Contact = () => {
                 <a
                   key={index}
                   href={info.href}
-                  className={`
+                  className="
                     group flex items-center gap-4 p-4 rounded-2xl backdrop-blur-xl border
                     transition-all duration-300 hover:-translate-x-1
-                    ${isDarkMode 
-                      ? 'bg-slate-900/80 border-slate-800 hover:border-blue-500/50' 
-                      : 'bg-white/80 border-slate-200 hover:border-blue-300 hover:shadow-lg'
-                    }
-                  `}
+                    bg-white/80 border-slate-200 hover:border-blue-300 hover:shadow-lg
+                  "
                 >
-                  <div className={`
+                  <div className="
                     w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0
                     transition-all duration-300 group-hover:scale-110
-                    ${isDarkMode 
-                      ? 'bg-blue-500/10 text-blue-400' 
-                      : 'bg-blue-100 text-blue-600'
-                    }
-                  `}>
+                    bg-blue-100 text-blue-600
+                  ">
                     {info.icon}
                   </div>
                   <div>
-                    <p className={`text-xs font-medium uppercase tracking-wider ${
-                      isDarkMode ? 'text-slate-500' : 'text-slate-400'
-                    }`}>
+                    <p className="text-xs font-medium uppercase tracking-wider text-slate-400">
                       {info.label}
                     </p>
-                    <p className={`text-sm font-semibold ${
-                      isDarkMode ? 'text-white' : 'text-slate-900'
-                    }`}>
+                    <p className="text-sm font-semibold text-slate-900">
                       {info.value}
                     </p>
                   </div>
@@ -345,7 +295,7 @@ const Contact = () => {
 
             {/* Social Links */}
             <div>
-              <p className={`text-sm font-semibold mb-4 ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+              <p className="text-sm font-semibold mb-4 text-slate-900">
                 Follow Me
               </p>
               <div className="flex gap-3">
@@ -355,13 +305,10 @@ const Contact = () => {
                     href={social.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`
+                    className="
                       p-3 rounded-xl transition-all duration-300 hover:scale-110 hover:-translate-y-1
-                      ${isDarkMode 
-                        ? 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700' 
-                        : 'bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200'
-                      }
-                    `}
+                      bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200
+                    "
                     aria-label={social.name}
                   >
                     {social.icon}
@@ -373,13 +320,7 @@ const Contact = () => {
 
           {/* Right Side - Contact Form */}
           <div className="lg:col-span-3">
-            <form onSubmit={handleSubmit} className={`
-              p-8 md:p-10 rounded-3xl backdrop-blur-xl border
-              ${isDarkMode 
-                ? 'bg-slate-900/80 border-slate-800' 
-                : 'bg-white/80 border-slate-200 shadow-lg'
-              }
-            `}>
+            <form onSubmit={handleSubmit} className="p-8 md:p-10 rounded-3xl backdrop-blur-xl border bg-white/80 border-slate-200 shadow-lg">
               
               {/* Error Message Display */}
               {error && (
@@ -408,18 +349,18 @@ const Contact = () => {
               {submitted ? (
                 /* Success Message */
                 <div className="text-center py-16">
-                  <div className={`
+                  <div className="
                     w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center
                     bg-gradient-to-r from-green-500 to-emerald-500
-                  `}>
+                  ">
                     <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"/>
                     </svg>
                   </div>
-                  <h3 className={`text-2xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+                  <h3 className="text-2xl font-bold mb-2 text-slate-900">
                     Message Sent Successfully! 🎉
                   </h3>
-                  <p className={`${isDarkMode ? 'text-slate-400' : 'text-slate-600'} mb-6`}>
+                  <p className="text-slate-600 mb-6">
                     Thank you for reaching out. I'll get back to you soon!
                   </p>
                   
@@ -427,13 +368,10 @@ const Contact = () => {
                   <button
                     type="button"
                     onClick={resetForm}
-                    className={`
+                    className="
                       px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300
-                      ${isDarkMode 
-                        ? 'bg-slate-800 text-slate-300 hover:bg-slate-700' 
-                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                      }
-                    `}
+                      bg-slate-100 text-slate-700 hover:bg-slate-200
+                    "
                   >
                     Send Another Message
                   </button>
@@ -444,10 +382,7 @@ const Contact = () => {
                     
                     {/* ✅ UPDATED: Full Name - matches Django model field */}
                     <div>
-                      <label className={`
-                        block text-sm font-medium mb-2
-                        ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}
-                      `}>
+                      <label className="block text-sm font-medium mb-2 text-slate-700">
                         Full Name *
                       </label>
                       <input
@@ -461,10 +396,7 @@ const Contact = () => {
                         disabled={isSubmitting}
                         className={`
                           w-full px-4 py-3 rounded-xl text-sm border focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all
-                          ${isDarkMode 
-                            ? 'bg-slate-800/50 border-slate-700 text-white placeholder-slate-500' 
-                            : 'bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400'
-                          }
+                          bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400
                           ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}
                         `}
                       />
@@ -472,10 +404,7 @@ const Contact = () => {
 
                     {/* Email Input */}
                     <div>
-                      <label className={`
-                        block text-sm font-medium mb-2
-                        ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}
-                      `}>
+                      <label className="block text-sm font-medium mb-2 text-slate-700">
                         Email Address *
                       </label>
                       <input
@@ -488,10 +417,7 @@ const Contact = () => {
                         disabled={isSubmitting}
                         className={`
                           w-full px-4 py-3 rounded-xl text-sm border focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all
-                          ${isDarkMode 
-                            ? 'bg-slate-800/50 border-slate-700 text-white placeholder-slate-500' 
-                            : 'bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400'
-                          }
+                          bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400
                           ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}
                         `}
                       />
@@ -500,10 +426,7 @@ const Contact = () => {
 
                   {/* Subject */}
                   <div className="mb-6">
-                    <label className={`
-                      block text-sm font-medium mb-2
-                      ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}
-                    `}>
+                    <label className="block text-sm font-medium mb-2 text-slate-700">
                       Subject *
                     </label>
                     <input
@@ -517,10 +440,7 @@ const Contact = () => {
                       disabled={isSubmitting}
                       className={`
                         w-full px-4 py-3 rounded-xl text-sm border focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all
-                        ${isDarkMode 
-                          ? 'bg-slate-800/50 border-slate-700 text-white placeholder-slate-500' 
-                          : 'bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400'
-                        }
+                        bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400
                         ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}
                       `}
                     />
@@ -530,10 +450,7 @@ const Contact = () => {
                     
                     {/* ✅ UPDATED: Project Type - matches Django PROJECT_TYPES choices */}
                     <div>
-                      <label className={`
-                        block text-sm font-medium mb-2
-                        ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}
-                      `}>
+                      <label className="block text-sm font-medium mb-2 text-slate-700">
                         Project Type
                       </label>
                       <select
@@ -543,10 +460,7 @@ const Contact = () => {
                         disabled={isSubmitting}
                         className={`
                           w-full px-4 py-3 rounded-xl text-sm border focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all appearance-none cursor-pointer
-                          ${isDarkMode 
-                            ? 'bg-slate-800/50 border-slate-700 text-white' 
-                            : 'bg-slate-50 border-slate-200 text-slate-900'
-                          }
+                          bg-slate-50 border-slate-200 text-slate-900
                           ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}
                         `}
                       >
@@ -563,10 +477,7 @@ const Contact = () => {
 
                     {/* ✅ UPDATED: Budget Range - matches Django BUDGET_RANGES (ETB) */}
                     <div>
-                      <label className={`
-                        block text-sm font-medium mb-2
-                        ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}
-                      `}>
+                      <label className="block text-sm font-medium mb-2 text-slate-700">
                         Budget Range (ETB)
                       </label>
                       <select
@@ -576,10 +487,7 @@ const Contact = () => {
                         disabled={isSubmitting}
                         className={`
                           w-full px-4 py-3 rounded-xl text-sm border focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all appearance-none cursor-pointer
-                          ${isDarkMode 
-                            ? 'bg-slate-800/50 border-slate-700 text-white' 
-                            : 'bg-slate-50 border-slate-200 text-slate-900'
-                          }
+                          bg-slate-50 border-slate-200 text-slate-900
                           ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}
                         `}
                       >
@@ -595,10 +503,7 @@ const Contact = () => {
 
                   {/* Message */}
                   <div className="mb-8">
-                    <label className={`
-                      block text-sm font-medium mb-2
-                      ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}
-                    `}>
+                    <label className="block text-sm font-medium mb-2 text-slate-700">
                       Your Message *
                     </label>
                     <textarea
@@ -611,10 +516,7 @@ const Contact = () => {
                       disabled={isSubmitting}
                       className={`
                         w-full px-4 py-3 rounded-xl text-sm border focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all resize-none
-                        ${isDarkMode 
-                          ? 'bg-slate-800/50 border-slate-700 text-white placeholder-slate-500' 
-                          : 'bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400'
-                        }
+                        bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400
                         ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}
                       `}
                     />
@@ -624,7 +526,7 @@ const Contact = () => {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={`
+                    className="
                       w-full flex items-center justify-center gap-2 px-8 py-4 
                       bg-gradient-to-r from-blue-600 to-cyan-500 text-white 
                       rounded-xl font-semibold text-sm
@@ -632,7 +534,7 @@ const Contact = () => {
                       transition-all duration-300 shadow-lg shadow-blue-500/25 
                       hover:shadow-xl hover:-translate-y-0.5
                       disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:translate-y-0
-                    `}
+                    "
                   >
                     {isSubmitting ? (
                       <>
