@@ -73,7 +73,7 @@ website_data = [
   },
   {
     "title": "Contact",
-    "content": "Email: abelsamuel@gmail.com | Phone: +251 9XX XXX XXX | Location: Ethiopia | Available for freelance and full-time work."
+    "content": "Email: abelsamuel841@gmail.com | Phone: +251 957576652 | Location:Hawassa Ethiopia | Available for freelance and full-time work."
   },
   {
     "title": "Stats",
