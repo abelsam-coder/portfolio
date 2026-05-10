@@ -13,7 +13,7 @@ class ChatView(APIView):
         # 🔥 HANDLE HUMAN REQUEST DIRECTLY
         if "human" in message or "support" in message or "contact" in message:
             return Response({
-                "reply": "You can talk to a human by contacting Abel Samuel at abelsamuel841@gmail.com or calling 0957576652. You can also contact Natinael Birhanu at nati@gmail.com or call 0956564545."
+                "reply": "You can talk to a human by contacting Abel Samuel at abelsamuel841@gmail.com or calling 0957576652."
             })
         AiQ.objects.create(message=message)
         # normal AI flow

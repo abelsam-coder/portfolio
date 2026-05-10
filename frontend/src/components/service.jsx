@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { 
   Monitor, Smartphone, Shield, Brain, Code, HelpCircle,
   ShoppingCart, Rocket, MessageSquare, BarChart3, Lock, Bot,
@@ -8,43 +8,19 @@ import {
 } from 'lucide-react';
 
 const Service = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [activeTab, setActiveTab] = useState('all');
   const [hoveredCard, setHoveredCard] = useState(null);
 
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-      setIsDarkMode(true);
-    }
-
-    const observer = new MutationObserver(() => {
-      setIsDarkMode(document.documentElement.classList.contains('dark'));
-    });
-    
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class']
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
-  // NEW: Function to handle navigation to contact section
+  // Function to handle navigation to contact section
   const handleGetQuote = (projectName) => {
-    // Close any open mobile menu if exists
     const contactSection = document.getElementById('contact');
     
     if (contactSection) {
-      // Smooth scroll to contact section
       contactSection.scrollIntoView({ 
         behavior: 'smooth', 
         block: 'start' 
       });
       
-      // Optional: Store project name in sessionStorage for pre-filling form
       if (projectName) {
         sessionStorage.setItem('interestedProject', projectName);
       }
@@ -245,25 +221,20 @@ const Service = () => {
     : projects.filter(p => p.category === activeTab);
 
   return (
-    <section id="service" className={`
-      relative py-20 lg:py-28 overflow-hidden transition-colors duration-500
-      ${isDarkMode ? 'bg-[#030712]' : 'bg-gradient-to-b from-slate-50 to-white'}
-    `}>
+    <section id="service" className="relative py-20 lg:py-28 overflow-hidden bg-white">
       
       {/* Background Effects */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className={`absolute top-[-20%] right-[-10%] w-[500px] h-[500px] rounded-full blur-[130px] opacity-20 ${isDarkMode ? 'bg-blue-600' : 'bg-blue-400'}`} />
-        <div className={`absolute bottom-[-15%] left-[-10%] w-[450px] h-[450px] rounded-full blur-[110px] opacity-15 ${isDarkMode ? 'bg-purple-600' : 'bg-purple-400'}`} />
+        <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] rounded-full blur-[130px] opacity-20 bg-blue-400" />
+        <div className="absolute bottom-[-15%] left-[-10%] w-[450px] h-[450px] rounded-full blur-[110px] opacity-15 bg-purple-400" />
         
-        {!isDarkMode && (
-          <div 
-            className="absolute inset-0 opacity-[0.03]"
-            style={{
-              backgroundImage: `radial-gradient(circle at 1px 1px, #000 1px, transparent 0)`,
-              backgroundSize: '40px 40px'
-            }}
-          />
-        )}
+        <div 
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, #000 1px, transparent 0)`,
+            backgroundSize: '40px 40px'
+          }}
+        />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -272,36 +243,20 @@ const Service = () => {
         <div className="text-center mb-20">
           
           {/* Badge */}
-          <div className={`
-            inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest mb-6
-            border backdrop-blur-xl transition-all duration-300
-            ${isDarkMode 
-              ? 'bg-white/[0.05] border-white/[0.08] text-blue-400' 
-              : 'bg-blue-50 border-blue-200 text-blue-600'
-            }
-          `}>
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest mb-6 border backdrop-blur-xl transition-all duration-300 bg-blue-50 border-blue-200 text-blue-600">
             <Sparkles className="w-4 h-4" />
             What I Offer
           </div>
 
           {/* Title */}
-          <h2 className={`
-            text-4xl md:text-5xl lg:text-6xl font-black tracking-tight mb-6
-            ${isDarkMode ? 'text-white' : 'text-slate-900'}
-          `}>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight mb-6 text-slate-900">
             My{' '}
-            <span className={`
-              bg-gradient-to-r bg-clip-text text-transparent
-              ${isDarkMode ? 'from-blue-400 via-cyan-400 to-violet-400' : 'from-blue-600 via-violet-600 to-cyan-600'}
-            `}>
+            <span className="bg-gradient-to-r bg-clip-text text-transparent from-blue-600 via-violet-600 to-cyan-600">
               Services
             </span>
           </h2>
 
-          <p className={`
-            max-w-2xl mx-auto text-base lg:text-lg leading-relaxed
-            ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}
-          `}>
+          <p className="max-w-2xl mx-auto text-base lg:text-lg leading-relaxed text-slate-600">
             Comprehensive technology solutions tailored to transform your business ideas into reality
           </p>
         </div>
@@ -313,15 +268,7 @@ const Service = () => {
               key={index}
               onMouseEnter={() => setHoveredCard(index)}
               onMouseLeave={() => setHoveredCard(null)}
-              className={`
-                group relative rounded-3xl overflow-hidden cursor-pointer
-                transition-all duration-700 ease-out
-                hover:-translate-y-3
-                ${isDarkMode 
-                  ? 'bg-gradient-to-br from-white/[0.06] to-white/[0.02] border border-white/[0.06] hover:border-white/[0.15]' 
-                  : 'bg-white border border-slate-200 hover:border-slate-300 shadow-lg hover:shadow-2xl'
-                }
-              `}
+              className="group relative rounded-3xl overflow-hidden cursor-pointer transition-all duration-700 ease-out hover:-translate-y-3 bg-white border border-slate-200 hover:border-slate-300 shadow-lg hover:shadow-2xl"
               style={{ animationDelay: `${index * 100}ms` }}
             >
               {/* Glow effect on hover */}
@@ -333,13 +280,9 @@ const Service = () => {
               <div className="relative p-7 lg:p-8">
                 
                 {/* Icon Container */}
-                <div className={`
-                  relative w-16 h-16 rounded-2xl mb-6 flex items-center justify-center text-white
-                  bg-gradient-to-br ${service.gradient}
-                  shadow-lg transform transition-all duration-500
-                  group-hover:scale-110 group-hover:rotate-3
-                `}
-                style={{ boxShadow: `0 15px 35px ${service.accentColor}30` }}
+                <div 
+                  className={`relative w-16 h-16 rounded-2xl mb-6 flex items-center justify-center text-white bg-gradient-to-br ${service.gradient} shadow-lg transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-3`}
+                  style={{ boxShadow: `0 15px 35px ${service.accentColor}30` }}
                 >
                   {service.icon}
                   
@@ -349,22 +292,19 @@ const Service = () => {
 
                 {/* Title & Price Tag */}
                 <div className="flex items-start justify-between mb-3">
-                  <h3 className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+                  <h3 className="text-xl font-bold text-slate-900">
                     {service.title}
                   </h3>
                   
                   {/* Price badge */}
-                  <div className={`
-                    flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider whitespace-nowrap ml-2
-                    ${isDarkMode ? 'bg-white/[0.08] text-slate-400' : 'bg-slate-100 text-slate-600'}
-                  `}>
+                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider whitespace-nowrap ml-2 bg-slate-100 text-slate-600">
                     <Tag className="w-3 h-3" />
                     {service.priceRange}
                   </div>
                 </div>
 
                 {/* Description */}
-                <p className={`text-sm leading-relaxed mb-5 ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                <p className="text-sm leading-relaxed mb-5 text-slate-600">
                   {service.description}
                 </p>
 
@@ -373,14 +313,7 @@ const Service = () => {
                   {service.features.map((feature, idx) => (
                     <span
                       key={idx}
-                      className={`
-                        px-3 py-1.5 rounded-xl text-xs font-medium
-                        transition-all duration-300
-                        ${isDarkMode 
-                          ? 'bg-white/[0.04] text-slate-400 border border-white/[0.06] hover:bg-white/[0.08]' 
-                          : 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100'
-                        }
-                      `}
+                      className="px-3 py-1.5 rounded-xl text-xs font-medium transition-all duration-300 bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100"
                     >
                       {feature}
                     </span>
@@ -390,15 +323,7 @@ const Service = () => {
                 {/* CTA Link - UPDATED: Now navigates to contact */}
                 <button
                   onClick={() => handleGetQuote(service.title)}
-                  className={`
-                    flex items-center gap-2 text-sm font-semibold pt-4 border-t w-full
-                    transition-all duration-300 cursor-pointer
-                    opacity-60 hover:opacity-100
-                    ${isDarkMode 
-                      ? 'border-white/[0.06] text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400' 
-                      : 'border-slate-100 text-blue-600'
-                    }
-                  `}
+                  className="flex items-center gap-2 text-sm font-semibold pt-4 border-t w-full transition-all duration-300 cursor-pointer opacity-60 hover:opacity-100 border-slate-100 text-blue-600"
                 >
                   Get Quote
                   <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
@@ -420,35 +345,19 @@ const Service = () => {
           {/* Section Header */}
           <div className="text-center mb-12">
             
-            <div className={`
-              inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest mb-6
-              border backdrop-blur-xl
-              ${isDarkMode 
-                ? 'bg-violet-500/10 border-violet-500/20 text-violet-400' 
-                : 'bg-violet-50 border-violet-200 text-violet-600'
-              }
-            `}>
+            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest mb-6 border backdrop-blur-xl bg-violet-50 border-violet-200 text-violet-600">
               <Terminal className="w-4 h-4" />
               Portfolio & Pricing
             </div>
 
-            <h2 className={`
-              text-3xl md:text-4xl lg:text-5xl font-black tracking-tight mb-4
-              ${isDarkMode ? 'text-white' : 'text-slate-900'}
-            `}>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight mb-4 text-slate-900">
               What I{' '}
-              <span className={`
-                bg-gradient-to-r bg-clip-text text-transparent
-                ${isDarkMode ? 'from-violet-400 via-fuchsia-400 to-pink-400' : 'from-violet-600 via-fuchsia-600 to-pink-600'}
-              `}>
+              <span className="bg-gradient-to-r bg-clip-text text-transparent from-violet-600 via-fuchsia-600 to-pink-600">
                 Build
               </span>
             </h2>
 
-            <p className={`
-              max-w-xl mx-auto text-base
-              ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}
-            `}>
+            <p className="max-w-xl mx-auto text-base text-slate-600">
               Explore my recent work with transparent pricing in Ethiopian Birr
             </p>
           </div>
@@ -459,28 +368,17 @@ const Service = () => {
               <button
                 key={cat.id}
                 onClick={() => setActiveTab(cat.id)}
-                className={`
-                  relative px-5 py-2.5 rounded-xl text-sm font-semibold
-                  transition-all duration-300 border flex items-center gap-2
-                  ${activeTab === cat.id
-                    ? isDarkMode
-                      ? 'bg-white/[0.08] border-white/[0.15] text-white'
-                      : 'bg-slate-900 text-white border-slate-900'
-                    : isDarkMode
-                      ? 'bg-transparent border-white/[0.06] text-slate-500 hover:border-white/[0.12] hover:text-slate-300'
-                      : 'bg-transparent border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-800'
-                  }
-                `}
+                className={`relative px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 border flex items-center gap-2 ${
+                  activeTab === cat.id
+                    ? 'bg-slate-900 text-white border-slate-900'
+                    : 'bg-transparent border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-800'
+                }`}
               >
                 {cat.icon}
                 {cat.label}
-                <span className={`
-                  px-1.5 py-0.5 rounded-md text-[10px] font-bold
-                  ${activeTab === cat.id
-                    ? isDarkMode ? 'bg-white/10 text-white' : 'bg-white/20 text-white'
-                    : isDarkMode ? 'bg-white/5 text-slate-500' : 'bg-slate-100 text-slate-500'
-                  }
-                `}>
+                <span className={`px-1.5 py-0.5 rounded-md text-[10px] font-bold ${
+                  activeTab === cat.id ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500'
+                }`}>
                   {cat.count}
                 </span>
               </button>
@@ -492,20 +390,10 @@ const Service = () => {
             {filteredProjects.map((project) => (
               <div
                 key={project.id}
-                className={`
-                  group relative rounded-3xl overflow-hidden
-                  transition-all duration-500 hover:-translate-y-2
-                  ${isDarkMode 
-                    ? 'bg-gradient-to-br from-white/[0.07] to-white/[0.02] border border-white/[0.06] hover:border-white/[0.15]' 
-                    : 'bg-white border border-slate-200 hover:border-slate-300 shadow-xl hover:shadow-2xl'
-                  }
-                `}
+                className="group relative rounded-3xl overflow-hidden transition-all duration-500 hover:-translate-y-2 bg-white border border-slate-200 hover:border-slate-300 shadow-xl hover:shadow-2xl"
               >
                 {/* Project Header with Icon & Price */}
-                <div className={`
-                  relative p-6 pb-4 border-b
-                  ${isDarkMode ? 'border-white/[0.06]' : 'border-slate-100'}
-                `}>
+                <div className="relative p-6 pb-4 border-b border-slate-100">
                   <div className="flex items-start justify-between">
                     
                     {/* Icon & Name */}
@@ -521,10 +409,10 @@ const Service = () => {
                         {project.icon}
                       </div>
                       <div>
-                        <h3 className={`font-bold text-base ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+                        <h3 className="font-bold text-base text-slate-900">
                           {project.name}
                         </h3>
-                        <div className={`flex items-center gap-1 mt-0.5 text-xs ${isDarkMode ? 'text-slate-500' : 'text-slate-500'}`}>
+                        <div className="flex items-center gap-1 mt-0.5 text-xs text-slate-500">
                           <Clock className="w-3 h-3" />
                           {project.timeline}
                         </div>
@@ -549,13 +437,13 @@ const Service = () => {
                 <div className="p-6 pt-4">
                   
                   {/* Description */}
-                  <p className={`text-sm leading-relaxed mb-4 ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                  <p className="text-sm leading-relaxed mb-4 text-slate-600">
                     {project.description}
                   </p>
 
                   {/* Tech Stack */}
                   <div className="mb-4">
-                    <div className={`flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest mb-2 ${isDarkMode ? 'text-slate-600' : 'text-slate-400'}`}>
+                    <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest mb-2 text-slate-400">
                       <Server className="w-3 h-3" />
                       Tech Stack
                     </div>
@@ -563,10 +451,7 @@ const Service = () => {
                       {project.techStack.map((tech, idx) => (
                         <span
                           key={idx}
-                          className={`
-                            px-2 py-1 rounded-lg text-[11px] font-medium flex items-center gap-1
-                            ${isDarkMode ? 'bg-white/[0.04] text-slate-400' : 'bg-slate-100 text-slate-600'}
-                          `}
+                          className="px-2 py-1 rounded-lg text-[11px] font-medium flex items-center gap-1 bg-slate-100 text-slate-600"
                         >
                           <Database className="w-2.5 h-2.5" />
                           {tech}
@@ -576,8 +461,8 @@ const Service = () => {
                   </div>
 
                   {/* Features List */}
-                  <div className={`pt-4 border-t border-dashed ${isDarkMode ? 'border-white/[0.06]' : 'border-slate-200'}`}>
-                    <div className={`flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest mb-2.5 ${isDarkMode ? 'text-slate-600' : 'text-slate-400'}`}>
+                  <div className="pt-4 border-t border-dashed border-slate-200">
+                    <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest mb-2.5 text-slate-400">
                       <Check className="w-3 h-3" />
                       Features Included
                     </div>
@@ -585,7 +470,7 @@ const Service = () => {
                       {project.features.slice(0, 6).map((feature, idx) => (
                         <div key={idx} className="flex items-center gap-1.5">
                           <Check className={`w-3 h-3 flex-shrink-0`} style={{ color: project.color }} />
-                          <span className={`text-[11px] ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                          <span className="text-[11px] text-slate-600">
                             {feature}
                           </span>
                         </div>
@@ -628,29 +513,17 @@ const Service = () => {
         </div>
 
         {/* ==================== PROCESS SECTION ==================== */}
-        <div className={`
-          relative rounded-[2rem] p-8 lg:p-12 overflow-hidden
-          ${isDarkMode 
-            ? 'bg-gradient-to-br from-white/[0.04] to-white/[0.01] border border-white/[0.06]' 
-            : 'bg-gradient-to-br from-slate-50 to-white border border-slate-200'
-          }
-        `}>
+        <div className="relative rounded-[2rem] p-8 lg:p-12 overflow-hidden bg-gradient-to-br from-slate-50 to-white border border-slate-200">
           
           {/* Background decoration */}
           <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-[100px] opacity-20 pointer-events-none"
-               style={{ background: isDarkMode ? '#3B82F6' : '#93C5FD' }} 
+               style={{ background: '#93C5FD' }} 
           />
 
           <div className="relative z-10">
-            <h3 className={`
-              text-2xl md:text-3xl font-bold text-center mb-12
-              ${isDarkMode ? 'text-white' : 'text-slate-900'}
-            `}>
+            <h3 className="text-2xl md:text-3xl font-bold text-center mb-12 text-slate-900">
               How I{' '}
-              <span className={`
-                bg-gradient-to-r bg-clip-text text-transparent
-                ${isDarkMode ? 'from-cyan-400 to-blue-400' : 'from-cyan-600 to-blue-600'}
-              `}>
+              <span className="bg-gradient-to-r bg-clip-text text-transparent from-cyan-600 to-blue-600">
                 Work
               </span>
             </h3>
@@ -666,13 +539,7 @@ const Service = () => {
                   <div className="text-center">
                     
                     {/* Step Number Circle */}
-                    <div className={`
-                      relative inline-flex items-center justify-center w-20 h-20 rounded-2xl mb-5
-                      bg-gradient-to-br from-blue-600 to-cyan-500 text-white
-                      shadow-xl shadow-blue-500/25
-                      transform transition-all duration-500
-                      group-hover:scale-110 group-hover:rotate-6
-                    `}>
+                    <div className="relative inline-flex items-center justify-center w-20 h-20 rounded-2xl mb-5 bg-gradient-to-br from-blue-600 to-cyan-500 text-white shadow-xl shadow-blue-500/25 transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-6">
                       <span className="text-2xl font-black">{item.step}</span>
                       
                       {/* Floating icon */}
@@ -681,21 +548,18 @@ const Service = () => {
                       </span>
                     </div>
 
-                    <h4 className={`text-lg font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+                    <h4 className="text-lg font-bold mb-2 text-slate-900">
                       {item.title}
                     </h4>
                     
-                    <p className={`text-sm ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                    <p className="text-sm text-slate-600">
                       {item.desc}
                     </p>
                   </div>
 
                   {/* Connector Arrow (not on last item) */}
                   {index < 3 && (
-                    <div className={`
-                      hidden lg:block absolute top-10 left-[60%] w-[80%]
-                      ${isDarkMode ? 'text-white/10' : 'text-slate-300'}
-                    `}>
+                    <div className="hidden lg:block absolute top-10 left-[60%] w-[80%] text-slate-300">
                       <svg className="w-full h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                       </svg>
@@ -708,17 +572,11 @@ const Service = () => {
         </div>
 
         {/* ==================== CTA SECTION - UPDATED: Functional button */}
-        <div className={`
-          mt-20 relative rounded-[2rem] p-10 lg:p-16 overflow-hidden text-center
-          ${isDarkMode 
-            ? 'bg-gradient-to-br from-blue-600/10 via-violet-600/5 to-cyan-600/10 border border-white/[0.06]' 
-            : 'bg-gradient-to-br from-blue-50 via-violet-50 to-cyan-50 border border-blue-100'
-          }
-        `}>
+        <div className="mt-20 relative rounded-[2rem] p-10 lg:p-16 overflow-hidden text-center bg-gradient-to-br from-blue-50 via-violet-50 to-cyan-50 border border-blue-100">
           
           {/* Background glow */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] rounded-full blur-[120px] opacity-30 pointer-events-none"
-               style={{ background: isDarkMode ? '#3B82F6' : '#60A5FA' }} 
+               style={{ background: '#60A5FA' }} 
           />
 
           <div className="relative z-10">
@@ -726,17 +584,11 @@ const Service = () => {
               <Zap className="w-8 h-8" />
             </div>
 
-            <h3 className={`
-              text-2xl md:text-3xl lg:text-4xl font-black mb-4
-              ${isDarkMode ? 'text-white' : 'text-slate-900'}
-            `}>
+            <h3 className="text-2xl md:text-3xl lg:text-4xl font-black mb-4 text-slate-900">
               Have a Project in Mind?
             </h3>
             
-            <p className={`
-              max-w-xl mx-auto mb-8 text-base
-              ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}
-            `}>
+            <p className="max-w-xl mx-auto mb-8 text-base text-slate-600">
               Let's discuss how I can help bring your ideas to life with cutting-edge technology solutions.
             </p>
             
@@ -766,15 +618,12 @@ const Service = () => {
               {/* Secondary CTA */}
               <a
                 href="#projects"
-                className={`
+                className="
                   group inline-flex items-center justify-center gap-3 px-8 py-4 
                   rounded-full font-bold text-sm border transition-all duration-300
                   hover:-translate-y-1 cursor-pointer
-                  ${isDarkMode 
-                    ? 'border-white/10 text-white hover:bg-white/5 hover:border-white/20' 
-                    : 'border-slate-300 text-slate-700 hover:bg-white hover:border-slate-400'
-                  }
-                `}
+                  border-slate-300 text-slate-700 hover:bg-white hover:border-slate-400
+                "
               >
                 <Eye className="w-5 h-5" />
                 View Projects

@@ -10,7 +10,7 @@ import Testimony from './components/testimony';
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
+    <div className="min-h-screen bg-white dark:bg-gray-500 transition-colors">
       <Header />
       <Info/>
       <Tech/>
