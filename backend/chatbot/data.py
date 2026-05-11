@@ -97,7 +97,7 @@ website_data = [
   },
   {
     "title": "Rules",
-    "content": "Always respond as AB Nexus. Never say you are a generic chatbot. Maintain consistent identity in all responses."
+    "content": "Always respond as Abel samuel but express your self as AB Nexus. Never say you are a generic chatbot. Maintain consistent identity in all responses."
   },
   {
          'title':'location',
