@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-rs0&crv(4&ffcbgsz!2b8pjl^04wj#vd!7t4901r^&)-+9%d1v'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -131,7 +131,8 @@ STATIC_URL = 'static/'
 CORS_ALLOWED_ORIGINS = [
        'http://localhost:5173',
        'https://abel-samuel.vercel.app/',
-       'https://abel-ebon-chi.vercel.app/'
+       'https://abel-ebon-chi.vercel.app/',
+       'https://abel-samuel.onrender.com/'
 ]
 
 CORS_ALLOW_CREDENTIALS = True

@@ -391,7 +391,7 @@ const Footer = () => {
             </p>
 
             <div className="flex items-center gap-4">
-              <span className={`text-xs flex items-center gap-1 ${isDark ? 'text-gray-600' : 'text-gray-500'}`}><CodeIcon className="w-3 h-3" /> Built with React & Tailwind CSS</span>
+              <span className={`text-xs flex items-center gap-1 ${isDark ? 'text-gray-600' : 'text-gray-500'}`}><CodeIcon className="w-3 h-3" /> Built By Abel Samuel</span>
               <a href="#" className={`p-3 rounded-xl transition-all duration-300 hover:-translate-y-1 group ${isDark ? 'bg-white/[0.05] text-gray-500 hover:text-white hover:bg-white/10' : 'bg-white/10 text-gray-400 hover:text-white hover:bg-white/20'}`} aria-label="Back to top">
                 <ArrowUpIcon className="w-5 h-5 transform group-hover:-translate-y-0.5 transition-transform" />
               </a>

@@ -1,272 +1,415 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { useTheme } from '../../src/context/ThemeContext';
 import api from '../../api/api';
 
-const ChatBot = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isDark, setIsDark] = useState(false);
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      text: "Hey there! ✨ I'm **Nexus AI**, Abel's personal assistant.\n\nAsk me about skills, projects, or how to connect!",
-      sender: 'bot',
-      time: new Date()
-    }
-  ]);
-  const [inputValue, setInputValue] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
-  const [isFocused, setIsFocused] = useState(false);
-  const messagesEndRef = useRef(null);
+// ── Website Data for Context ──
+const WEBSITE_DATA = {
+  name: "Abel Samuel",
+  company: "AB",
+  aiName: "CodeX",
+  role: "Full Stack Developer & AI Engineer",
+  location: "Hawassa Ethiopia",
+  email: "abelsamuel841@gmail.com",
+  phone: "+251 957576652",
+  services: [
+    "Web Development",
+    "Mobile Apps", 
+    "ERP Systems",
+    "E-commerce Platforms",
+    "UI/UX Design",
+    "AI Solutions",
+    "Cybersecurity",
+    "Digital Marketing"
+  ],
+  pricing: {
+    basic: "ETB 60,000",
+    growth: "ETB 150,000", 
+    premium: "ETB 300,000+",
+    ecommerce: "ETB 200,000+",
+    mobile: "ETB 200,000+",
+    erp: "ETB 300,000+",
+    ai: "ETB 600,000+",
+    security: "ETB 160,000+"
+  },
+  stats: "3+ years experience, 50+ clients, 120+ projects, 98% satisfaction"
+};
 
-  // Detect Dark Mode
+const fallbackResponses = {
+  greeting: "Hello! I'm " + WEBSITE_DATA.aiName + ", your intelligent assistant for " + WEBSITE_DATA.company + ". I can help you with web development, AI solutions, cybersecurity, and more. How can I assist you today?",
+
+  services: "Great question! " + WEBSITE_DATA.name + " specializes in:\n\n- " + WEBSITE_DATA.services.join("\n- ") + "\n\nWhich service interests you? I can provide details and pricing!",
+
+  about: WEBSITE_DATA.name + " is a Full Stack Developer, Machine Learning Engineer, Cybersecurity Specialist, and AI Builder focused on creating modern intelligent systems through " + WEBSITE_DATA.company + ". With " + WEBSITE_DATA.stats.split(',')[0] + ", he delivers powerful and secure digital solutions.",
+
+  pricing: "Here are our starting prices:\n\nBasic Website: " + WEBSITE_DATA.pricing.basic + "\nGrowth Package: " + WEBSITE_DATA.pricing.growth + "\nPremium System: " + WEBSITE_DATA.pricing.premium + "\nE-Commerce: " + WEBSITE_DATA.pricing.ecommerce + "\nMobile App: " + WEBSITE_DATA.pricing.mobile + "\nERP System: " + WEBSITE_DATA.pricing.erp + "\nAI Solutions: " + WEBSITE_DATA.pricing.ai + "\nCybersecurity: " + WEBSITE_DATA.pricing.security + "\n\nAll projects include maintenance and support. Which package fits your needs?",
+
+  time: "Project timelines vary by complexity:\n\n- Basic websites: 1-2 weeks\n- Business systems: 3-6 weeks\n- E-commerce: 4-8 weeks\n- Mobile apps: 6-12 weeks\n- AI/ML projects: 8-16 weeks\n\nYou'll receive regular updates throughout development!",
+
+  contact: "You can reach " + WEBSITE_DATA.name + " directly:\n\nEmail: " + WEBSITE_DATA.email + "\nPhone: " + WEBSITE_DATA.phone + "\nLocation: " + WEBSITE_DATA.location + "\n\nResponse time: Within 2 hours during business hours (Mon-Fri 9AM-6PM). Online support available 24/7!",
+
+  human: "Want to talk directly to " + WEBSITE_DATA.name + "? Here's how:\n\nEmail: " + WEBSITE_DATA.email + "\nCall/WhatsApp: " + WEBSITE_DATA.phone + "\nBased in " + WEBSITE_DATA.location + "\n\nAvailable for freelance and full-time projects. Mention you chatted with me for priority response!",
+
+  portfolio: "Some notable projects include:\n\n- Scalable E-Commerce Platform\n  Payment integration, inventory management, admin dashboard\n\n- Restaurant Management System\n  Digital ordering, reservations, real-time tracking\n\n- Online Exam Platform\n  Auto-grading, AI proctoring, analytics dashboard\n\n- Cybersecurity Tools\n  Penetration testing, vulnerability assessment\n\nWant to see more or discuss a similar project?",
+
+  tech: "Tech stack expertise includes:\n\nFrontend: React, Next.js, Vue.js, TypeScript\nBackend: Node.js, Python, Django, PostgreSQL\nMobile: React Native, Flutter\nAI/ML: TensorFlow, PyTorch, OpenAI APIs\nCloud: AWS, Vercel, Docker\nSecurity: OWASP, penetration testing\n\nWhat technology are you interested in?",
+
+  process: "Our development process:\n\n1) Discovery - Understanding your needs\n2) Planning - Architecture & design\n3) Development - Agile sprints with demos\n4) Testing - QA & security audit\n5) Launch - Deployment & training\n6) Support - Ongoing maintenance\n\nReady to start your project?",
+
+  goodbye: "Thanks for chatting with " + WEBSITE_DATA.aiName + "!\n\nFor detailed project discussions, feel free to contact " + WEBSITE_DATA.name + " at " + WEBSITE_DATA.email + " or call " + WEBSITE_DATA.phone + ".\n\n " + WEBSITE_DATA.company + " - Building Intelligent Systems\n " + WEBSITE_DATA.location,
+
+  identity: "I am " + WEBSITE_DATA.aiName + ", the official AI assistant for " + WEBSITE_DATA.company + ". I'm here to help you learn about " + WEBSITE_DATA.name + "'s services, get project estimates, and connect you with the right solutions. How can I help?",
+
+  default: "Thanks for your message! As " + WEBSITE_DATA.aiName + ", I'm here to help with information about " + WEBSITE_DATA.company + "'s services. You can ask about:\n\n- Services & pricing\n- Project timelines\n- Technical capabilities\n- Portfolio examples\n- Contact information\n\nOr reach out directly: " + WEBSITE_DATA.email
+};
+
+const quickReplies = [
+  'What services do you offer?',
+  'Show me pricing',
+  'View portfolio',
+  'Talk to Abel',
+];
+
+const SIZE_PRESETS = {
+  small: { w: 350, h: 450, label: 'S' },
+  medium: { w: 420, h: 560, label: 'M' },
+  large: { w: 520, h: 680, label: 'L' },
+};
+
+function getFallbackResponse(text) {
+  const lower = text.toLowerCase();
+  
+  if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey') || lower.includes('good')) return fallbackResponses.greeting;
+  if (lower.includes('service') || lower.includes('offer') || lower.includes('do you do') || lower.includes('what can')) return fallbackResponses.services;
+  if (lower.includes('about') || lower.includes('who are') || lower.includes('tell me about')) return fallbackResponses.about;
+  if (lower.includes('price') || lower.includes('cost') || lower.includes('pricing') || lower.includes('payment') || lower.includes('how much')) return fallbackResponses.pricing;
+  if (lower.includes('how long') || lower.includes('time') || lower.includes('duration') || lower.includes('turnaround') || lower.includes('timeline')) return fallbackResponses.time;
+  if (lower.includes('contact') || lower.includes('reach') || lower.includes('email') || lower.includes('phone') || lower.includes('call')) return fallbackResponses.contact;
+  if (lower.includes('human') || lower.includes('talk to') || lower.includes('real person') || lower.includes('agent') || lower.includes('abel')) return fallbackResponses.human;
+  if (lower.includes('portfolio') || lower.includes('project') || lower.includes('work') || lower.includes('example') || lower.includes('case study')) return fallbackResponses.portfolio;
+  if (lower.includes('tech') || lower.includes('technology') || lower.includes('stack') || lower.includes('language') || lower.includes('framework')) return fallbackResponses.tech;
+  if (lower.includes('process') || lower.includes('how do you work') || lower.includes('methodology') || lower.includes('steps')) return fallbackResponses.process;
+  if (lower.includes('who are you') || lower.includes('your name') || lower.includes('identity')) return fallbackResponses.identity;
+  if (lower.includes('thank') || lower.includes('bye') || lower.includes('goodbye') || lower.includes('thanks')) return fallbackResponses.goodbye;
+  
+  return fallbackResponses.default;
+}
+
+function CodeXChat() {
+  // ── DEFAULT TO DARK MODE INITIALLY ──
+  let themeContextValue;
+  try {
+    themeContextValue = useTheme();
+  } catch (e) {
+    console.warn('ThemeContext not available, defaulting to dark mode');
+  }
+  
+  const isDark = themeContextValue?.isDark ?? true;
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState([
+    { 
+      id: 1, 
+      sender: 'bot', 
+      text: `Hi there! 👋 I'm ${WEBSITE_DATA.aiName}, the ${WEBSITE_DATA.company} AI assistant. I can help you explore our services, pricing, and connect you with ${WEBSITE_DATA.name}. How can I help you today?`, 
+      time: new Date() 
+    },
+  ]);
+  const [input, setInput] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+  const [size, setSize] = useState(SIZE_PRESETS.medium);
+  const [isResizing, setIsResizing] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  const resizeStartRef = useRef({ x: 0, y: 0, w: 0, h: 0, axis: 'both' });
+  const messagesEndRef = useRef(null);
+  const inputRef = useRef(null);
+
+  // ── Detect Hover Capability (Desktop vs Mobile) ──
   useEffect(() => {
-    const checkTheme = () => setIsDark(document.documentElement.classList.contains('dark'));
-    checkTheme();
-    const observer = new MutationObserver(checkTheme);
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-    return () => observer.disconnect();
+    const mediaQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
+    setIsDesktop(mediaQuery.matches);
+    const handler = (e) => setIsDesktop(e.matches);
+    mediaQuery.addEventListener('change', handler);
+    return () => mediaQuery.removeEventListener('change', handler);
   }, []);
 
-  // Auto-scroll
+  // ── Body Scroll Lock for Mobile ──
   useEffect(() => {
+    if (isOpen && !isDesktop) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen, isDesktop]);
+
+  const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
-
-  // Quick Actions
-  const quickActions = [
-    { icon: '💼', label: 'Hire Me', action: 'hire' },
-    { icon: '📧', label: 'Contact', action: 'email' },
-    { icon: '⚡', label: 'Skills', action: 'skills' },
-    { icon: '🚀', label: 'Projects', action: 'projects' }
-  ];
-
-  // API Call
-  const sendMessageToAPI = async (msg) => {
-    try {
-      const res = await api.post('/chat/', { message: msg });
-      return res.data.response || res.data.message || res.data.reply;
-    } catch (e) {
-      return getFallbackResponse(msg);
-    }
   };
 
-  // Smart Responses
-  const getFallbackResponse = (msg) => {
-    const m = msg.toLowerCase();
-    if (m.includes('hire') || m.includes('work')) {
-      return "**Let's Work Together!** 🤝\n\nAbel is available for:\n• Full-time positions\n• Freelance projects\n• Remote collaborations";
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, isTyping]);
+
+  useEffect(() => {
+    if (isOpen && inputRef.current) {
+      setTimeout(() => inputRef.current?.focus(), isDesktop ? 400 : 100);
     }
-    if (m.includes('email') || m.includes('contact')) {
-      return "**Get in Touch** 📬\n\n**Email:** abelsamuel841@email.com\n**Phone:** +251 957576652";
-    }
-    if (m.includes('skill') || m.includes('tech')) {
-      return "**Tech Stack** ⚡\n\n**Frontend:** React, Next.js\n**Backend:** Python, Django\n**Mobile:** React Native";
-    }
-    if (m.includes('project')) {
-      return "**Featured Projects** 🎯\n\n1. Samri Collection\n2. Ethioglobal Digital\n3. Nani Cafe System\n4. Online Exam Platform";
-    }
-    if (m.includes('hello') || m.includes('hi')) {
-      return "Hello! 👋✨\n\nI'm **Nexus AI** - Abel's intelligent assistant.";
-    }
-    return "Interesting! 😊 Let me connect you with Abel for more details.";
+  }, [isOpen, isDesktop]);
+
+  const formatTime = (date) => {
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
-  const handleSend = async (text = inputValue) => {
-    const msg = typeof text === 'string' ? text : String(text || '');
-    if (!msg.trim()) return;
-
-    setMessages(prev => [...prev, { id: Date.now(), text: msg, sender: 'user', time: new Date() }]);
-    setInputValue('');
+  const sendMessage = useCallback((text) => {
+    if (!text.trim()) return;
+    setMessages((prev) => [...prev, { id: Date.now(), sender: 'user', text: text.trim(), time: new Date() }]);
     setIsTyping(true);
 
-    try {
-      const reply = await sendMessageToAPI(msg);
-      setMessages(prev => [...prev, { id: Date.now() + 1, text: reply, sender: 'bot', time: new Date() }]);
-    } catch (e) {
-      setMessages(prev => [...prev, { id: Date.now() + 1, text: "Oops! Something went wrong 😅", sender: 'bot', time: new Date(), isError: true }]);
-    } finally {
-      setIsTyping(false);
+    api
+      .post('/chat/', { message: text.trim() })
+      .then((response) => {
+        const botText = response.data?.response || response.data?.message || response.data?.reply || getFallbackResponse(text);
+        setIsTyping(false);
+        setMessages((prev) => [...prev, { id: Date.now(), sender: 'bot', text: botText, time: new Date() }]);
+      })
+      .catch((err) => {
+        console.log('Chat API failed, using fallback:', err.message);
+        setIsTyping(false);
+        setMessages((prev) => [...prev, { id: Date.now(), sender: 'bot', text: getFallbackResponse(text), time: new Date() }]);
+      });
+  }, []);
+
+  const handleSend = () => {
+    sendMessage(input);
+    setInput('');
+  };
+
+  const handleQuickReply = (reply) => {
+    setInput('');
+    sendMessage(reply);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
     }
   };
 
-  const handleQuickAction = (action) => {
-    const actions = { 
-      hire: "I'd like to hire Abel for a project", 
-      email: "How can I contact Abel?", 
-      skills: "What are Abel's technical skills?", 
-      projects: "Show me Abel's portfolio" 
+  // ── Desktop Resize Logic ──
+  const handleResizeStart = (e, axis = 'both') => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsResizing(true);
+    resizeStartRef.current = { x: e.clientX, y: e.clientY, w: size.w, h: size.h, axis };
+  };
+
+  const handleResizeMove = useCallback((e) => {
+    if (!isResizing) return;
+    const s = resizeStartRef.current;
+    let newW = size.w;
+    let newH = size.h;
+
+    if (s.axis === 'both' || s.axis === 'x') {
+      const dx = s.x - e.clientX;
+      newW = Math.min(Math.max(s.w + dx, 320), 620);
+    }
+    if (s.axis === 'both' || s.axis === 'y') {
+      const dy = s.y - e.clientY;
+      newH = Math.min(Math.max(s.h + dy, 400), 780);
+    }
+    setSize({ w: newW, h: newH });
+  }, [isResizing, size.w, size.h]);
+
+  const handleResizeEnd = useCallback(() => {
+    setIsResizing(false);
+  }, []);
+
+  useEffect(() => {
+    if (!isDesktop) return;
+    if (isResizing) {
+      document.addEventListener('mousemove', handleResizeMove);
+      document.addEventListener('mouseup', handleResizeEnd);
+      document.body.style.userSelect = 'none';
+      document.body.style.cursor = 'nwse-resize';
+    }
+    return () => {
+      document.removeEventListener('mousemove', handleResizeMove);
+      document.removeEventListener('mouseup', handleResizeEnd);
+      document.body.style.userSelect = '';
+      document.body.style.cursor = '';
     };
-    handleSend(actions[action]);
+  }, [isResizing, handleResizeMove, handleResizeEnd, isDesktop]);
+
+  const getCurrentPreset = () => {
+    if (Math.abs(size.w - SIZE_PRESETS.small.w) < 25 && Math.abs(size.h - SIZE_PRESETS.small.h) < 25) return 'small';
+    if (Math.abs(size.w - SIZE_PRESETS.large.w) < 25 && Math.abs(size.h - SIZE_PRESETS.large.h) < 25) return 'large';
+    return 'medium';
   };
 
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) { 
-      e.preventDefault(); 
-      handleSend(); 
-    }
-  };
-
-  // Format time
-  const fmtTime = (d) => new Date(d).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-  // Helper function for message bubble styles
-  const getMessageBubbleClass = (msg) => {
-    const baseClass = "px-4 py-3 rounded-2xl text-[13.5px] leading-relaxed transition-all duration-200";
-    
-    if (msg.isError) {
-      return `${baseClass} ${isDark ? 'bg-red-900/20 border border-red-500/30 text-red-300' : 'bg-red-50 border border-red-200 text-red-600'}`;
-    }
-    
-    if (msg.sender === 'user') {
-      return `${baseClass} ${isDark ? 'bg-gradient-to-br from-blue-600 to-cyan-600 text-white shadow-lg shadow-blue-500/20' : 'bg-gradient-to-br from-blue-500 to-indigo-500 text-white shadow-lg shadow-blue-500/20'} rounded-tr-md`;
-    }
-    
-    return `${baseClass} ${isDark ? 'bg-white/[0.06] backdrop-blur-sm text-gray-100 border border-white/[0.08] shadow-sm rounded-tl-md' : 'bg-white text-gray-800 border border-gray-100 shadow-md shadow-gray-200/50 rounded-tl-md'}`;
-  };
-
-  // Helper for timestamp class
-  const getTimeStampClass = (sender) => {
-    const baseClass = "block text-[10px] mt-2 pt-2 border-t opacity-40 font-medium";
-    
-    if (sender === 'user') {
-      return `${baseClass} border-white/20 text-white/60`;
-    }
-    
-    return `${baseClass} ${isDark ? 'border-white/[0.06] text-gray-500' : 'border-gray-100 text-gray-400'}`;
+  const cyclePreset = () => {
+    const c = getCurrentPreset();
+    if (c === 'small') setSize(SIZE_PRESETS.medium);
+    else if (c === 'medium') setSize(SIZE_PRESETS.large);
+    else setSize(SIZE_PRESETS.small);
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-[9999] font-sans">
-      
-      {/* ===== MAIN CHAT WINDOW ===== */}
-      {isOpen && (
-        <div 
-          className={`
-            fixed bottom-6 right-6 w-[420px] max-w-[calc(100vw-3rem)] h-[640px] max-h-[calc(100vh-6rem)]
-            rounded-[28px] overflow-hidden flex flex-col
-            transition-all duration-500 ease-out animate-in fade-in slide-in-from-bottom-4 duration-500
-            ${isDark ? 'shadow-2xl shadow-black/50' : 'shadow-2xl shadow-gray-300/50'}
-          `}
-          style={{
-            background: isDark 
-              ? 'linear-gradient(135deg, rgba(15,15,25,0.95) 0%, rgba(10,10,20,0.98) 100%)'
-              : 'linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.98) 100%)',
-            backdropFilter: 'blur(20px)',
-            border: isDark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.06)',
-          }}
-        >
-          
-          {/* ===== HEADER ===== */}
-          <div 
-            className="relative px-6 py-5 flex items-center justify-between shrink-0 overflow-hidden"
-            style={{
-              background: isDark
-                ? 'linear-gradient(135deg, rgba(124,58,237,0.15) 0%, rgba(79,70,229,0.1) 100%)'
-                : 'linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(168,85,247,0.06) 100%)',
-              borderBottom: isDark ? '1px solid rgba(255,255,255,0.06)' : '1px solid rgba(0,0,0,0.05)'
-            }}
-          >
-            {/* Decorative blurs */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-violet-500/20 to-purple-500/20 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-0 left-20 w-24 h-24 bg-gradient-to-tr from-cyan-500/10 to-blue-500/10 rounded-full blur-2xl"></div>
-            
-            {/* Left Side */}
-            <div className="relative flex items-center gap-3.5">
-              <div className="relative">
-                <div className={`
-                  w-12 h-12 rounded-2xl flex items-center justify-center text-xl
-                  shadow-lg transform rotate-3 hover:rotate-0 transition-transform duration-300
-                  ${isDark 
-                    ? 'bg-gradient-to-br from-violet-600 to-purple-700 shadow-violet-500/30' 
-                    : 'bg-gradient-to-br from-indigo-500 to-purple-600 shadow-indigo-500/30'
-                  }
-                `}>
-                  🤖
-                </div>
-                
-                <span className="absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex h-3.5 w-3.5 rounded-full bg-emerald-500 border-2 border-white dark:border-gray-900"></span>
-                </span>
-              </div>
+    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col items-end gap-3">
 
-              <div>
-                <h3 className={`text-base font-bold tracking-tight flex items-center gap-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                  Nexus AI
-                  <span className={`px-2 py-0.5 text-[10px] font-semibold rounded-full uppercase tracking-wider ${isDark ? 'bg-violet-500/20 text-violet-300' : 'bg-indigo-100 text-indigo-600'}`}>
-                    Online
-                  </span>
-                </h3>
-                <p className={`text-xs mt-0.5 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                  Abel's Assistant • Responds instantly
-                </p>
+      {/* ═══ Mobile Backdrop ═══ */}
+      {isOpen && !isDesktop && (
+        <div
+          className={`fixed inset-0 backdrop-blur-sm -z-10 ${isDark ? 'bg-black/60' : 'bg-black/30'}`}
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+
+      {/* ═══════════════════════════════════════════
+          CHAT PANEL
+          ═══════════════════════════════════════════ */}
+      <div
+        className={`transition-[opacity,transform] duration-500 ease-out ${
+          isOpen
+            ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto'
+            : 'opacity-0 scale-90 translate-y-4 pointer-events-none'
+        } ${
+          isDesktop
+            ? 'origin-bottom-right'
+            : 'fixed inset-x-2 sm:inset-x-4 bottom-20 top-2 sm:top-4 w-auto h-auto'
+        }`}
+      >
+        <div
+          className={`relative backdrop-blur-xl border rounded-2xl shadow-2xl flex flex-col overflow-hidden h-full ${
+            isDark
+              ? 'bg-[#0a0a0a]/95 border-white/[0.08] shadow-black/60'
+              : 'bg-white border-gray-200 shadow-black/10'
+          }`}
+          style={isDesktop ? { width: size.w, height: Math.min(size.h, window.innerHeight - 48) } : undefined}
+        >
+
+          {/* ── Header ── */}
+          <div
+            className={`relative flex items-center gap-3 px-4 sm:px-5 py-3.5 sm:py-4 border-b flex-shrink-0 ${
+              isDark ? 'border-white/[0.06] bg-[#0d0d12]/80' : 'border-gray-100 bg-gray-50/90'
+            }`}
+          >
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 sm:w-40 h-px bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent" />
+
+            {/* Mobile Drag Handle */}
+            {!isDesktop && (
+              <div className={`absolute -top-1 left-1/2 -translate-x-1/2 w-10 h-1 rounded-full ${isDark ? 'bg-white/20' : 'bg-gray-300'}`} />
+            )}
+
+            <div className="relative flex-shrink-0">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
+                </svg>
               </div>
+              <span className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-emerald-500 rounded-full border-2 ${
+                isDark ? 'border-[#0d0d12]' : 'border-white'
+              }`} />
             </div>
 
+            <div className="flex-1 min-w-0">
+              <h4 className={`text-sm font-semibold truncate ${isDark ? 'text-white' : 'text-gray-900'}`}>{WEBSITE_DATA.aiName}</h4>
+              <p className={`text-[10px] sm:text-[11px] flex items-center gap-1 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>
+                <span className="w-1 h-1 rounded-full bg-emerald-400 flex-shrink-0" />
+                <span className="truncate">{WEBSITE_DATA.company} AI Assistant</span>
+              </p>
+            </div>
+
+            {/* Size Toggle (Desktop Only) */}
+            {isDesktop && (
+              <button
+                onClick={cyclePreset}
+                className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 ${
+                  isDark
+                    ? 'text-neutral-500 hover:text-white hover:bg-white/[0.06]'
+                    : 'text-gray-400 hover:text-gray-700 hover:bg-gray-100'
+                }`}
+                title={`Size: ${getCurrentPreset().toUpperCase()} — click to change`}
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
+                </svg>
+              </button>
+            )}
+
             {/* Close Button */}
-            <button 
+            <button
               onClick={() => setIsOpen(false)}
-              className={`relative p-2.5 rounded-xl transition-all duration-200 group ${isDark ? 'hover:bg-white/10 text-gray-400 hover:text-white' : 'hover:bg-gray-100 text-gray-400 hover:text-gray-700'}`}
+              className={`w-9 h-9 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center transition-all duration-200 ${
+                isDark
+                  ? 'text-neutral-500 hover:text-white hover:bg-white/[0.06] active:bg-white/10'
+                  : 'text-gray-400 hover:text-gray-700 hover:bg-gray-100 active:bg-gray-200'
+              }`}
+              aria-label="Close chat"
             >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg className="w-5 h-5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
 
-          {/* ===== MESSAGES AREA ===== */}
-          <div className={`
-            flex-1 overflow-y-auto px-5 py-4 space-y-4
-            ${isDark ? '' : ''}
-          `}
-          style={{ 
-            background: isDark 
-              ? 'radial-gradient(circle at 50% 0%, rgba(124,58,237,0.03) 0%, transparent 70%)'
-              : 'radial-gradient(circle at 50% 0%, rgba(99,102,241,0.03) 0%, transparent 70%)'
-          }}
-          >
+          {/* ── Messages Area ── */}
+          <div className="flex-1 overflow-y-auto px-3 sm:px-4 py-4 space-y-3 sm:space-y-4 scrollbar-thin overscroll-contain min-h-0">
             {messages.map((msg) => (
-              <div key={msg.id} className={`flex gap-3 ${msg.sender === 'user' ? 'flex-row-reverse' : ''}`}>
-                
-                {/* Avatar */}
-                <div className={`
-                  w-9 h-9 rounded-xl flex items-center justify-center shrink-0 mt-auto text-sm shadow-md
-                  ${msg.sender === 'user'
-                    ? (isDark ? 'bg-gradient-to-br from-blue-600 to-cyan-600 shadow-blue-500/20' : 'bg-gradient-to-br from-blue-500 to-indigo-500 shadow-blue-500/20')
-                    : (isDark ? 'bg-gradient-to-br from-violet-600/80 to-purple-600/80 shadow-purple-500/20' : 'bg-gradient-to-br from-violet-500 to-purple-500 shadow-violet-500/20')
-                  }
-                `}>
-                  {msg.sender === 'user' ? '👤' : '🤖'}
-                </div>
-
-                {/* Message Bubble */}
-                <div className="max-w-[75%] group">
-                  <div className={getMessageBubbleClass(msg)}>
-                    <div dangerouslySetInnerHTML={{ 
-                      __html: msg.text
-                        .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold">$1</strong>')
-                        .replace(/\n/g, '<br/>')
-                    }}/>
-                    
-                    <span className={getTimeStampClass(msg.sender)}>
-                      {fmtTime(msg.time)}
-                    </span>
+              <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                <div className={`flex items-end gap-1.5 sm:gap-2 max-w-[85%] ${msg.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                  {msg.sender === 'bot' && (
+                    <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-md sm:rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center flex-shrink-0 mb-4 sm:mb-5">
+                      <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
+                      </svg>
+                    </div>
+                  )}
+                  <div className="flex flex-col min-w-0">
+                    <div
+                      className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-2xl text-xs sm:text-[13px] leading-relaxed break-words whitespace-pre-line ${
+                        msg.sender === 'user'
+                          ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-br-md'
+                          : isDark
+                            ? 'bg-white/[0.06] text-neutral-300 border border-white/[0.06] rounded-bl-md'
+                            : 'bg-gray-100 text-gray-700 border border-gray-200 rounded-bl-md'
+                      }`}
+                    >
+                      {msg.text}
+                    </div>
+                    <p className={`text-[9px] sm:text-[10px] mt-1 px-1 ${
+                      isDark ? 'text-neutral-700' : 'text-gray-400'
+                    } ${msg.sender === 'user' ? 'text-right' : 'text-left'}`}>
+                      {formatTime(msg.time)}
+                    </p>
                   </div>
                 </div>
               </div>
             ))}
 
-            {/* Typing Indicator */}
             {isTyping && (
-              <div className="flex gap-3">
-                <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-sm shadow-md ${isDark ? 'bg-gradient-to-br from-violet-600/60 to-purple-600/60' : 'bg-gradient-to-br from-violet-400 to-purple-500'}`}>
-                  🤖
-                </div>
-                <div className={`px-5 py-3.5 rounded-2xl rounded-tl-md ${isDark ? 'bg-white/[0.06] backdrop-blur-sm border border-white/[0.08]' : 'bg-white border border-gray-100 shadow-md'}`}>
-                  <div className="flex items-center gap-1.5">
-                    <span className={`w-2 h-2 rounded-full animate-bounce ${isDark ? 'bg-violet-400' : 'bg-violet-500'}`} style={{animationDelay: '0ms'}}></span>
-                    <span className={`w-2 h-2 rounded-full animate-bounce ${isDark ? 'bg-purple-400' : 'bg-purple-500'}`} style={{animationDelay: '150ms'}}></span>
-                    <span className={`w-2 h-2 rounded-full animate-bounce ${isDark ? 'bg-indigo-400' : 'bg-indigo-500'}`} style={{animationDelay: '300ms'}}></span>
-                    <span className={`ml-2 text-xs ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>thinking...</span>
+              <div className="flex justify-start">
+                <div className="flex items-end gap-1.5 sm:gap-2">
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-md sm:rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center flex-shrink-0 mb-4 sm:mb-5">
+                    <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
+                    </svg>
+                  </div>
+                  <div
+                    className={`px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl rounded-bl-md ${
+                      isDark
+                        ? 'bg-white/[0.06] border border-white/[0.06]'
+                        : 'bg-gray-100 border border-gray-200'
+                    }`}
+                  >
+                    <div className="flex items-center gap-1.5">
+                      <span className={`w-1.5 h-1.5 rounded-full animate-bounce ${isDark ? 'bg-neutral-500' : 'bg-gray-400'}`} style={{ animationDelay: '0ms' }} />
+                      <span className={`w-1.5 h-1.5 rounded-full animate-bounce ${isDark ? 'bg-neutral-500' : 'bg-gray-400'}`} style={{ animationDelay: '150ms' }} />
+                      <span className={`w-1.5 h-1.5 rounded-full animate-bounce ${isDark ? 'bg-neutral-500' : 'bg-gray-400'}`} style={{ animationDelay: '300ms' }} />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -275,141 +418,183 @@ const ChatBot = () => {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* ===== QUICK ACTIONS ===== */}
-          <div className={`px-5 py-3.5 shrink-0 ${isDark ? 'border-t border-white/[0.04]' : 'border-t border-gray-100'}`}>
-            <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-              {quickActions.map((qa, i) => (
+          {/* ── Quick Replies ── */}
+          {messages.length <= 2 && (
+            <div className="px-3 sm:px-4 pb-2 flex flex-wrap gap-1.5 sm:gap-1.5 flex-shrink-0">
+              {quickReplies.map((reply) => (
                 <button
-                  key={i}
-                  onClick={() => handleQuickAction(qa.action)}
-                  className={`
-                    group flex items-center gap-2 px-4 py-2.5 rounded-full
-                    text-xs font-semibold whitespace-nowrap
-                    transition-all duration-300 cursor-pointer
-                    hover:scale-105 active:scale-95
-                    ${isDark 
-                      ? 'bg-white/[0.04] border border-white/[0.08] text-gray-300 hover:bg-white/[0.08] hover:border-white/[0.15]'
-                      : 'bg-gray-50 border border-gray-200 text-gray-600 hover:bg-white hover:border-gray-300 hover:shadow-md'
-                    }
-                  `}
+                  key={reply}
+                  onClick={() => handleQuickReply(reply)}
+                  className={`px-3 sm:px-3 py-2 sm:py-1.5 rounded-full border font-medium active:scale-95 transition-all duration-200 ${
+                    isDark
+                      ? 'border-white/[0.08] bg-white/[0.03] text-[11px] text-neutral-400 hover:text-white hover:border-cyan-500/30 hover:bg-cyan-500/[0.06]'
+                      : 'border-gray-200 bg-gray-50 text-[11px] text-gray-500 hover:text-gray-900 hover:border-cyan-300 hover:bg-cyan-50'
+                  }`}
                 >
-                  <span className="text-base transition-transform duration-200 group-hover:scale-125">{qa.icon}</span>
-                  <span>{qa.label}</span>
+                  {reply}
                 </button>
               ))}
             </div>
-          </div>
+          )}
 
-          {/* ===== INPUT AREA ===== */}
-          <div className={`p-5 pt-3 shrink-0 ${isDark ? 'border-t border-white/[0.04]' : 'border-t border-gray-100'}`}>
-            
-            <div className={`
-              relative flex items-end gap-2.5 p-2 rounded-2xl transition-all duration-300
-              ${isFocused 
-                ? (isDark ? 'bg-white/[0.06] ring-2 ring-violet-500/30 shadow-lg shadow-violet-500/10' : 'bg-white ring-2 ring-indigo-500/20 shadow-xl shadow-indigo-500/10')
-                : (isDark ? 'bg-white/[0.03] ring-1 ring-white/[0.06]' : 'bg-gray-50 ring-1 ring-gray-200')
-              }
-            `}>
-              <input
-                type="text"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyPress={handleKeyPress}
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
-                placeholder="Type your message..."
-                disabled={isTyping}
-                className={`flex-1 px-4 py-3 bg-transparent text-[14px] outline-none placeholder:text-gray-400 disabled:opacity-50 ${isDark ? 'text-white' : 'text-gray-800'}`}
-              />
-
-              <button
-                onClick={() => handleSend()}
-                disabled={!inputValue.trim() || isTyping}
-                className={`
-                  p-3 rounded-xl transition-all duration-300
-                  disabled:opacity-40 disabled:cursor-not-allowed disabled:transform-none
-                  active:scale-90
-                  ${(!inputValue.trim() || isTyping)
-                    ? (isDark ? 'bg-gray-800 text-gray-600' : 'bg-gray-200 text-gray-400')
-                    : 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-lg shadow-violet-500/30 hover:shadow-xl hover:shadow-violet-500/40 hover:scale-110 hover:rotate-3'
-                  }
-                `}
+          {/* ── Input Area ── */}
+          <div
+            className={`px-3 sm:px-4 py-2.5 sm:py-3 border-t flex-shrink-0 ${
+              isDark ? 'border-white/[0.06] bg-[#0d0d12]/60' : 'border-gray-100 bg-gray-50/80'
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <div
+                className={`flex-1 relative rounded-xl border transition-all duration-300 ${
+                  isDark
+                    ? 'border-white/[0.08] bg-white/[0.03] focus-within:border-cyan-500/30 focus-within:bg-cyan-500/[0.02]'
+                    : 'border-gray-200 bg-white focus-within:border-cyan-400 focus-within:bg-cyan-50/50'
+                }`}
               >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Ask about services, pricing..."
+                  enterKeyHint="send"
+                  className={`w-full bg-transparent text-sm py-2.5 sm:py-2.5 px-3.5 sm:px-4 outline-none rounded-xl placeholder-${
+                    isDark ? 'neutral-600 text-white' : 'gray-400 text-gray-900'
+                  }`}
+                />
+              </div>
+              <button
+                onClick={handleSend}
+                disabled={!input.trim() || isTyping}
+                aria-label="Send message"
+                className="w-11 h-11 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/30 disabled:opacity-30 disabled:shadow-none transition-all duration-300 hover:scale-105 active:scale-95 flex-shrink-0"
+              >
+                <svg className="w-4 h-4 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
                 </svg>
               </button>
             </div>
-
-            <div className={`flex items-center justify-center gap-1.5 mt-3 text-[11px] ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
-              <span>End-to-end encrypted</span>
-            </div>
+            <p className={`text-[9px] sm:text-[10px] text-center mt-1.5 sm:mt-2 ${isDark ? 'text-neutral-700' : 'text-gray-400'}`}>
+              {WEBSITE_DATA.aiName} AI · Powered by {WEBSITE_DATA.company}
+            </p>
           </div>
+
+          {/* ══════════════════════════════════════
+              RESIZE HANDLES (Desktop Only)
+              ══════════════════════════════════════ */}
+          {isDesktop && (
+            <>
+              {/* Corner handle — bottom-left */}
+              <div
+                onMouseDown={(e) => handleResizeStart(e, 'both')}
+                className={`absolute bottom-0 left-0 w-6 h-6 cursor-nwse-resize z-20 flex items-start justify-end pt-1 pr-1 transition-opacity duration-200 ${
+                  isResizing ? 'opacity-100' : 'opacity-20 hover:opacity-60'
+                }`}
+              >
+                <svg className={`w-3.5 h-3.5 rotate-180 ${isDark ? 'text-neutral-400' : 'text-gray-400'}`} fill="none" viewBox="0 0 16 16" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" d="M2 14L14 2M8 14L14 8" />
+                </svg>
+              </div>
+
+              {/* Right edge handle */}
+              <div
+                onMouseDown={(e) => handleResizeStart(e, 'x')}
+                className={`absolute top-14 right-0 bottom-14 w-1.5 cursor-ew-resize z-20 transition-all duration-200 rounded-l ${
+                  isResizing
+                    ? 'opacity-100 bg-cyan-500/40'
+                    : 'opacity-0 hover:opacity-100 hover:bg-cyan-500/20'
+                }`}
+              />
+
+              {/* Bottom edge handle */}
+              <div
+                onMouseDown={(e) => handleResizeStart(e, 'y')}
+                className={`absolute bottom-0 left-8 right-0 h-1.5 cursor-ns-resize z-20 transition-all duration-200 rounded-t ${
+                  isResizing
+                    ? 'opacity-100 bg-cyan-500/40'
+                    : 'opacity-0 hover:opacity-100 hover:bg-cyan-500/20'
+                }`}
+              />
+            </>
+          )}
         </div>
-      )}
+      </div>
 
-      {/* ===== FLOATING TRIGGER BUTTON ===== */}
-      {!isOpen && (
-        <div className="relative group">
-          {/* Outer glow */}
-          <div className={`absolute -inset-4 rounded-[28px] opacity-0 group-hover:opacity-100 bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 blur-xl transition-opacity duration-500`}></div>
+      {/* ═══════════════════════════════════════════
+          FLOATING TOGGLE BUTTON
+          ═══════════════════════════════════════════ */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        aria-label={isOpen ? "Close chat" : "Open chat"}
+        className={`group relative w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 shadow-xl z-10 ${
+          isOpen
+            ? `${
+                isDark
+                  ? 'bg-[#0a0a0a] border border-white/[0.08] shadow-black/40'
+                  : 'bg-white border border-gray-200 shadow-gray-300/40'
+              } rotate-0`
+            : 'bg-gradient-to-r from-cyan-500 to-blue-600 shadow-cyan-500/25 hover:shadow-cyan-500/40 hover:scale-110 active:scale-95'
+        }`}
+      >
+        {!isOpen && (
+          <span className="absolute inset-0 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 animate-ping opacity-20" />
+        )}
 
-          {/* Middle ring */}
-          <div className={`absolute -inset-1.5 rounded-[22px] opacity-0 group-hover:opacity-100 bg-gradient-to-r from-violet-500 to-indigo-500 transition-opacity duration-300`}></div>
+        <svg
+          className={`w-5 h-5 text-white transition-all duration-300 ${
+            isOpen ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 rotate-90 scale-50'
+          }`}
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
 
-          {/* Main button */}
-          <button
-            onClick={() => setIsOpen(true)}
-            className="
-              relative w-[64px] h-[64px]
-              rounded-[20px]
-              bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700
-              text-white
-              shadow-2xl shadow-violet-500/40
-              transform group-hover:scale-110 group-hover:-translate-y-2 group-hover:rotate-3
-              transition-all duration-500 ease-out overflow-hidden
-            "
-          >
-            {/* Shine effect */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/20 to-white/0 translate-y-full group-hover:translate-y-[-100%] transition-transform duration-700"></div>
-            
-            {/* Icon */}
-            <div className="relative z-10 absolute inset-0 flex flex-col items-center justify-center">
-              <span className="text-2xl mb-0.5">💬</span>
-              <span className="text-[9px] font-bold tracking-wider opacity-90">AI</span>
-            </div>
+        <svg
+          className={`w-6 h-6 text-white absolute transition-all duration-300 ${
+            isOpen ? 'opacity-0 -rotate-90 scale-50' : 'opacity-100 rotate-0 scale-100'
+          }`}
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={1.5}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+        </svg>
 
-            {/* Notification dot */}
-            <span className="absolute top-2 right-2 w-3 h-3 bg-emerald-400 rounded-full border-2 border-white/30 shadow-lg shadow-emerald-500/50">
-              <span className="absolute inset-0 rounded-full bg-emerald-400 animate-ping opacity-75"></span>
-            </span>
-          </button>
+        {!isOpen && (
+          <span className={`absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 flex items-center justify-center ${
+            isDark ? 'border-[#050505]' : 'border-white'
+          }`}>
+            <span className="text-[8px] font-bold text-white">1</span>
+          </span>
+        )}
+      </button>
 
-          {/* Tooltip */}
-          <div className={`
-            absolute bottom-full right-0 mb-4 px-5 py-2.5 rounded-2xl whitespace-nowrap
-            opacity-0 group-hover:opacity-100 translate-y-3 group-hover:translate-y-0
-            transition-all duration-300 pointer-events-none z-20
-            ${isDark ? 'bg-gray-900/95 backdrop-blur-xl text-white border border-white/10 shadow-2xl' : 'bg-gray-900/95 backdrop-blur-xl text-white border border-white/10 shadow-2xl'}
-          `}>
-            <div className="flex items-center gap-2.5 text-sm font-semibold">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
-              </span>
-              Chat with 
-              <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent font-bold">AI</span>
-            </div>
-            
-            <div className={`absolute top-full right-6 w-3 h-3 rotate-45 ${isDark ? 'bg-gray-900/95 border-r border-b border-white/10' : 'bg-gray-900/95 border-r border-b border-white/10'}`}></div>
-          </div>
+      {/* ═══ Tooltip (Desktop Only) ═══ */}
+      {!isOpen && isDesktop && (
+        <div
+          className={`absolute bottom-[70px] right-0 px-3 py-1.5 rounded-lg backdrop-blur-md border shadow-lg whitespace-nowrap pointer-events-none animate-[fadeSlideIn_0.3s_ease-out] ${
+            isDark
+              ? 'bg-[#0a0a0a]/90 border-white/[0.08]'
+              : 'bg-white border-gray-200 shadow-gray-300/30'
+          }`}
+        >
+          <p className={`text-xs font-medium ${isDark ? 'text-neutral-300' : 'text-gray-700'}`}>Chat with {WEBSITE_DATA.aiName}</p>
+          <div
+            className={`absolute bottom-0 right-5 translate-y-1/2 rotate-45 w-2 h-2 border-r border-b ${
+              isDark
+                ? 'bg-[#0a0a0a]/90 border-white/[0.08]'
+                : 'bg-white border-gray-200'
+            }`}
+          />
         </div>
       )}
     </div>
   );
-};
+}
 
-export default ChatBot;
+export default CodeXChat;
