@@ -1,631 +1,681 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import { 
+  Sun, 
+  Moon, 
+  Menu, 
+  X,
+  ArrowRight,
+  Code2  // ✅ Changed from Zap to Code2
+} from 'lucide-react';
 import logo from '../assets/logo.png';
 
 const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  // DEFAULT TO DARK MODE ON FIRST LOAD
+  const [isDark, setIsDark] = useState(true);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeLink, setActiveLink] = useState('Home');
-  
-  // Search states
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-  const [showSearchResults, setShowSearchResults] = useState(false);
-  const [isSearching, setIsSearching] = useState(false);
-  
-  // Refs for search
-  const searchRef = useRef(null);
-  const searchTimeoutRef = useRef(null);
+  const [isHovering, setIsHovering] = useState(null);
 
+  // Navigation items with IDs
+  const navItems = [
+    { name: 'Home', id: 'home' },
+    { name: 'Service', id: 'services' },
+    { name: 'Projects', id: 'projects' },
+    { name: 'Testimony', id: 'testimony' },
+    { name: 'Certificate', id: 'certificate' },
+    { name: 'Contact us', id: 'contact' }
+  ];
+
+  // Handle scroll effect & active link detection
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
+      setIsScrolled(window.scrollY > 20);
       
       // Update active link based on scroll position
       const scrollPosition = window.scrollY + 100;
-      const sections = ['home', 'tech', 'service', 'projects', 'testimony', 'contact'];
-      
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const element = document.getElementById(sections[i]);
-        if (element && element.offsetTop <= scrollPosition) {
-          setActiveLink(sections[i].charAt(0).toUpperCase() + sections[i].slice(1));
+
+      for (let i = navItems.length - 1; i >= 0; i--) {
+        const section = document.getElementById(navItems[i].id);
+        if (section && section.offsetTop <= scrollPosition) {
+          setActiveLink(navItems[i].name);
           break;
         }
       }
     };
+
     window.addEventListener('scroll', handleScroll);
+    
+    // Initial call to set active state
+    handleScroll();
+    
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Enhanced navItems with searchable data
-  const navItems = [
-    { 
-      label: 'Home', 
-      id: 'home',
-      keywords: ['home', 'welcome', 'hero', 'landing', 'main', 'start', 'beginning', 'intro'],
-      description: 'Welcome section'
-    },
-    { 
-      label: 'Tech', 
-      id: 'tech',
-      keywords: ['tech', 'technology', 'skills', 'stack', 'programming', 'code', 'coding', 'languages', 'frameworks', 'react', 'javascript', 'nodejs', 'python', 'tools', 'development'],
-      description: 'Technology stack & skills'
-    },
-    { 
-      label: 'Service', 
-      id: 'service',
-      keywords: ['service', 'services', 'offerings', 'solutions', 'consulting', 'development', 'design', 'what i do', 'offer', 'provide', 'help', 'support', 'work'],
-      description: 'Services I offer'
-    },
-    { 
-      label: 'Projects', 
-      id: 'projects',
-      keywords: ['project', 'projects', 'portfolio', 'work', 'case study', 'showcase', 'examples', 'samples', 'demo', 'built', 'created', 'developed', 'made'],
-      description: 'Featured projects'
-    },
-    { 
-      label: 'Testimony', 
-      id: 'testimony',
-      keywords: ['testimony', 'testimonial', 'review', 'reviews', 'feedback', 'client', 'clients', 'rating', 'recommendation', 'quote', 'say', 'said', 'experience', 'opinion'],
-      description: 'Client testimonials'
-    },
-    { 
-      label: 'Contact', 
-      id: 'contact',
-      keywords: ['contact', 'email', 'phone', 'hire', 'reach out', 'connect', 'message', 'get in touch', 'call', 'whatsapp', 'address', 'location', 'form', 'reach'],
-      description: 'Get in touch'
-    }
-  ];
-
-  // Search functionality with debounce
+  // Apply dark mode to document
   useEffect(() => {
-    if (searchTimeoutRef.current) {
-      clearTimeout(searchTimeoutRef.current);
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
     }
+  }, [isDark]);
 
-    if (searchQuery.trim() === '') {
-      setSearchResults([]);
-      setShowSearchResults(false);
-      return;
-    }
-
-    setIsSearching(true);
-
-    searchTimeoutRef.current = setTimeout(() => {
-      const query = searchQuery.toLowerCase().trim();
-      const results = [];
-
-      navItems.forEach((item) => {
-        const labelMatch = item.label.toLowerCase().includes(query);
-        const keywordMatch = item.keywords.some(keyword => 
-          keyword.toLowerCase().includes(query)
-        );
-
-        let score = 0;
-        if (labelMatch) score += 10;
-        if (keywordMatch) score += 5;
-        if (item.label.toLowerCase() === query) score += 20;
-
-        if (labelMatch || keywordMatch) {
-          results.push({ ...item, score });
-        }
-      });
-
-      // Sort by relevance
-      results.sort((a, b) => b.score - a.score);
-
-      setSearchResults(results);
-      setShowSearchResults(results.length > 0);
-      setIsSearching(false);
-    }, 300); // 300ms debounce
-
-    return () => {
-      if (searchTimeoutRef.current) {
-        clearTimeout(searchTimeoutRef.current);
-      }
-    };
-  }, [searchQuery]);
-
-  // Close search when clicking outside
+  // Initialize dark mode on mount - ALWAYS DARK FIRST
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (searchRef.current && !searchRef.current.contains(event.target)) {
-        setShowSearchResults(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('touchstart', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('touchstart', handleClickOutside);
-    };
+    // Force dark mode on first load
+    document.documentElement.classList.add('dark');
+    setIsDark(true);
+    localStorage.setItem('theme', 'dark');
   }, []);
 
-  // Navigate to section
-  const navigateToSection = (sectionId) => {
-    const element = document.getElementById(sectionId);
+  const toggleDarkMode = () => {
+    setIsDark(!isDark);
+  };
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  // Smooth scroll to section
+  const scrollToSection = (id) => {
+    const element = document.getElementById(id);
     if (element) {
-      // Close mobile menu first
-      setIsMenuOpen(false);
-      
-      setTimeout(() => {
-        element.scrollIntoView({ 
-          behavior: 'smooth', 
-          block: 'start'
-        });
-        
-        // Update active link
-        const item = navItems.find(item => item.id === sectionId);
-        if (item) setActiveLink(item.label);
-      }, isMenuOpen ? 300 : 0);
+      const offsetTop = element.offsetTop - 88; // Account for fixed header height
+      window.scrollTo({
+        top: offsetTop,
+        behavior: 'smooth'
+      });
     }
-    
-    // Reset search
-    setSearchQuery('');
-    setShowSearchResults(false);
-    setIsSearchFocused(false);
-  };
-
-  // Handle keyboard navigation
-  const handleSearchKeyDown = (e) => {
-    if (e.key === 'Enter' && searchResults.length > 0) {
-      e.preventDefault();
-      navigateToSection(searchResults[0].id);
-    } else if (e.key === 'Escape') {
-      clearSearch();
-    }
-  };
-
-  // Clear search
-  const clearSearch = () => {
-    setSearchQuery('');
-    setSearchResults([]);
-    setShowSearchResults(false);
-    setIsSearchFocused(false);
+    setIsMobileMenuOpen(false); // Close mobile menu after click
   };
 
   return (
     <header className={`
-      fixed top-0 w-full z-50 
-      transition-all duration-700 ease-out
-      ${scrolled 
-        ? 'bg-white/95 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.08)] border-b border-gray-100' 
+      fixed top-0 left-0 right-0 z-50 w-full 
+      transition-all duration-500 ease-[cubic-bezier(0.4, 0, 0.2, 1)]
+      ${isScrolled 
+        ? isDark 
+          ? 'bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/5 shadow-2xl shadow-black/40' 
+          : 'bg-white/95 backdrop-blur-xl border-b border-gray-100 shadow-xl shadow-gray-200/50'
         : 'bg-transparent'
       }
     `}>
-      {/* Subtle gradient accent on scroll */}
-      {scrolled && (
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-50/40 via-white to-white pointer-events-none"></div>
-      )}
       
-      <nav className="max-w-7xl mx-auto px-6 lg:px-8 relative">
-        <div className="flex items-center justify-between h-20">
+      <nav className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="flex items-center justify-between h-[88px]">
           
-          {/* Logo */}
-          <a href="#home" onClick={(e) => { e.preventDefault(); navigateToSection('home'); }} className="group flex-shrink-0 relative">
-            <img 
-              src={logo} 
-              alt="Logo" 
-              className="h-11 w-auto relative z-10 transition-all duration-500 group-hover:scale-105" 
-            />
+          {/* ===== LOGO SECTION ===== */}
+          <a 
+            href="#home" 
+            onClick={(e) => { 
+              e.preventDefault(); 
+              scrollToSection('home'); 
+            }} 
+            className="group flex items-center gap-4"
+          >
+            <div className="relative overflow-hidden rounded-lg">
+              <img
+                src={logo}
+                alt="Abel Samuel"
+                className={`
+                  h-11 w-auto object-contain
+                  transition-all duration-700 ease-[cubic-bezier(0.34, 1.56, 0.64, 1)]
+                  group-hover:scale-110 group-hover:brightness-125 group-hover:rotate-3
+                  ${isDark ? 'brightness-110 contrast-125' : ''}
+                `}
+              />
+              {/* Enhanced shine effect */}
+              <div className="
+                absolute inset-0 
+                bg-gradient-to-r from-transparent via-white/40 to-transparent
+                translate-x-[-100%] group-hover:translate-x-[100%]
+                transition-transform duration-1000 ease-[cubic-bezier(0.25, 0.46, 0.45, 0.94)]
+                skew-x-12
+              " />
+              
+              {/* Glow effect */}
+              <div className={`
+                absolute inset-0 rounded-lg
+                opacity-0 group-hover:opacity-100
+                transition-opacity duration-500 ease-out
+                ${isDark 
+                  ? 'shadow-[0_0_30px_rgba(59,130,246,0.5)]' 
+                  : 'shadow-[0_0_30px_rgba(59,130,246,0.3)]'
+                }
+              `} />
+            </div>
             
-            {/* Underline on hover */}
-            <span className="absolute -bottom-1 left-0 w-0 h-[3px] bg-gradient-to-r from-blue-600 to-cyan-500 rounded-full group-hover:w-full transition-all duration-400"></span>
+            {/* Divider */}
+            <div className={`h-10 w-px transition-all duration-500 ease-out ${isDark ? 'bg-gradient-to-b from-transparent via-gray-600 to-transparent group-hover:via-blue-400' : 'bg-gradient-to-b from-transparent via-gray-300 to-transparent group-hover:via-blue-400'}`} />
+            
+            {/* Name & Title */}
+            <div className="hidden sm:flex flex-col justify-center">
+              <h1 className={`
+                text-lg font-bold tracking-tight leading-none mb-1
+                transition-all duration-500 ease-[cubic-bezier(0.34, 1.56, 0.64, 1)]
+                ${isDark ? 'text-white group-hover:text-blue-400 group-hover:translate-x-1' : 'text-gray-900 group-hover:text-blue-600 group-hover:translate-x-1'}
+              `}>
+                Abel Samuel
+              </h1>
+              <p className={`
+                text-xs font-medium uppercase tracking-[0.2em] flex items-center gap-1.5
+                transition-all duration-500 ease-out
+                ${isDark ? 'text-gray-500 group-hover:text-gray-300' : 'text-gray-400 group-hover:text-gray-600'}
+              `}>
+                {/* ✅ CHANGED: Code2 icon instead of Zap */}
+                <Code2 className="w-3 h-3 transition-transform duration-300 group-hover:rotate-180" />
+                Developer
+              </p>
+            </div>
           </a>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-2">
-            
-            {/* Search Bar - Clean White Style */}
-            <div className="relative mr-3 group/search" ref={searchRef}>
-              {/* Subtle focus glow */}
-              <div className={`
-                absolute -inset-1 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full blur-md opacity-0 transition-opacity duration-300
-                ${isSearchFocused ? 'opacity-20' : ''}
-              `}></div>
+          {/* ===== DESKTOP NAVIGATION ===== */}
+          <div className="hidden lg:flex items-center gap-1">
+            {navItems.map((item) => {
+              const isActive = activeLink === item.name;
+              const isItemHovering = isHovering === item.name;
               
-              <div className={`relative transition-all duration-300 ease-out ${
-                isSearchFocused ? 'w-80 xl:w-96' : 'w-64 lg:w-72'
-              }`}>
-                <input 
-                  type="text" 
-                  placeholder={isSearchFocused ? "Type to explore..." : "Search..."}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onFocus={() => setIsSearchFocused(true)}
-                  onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
-                  onKeyDown={handleSearchKeyDown}
+              return (
+                <button
+                  key={item.name}
+                  onClick={() => scrollToSection(item.id)}
+                  onMouseEnter={() => setIsHovering(item.name)}
+                  onMouseLeave={() => setIsHovering(null)}
                   className={`
-                    relative pl-11 pr-10 py-3 rounded-xl text-sm font-medium
-                    bg-gray-50 text-gray-800 placeholder-gray-400
-                    border border-gray-200 hover:border-gray-300
-                    focus:bg-white focus:border-blue-400 focus:text-gray-900 focus:shadow-lg focus:shadow-blue-100/50
-                    focus:outline-none transition-all duration-300 ease-out w-full
-                  `}
-                />
-                
-                {/* Dynamic search icon */}
-                <div className="absolute left-4 top-1/2 -translate-y-1/2">
-                  {isSearching ? (
-                    <svg className="w-[18px] h-[18px] animate-spin text-blue-500" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                  ) : (
-                    <svg 
-                      className={`w-[18px] h-[18px] transition-all duration-300 ${isSearchFocused ? 'text-blue-500' : 'text-gray-400'}`} 
-                      fill="none" 
-                      stroke="currentColor" 
-                      viewBox="0 0 24 24"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                  )}
-                </div>
-
-                {/* Clear button */}
-                {searchQuery && (
-                  <button
-                    onClick={clearSearch}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-gray-100 transition-all hover:rotate-90"
-                  >
-                    <svg className="w-4 h-4 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                )}
-
-                {/* Search Results Dropdown - White Style */}
-                {showSearchResults && (
-                  <div className="
-                    absolute top-full left-0 right-0 mt-3 rounded-2xl overflow-hidden
-                    bg-white backdrop-blur-xl border border-gray-200 shadow-2xl shadow-gray-200/50
-                    animate-in slide-in-from-top-2 fade-in duration-300 max-h-96 overflow-y-auto
-                  ">
-                    {/* Results header */}
-                    <div className="px-5 py-3 border-b border-gray-100 bg-gray-50/80">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
-                          Found {searchResults.length} result{searchResults.length !== 1 ? 's' : ''}
-                        </span>
-                        <span className="text-xs text-gray-400">Press Enter</span>
-                      </div>
-                    </div>
-
-                    {/* Results list */}
-                    <div className="p-2">
-                      {searchResults.map((result, index) => (
-                        <button
-                          key={result.id}
-                          onClick={() => navigateToSection(result.id)}
-                          className={`
-                            w-full text-left px-4 py-3.5 rounded-xl mb-1 last:mb-0
-                            flex items-center gap-3 transition-all duration-200
-                            hover:bg-blue-50/60 hover:border-blue-100
-                            border border-transparent group/result
-                            ${index === 0 ? 'ring-1 ring-blue-200 bg-blue-50/40' : ''}
-                          `}
-                        >
-                          {/* Accent bar */}
-                          <div className="w-1 h-10 rounded-full bg-gradient-to-b from-blue-500 to-cyan-500 flex-shrink-0"></div>
-                          
-                          {/* Content */}
-                          <div className="flex-grow min-w-0">
-                            <div className="font-bold text-gray-900 mb-1 flex items-center gap-2">
-                              {result.label}
-                              {index === 0 && (
-                                <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 font-black uppercase tracking-wider">
-                                  Best Match
-                                </span>
-                              )}
-                            </div>
-                            <div className="text-xs text-gray-500">{result.description}</div>
-                            
-                            {/* Matched keywords preview */}
-                            <div className="flex gap-1.5 mt-1.5 flex-wrap">
-                              {result.keywords.slice(0, 3).map((kw, idx) => (
-                                <span key={idx} className="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 border border-gray-200">
-                                  {kw}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-
-                          {/* Arrow icon */}
-                          <svg className="w-4 h-4 text-gray-300 group-hover/result:text-blue-500 group-hover/result:translate-x-1 transition-all flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                          </svg>
-                        </button>
-                      ))}
-                    </div>
-
-                    {/* Footer hint */}
-                    <div className="px-5 py-2.5 border-t border-gray-100 bg-gray-50/80">
-                      <p className="text-xs text-gray-400 text-center">
-                        ESC to close • ↑↓ to navigate
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Nav Links with Underline Effect - White Style */}
-            <ul className="flex items-center gap-1">
-              {navItems.map((item) => (
-                <li key={item.id}>
-                  <a 
-                    href={`#${item.id}`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      navigateToSection(item.id);
-                    }}
-                    className={`
-                      relative px-5 py-2.5 rounded-xl text-sm font-semibold 
-                      transition-all duration-300 group/nav
-                      ${activeLink === item.label 
-                        ? 'text-blue-600 bg-blue-50 border border-blue-100 shadow-sm shadow-blue-100/50' 
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                      }
-                    `}
-                  >
-                    {item.label}
+                    relative px-5 py-2.5 rounded-xl
+                    text-sm font-semibold tracking-wide
+                    overflow-hidden cursor-pointer
                     
-                    {/* UNDERLINE EFFECT - Animated gradient line */}
-                    <span className={`
-                      absolute bottom-1 left-1/2 -translate-x-1/2 
-                      h-[2px] rounded-full
-                      bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-500
-                      transition-all duration-500 ease-out
-                      ${activeLink === item.label 
-                        ? 'w-3/4 shadow-sm shadow-blue-300/50' 
-                        : 'w-0 group-hover/nav:w-1/2 group-hover/nav:shadow-sm group-hover/nav:shadow-blue-200/50'
-                      }
-                    `}></span>
-                  </a>
-                </li>
-              ))}
-            </ul>
+                    /* Smooth cubic-bezier for buttery transitions */
+                    transition-all duration-500 ease-[cubic-bezier(0.25, 0.46, 0.45, 0.94)]
+                    
+                    /* Scale transform on hover */
+                    transform hover:scale-105 active:scale-95
+                    
+                    ${isActive 
+                      ? isDark 
+                        ? 'text-white' 
+                        : 'text-blue-600'
+                      : isDark 
+                        ? 'text-gray-400 hover:text-white' 
+                        : 'text-gray-600 hover:text-gray-900'
+                    }
+                  `}
+                >
+                  {/* Multi-layer background fill animation */}
+                  <span className={`
+                    absolute inset-0 rounded-xl
+                    transition-all duration-700 ease-[cubic-bezier(0.4, 0, 0.2, 1)]
+                    
+                    ${isActive 
+                      ? isDark 
+                        ? 'bg-gradient-to-r from-blue-600/30 via-purple-600/20 to-pink-600/30 backdrop-blur-md' 
+                        : 'bg-gradient-to-r from-blue-50 to-purple-50'
+                      : isDark
+                        ? isItemHovering ? 'bg-white/10' : 'bg-white/0'
+                        : isItemHovering ? 'bg-gray-50' : 'bg-transparent'
+                    }
+                  `} />
+                  
+                  {/* Animated gradient border on hover */}
+                  <span className={`
+                    absolute inset-0 rounded-xl
+                    opacity-0 hover:opacity-100
+                    transition-opacity duration-500 ease-out
+                    ${isDark 
+                      ? 'bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 blur-sm' 
+                      : 'bg-gradient-to-r from-blue-200/50 via-purple-200/50 to-pink-200/50 blur-sm'
+                    }
+                  `} />
+                  
+                  {/* Shimmer effect - slower and smoother */}
+                  <span className="
+                    absolute inset-0 rounded-xl
+                    bg-gradient-to-r from-transparent via-white/15 to-transparent
+                    translate-x-[-100%] hover:translate-x-[100%]
+                    transition-transform duration-1000 ease-[cubic-bezier(0.25, 0.46, 0.45, 0.94)]
+                  " />
+                  
+                  {/* Text content with subtle movement */}
+                  <span className="relative flex items-center gap-2 transition-transform duration-300 group-hover:translate-x-0.5">
+                    {item.name}
+                    
+                    {isActive && (
+                      <ArrowRight className={`
+                        w-3.5 h-3.5
+                        transition-all duration-500 ease-[cubic-bezier(0.34, 1.56, 0.64, 1)]
+                        ${isDark ? 'text-blue-400' : 'text-blue-600'}
+                        animate-pulse-slow
+                      `} />
+                    )}
+                  </span>
 
-            {/* Premium CTA Button - White Mode Style */}
-            <a 
-              href="#contact"
-              onClick={(e) => {
-                e.preventDefault();
-                navigateToSection('contact');
-              }}
+                  {/* Active indicator dot with glow */}
+                  {isActive && (
+                    <span className={`
+                      absolute bottom-1.5 left-1/2 -translate-x-1/2
+                      w-1.5 h-1.5 rounded-full
+                      transition-all duration-500 ease-out
+                      animate-pulse
+                      ${isDark 
+                        ? 'bg-blue-400 shadow-[0_0_10px_rgba(96,165,250,0.8)]' 
+                        : 'bg-blue-600 shadow-[0_0_8px_rgba(37,99,235,0.6)]'
+                      }
+                    `} />
+                  )}
+
+                  {/* Hover ripple effect */}
+                  <span className={`
+                    absolute inset-0 rounded-xl
+                    scale-0 opacity-0
+                    transition-all duration-700 ease-[cubic-bezier(0.34, 1.56, 0.64, 1)]
+                    ${isItemHovering && !isActive ? 'scale-100 opacity-100' : ''}
+                    ${isDark ? 'bg-white/5' : 'bg-gray-100/50'}
+                  `} />
+                </button>
+              );
+            })}
+          </div>
+
+          {/* ===== RIGHT SIDE ACTIONS ===== */}
+          <div className="flex items-center gap-3">
+            
+            {/* Dark Mode Toggle - Enhanced */}
+            <button
+              onClick={toggleDarkMode}
+              onMouseEnter={() => setIsHovering('darkmode')}
+              onMouseLeave={() => setIsHovering(null)}
+              className={`
+                relative p-3 rounded-xl
+                overflow-hidden
+                
+                /* Ultra-smooth spring-like transition */
+                transition-all duration-700 ease-[cubic-bezier(0.34, 1.56, 0.64, 1)]
+                
+                transform hover:scale-110 active:scale-90
+                
+                ${isDark 
+                  ? 'hover:bg-white/10 text-yellow-400 hover:text-yellow-300' 
+                  : 'hover:bg-gray-100 text-gray-700 hover:text-orange-500'
+                }
+              `}
+              aria-label="Toggle dark mode"
+            >
+              {/* Background glow on hover */}
+              <span className={`
+                absolute inset-0 rounded-xl
+                opacity-0 transition-opacity duration-500
+                ${isHovering === 'darkmode' ? 'opacity-100' : ''}
+                ${isDark 
+                  ? 'bg-gradient-to-br from-yellow-400/20 to-orange-400/20' 
+                  : 'bg-gradient-to-br from-orange-400/10 to-yellow-400/10'
+                }
+              `} />
+
+              {/* Icon container with smooth rotation */}
+              <div className="relative w-5 h-5">
+                <Sun className={`
+                  absolute inset-0 w-5 h-5
+                  transition-all duration-700 ease-[cubic-bezier(0.34, 1.56, 0.64, 1)]
+                  ${isDark 
+                    ? 'opacity-100 rotate-0 scale-100' 
+                    : 'opacity-0 rotate-180 scale-0'
+                  }
+                `} />
+                
+                <Moon className={`
+                  absolute inset-0 w-5 h-5
+                  transition-all duration-700 ease-[cubic-bezier(0.34, 1.56, 0.64, 1)]
+                  ${isDark 
+                    ? 'opacity-0 -rotate-180 scale-0' 
+                    : 'opacity-100 rotate-0 scale-100'
+                  }
+                `} />
+              </div>
+
+              {/* Orbiting decoration - smoother rotation */}
+              <span className={`
+                absolute inset-0 rounded-xl
+                border-2 border-dashed
+                transition-all duration-1000 ease-[cubic-bezier(0.4, 0, 0.2, 1)]
+                ${isDark 
+                  ? 'border-yellow-400/40 opacity-100 rotate-45' 
+                  : 'border-gray-300/0 opacity-0 rotate-0'
+                }
+              `} />
+            </button>
+
+            {/* CTA Button - Premium feel */}
+            <button 
+              onClick={() => scrollToSection('contact')}
+              onMouseEnter={() => setIsHovering('cta')}
+              onMouseLeave={() => setIsHovering(null)}
               className="
-                ml-4 relative px-7 py-3 rounded-xl
-                font-bold text-sm text-white uppercase tracking-wider
-                overflow-hidden group/btn
-                transition-all duration-500
-                hover:scale-105 hover:-translate-y-0.5
-                active:scale-95 active:translate-y-0
-                bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500
+                hidden md:flex relative items-center gap-2 px-7 py-3 
+                rounded-xl text-sm font-bold
+                overflow-hidden
+                
+                /* Premium spring transition */
+                transition-all duration-500 ease-[cubic-bezier(0.34, 1.56, 0.64, 1)]
+                
+                transform hover:scale-105 hover:-translate-y-0.5 active:scale-95 active:translate-y-0
+                
+                /* Gradient background */
+                bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 
+                text-white 
+                
+                /* Enhanced shadows */
+                shadow-lg shadow-blue-500/30 
+                hover:shadow-2xl hover:shadow-blue-500/40 
+                hover:from-blue-500 hover:via-purple-500 hover:to-pink-500
+              "
+            >
+              {/* Animated shimmer overlay */}
+              <span className={`
+                absolute inset-0 
+                bg-gradient-to-r from-transparent via-white/30 to-transparent
+                translate-x-[-100%]
+                transition-transform duration-1000 ease-out
+                ${isHovering === 'cta' ? 'translate-x-[100%]' : ''}
+              `} />
+              
+              {/* Button content */}
+              <span className="relative flex items-center gap-2 transition-transform duration-300">
+                Hire Me
+                <ArrowRight className={`
+                  w-4 h-4 
+                  transition-all duration-500 ease-[cubic-bezier(0.34, 1.56, 0.64, 1)]
+                  ${isHovering === 'cta' ? 'translate-x-1 translate-y-0' : ''}
+                `} />
+              </span>
+            </button>
+
+            {/* Mobile Menu Toggle - ONLY ON MOBILE */}
+            <button
+              onClick={toggleMobileMenu}
+              onMouseEnter={() => setIsHovering('mobile')}
+              onMouseLeave={() => setIsHovering(null)}
+              className={`
+                flex lg:hidden p-3 rounded-xl
+                overflow-hidden
+                transition-all duration-500 ease-[cubic-bezier(0.34, 1.56, 0.64, 1)]
+                transform hover:scale-110 active:scale-90
+                
+                ${isDark 
+                  ? 'hover:bg-white/10 text-white' 
+                  : 'hover:bg-gray-100 text-gray-900'
+                }
+              `}
+              aria-label="Toggle menu"
+            >
+              {/* Background pulse on hover */}
+              <span className={`
+                absolute inset-0 rounded-xl
+                opacity-0 transition-opacity duration-300
+                ${isHovering === 'mobile' ? 'opacity-100' : ''}
+                ${isDark ? 'bg-white/5' : 'bg-gray-100'}
+              `} />
+
+              <div className="relative w-6 h-6">
+                <X className={`
+                  absolute inset-0 w-6 h-6
+                  transition-all duration-500 ease-[cubic-bezier(0.34, 1.56, 0.64, 1)]
+                  ${isMobileMenuOpen 
+                    ? 'opacity-100 rotate-0 scale-100' 
+                    : 'opacity-0 -rotate-180 scale-0'
+                  }
+                `} />
+                
+                <Menu className={`
+                  absolute inset-0 w-6 h-6
+                  transition-all duration-500 ease-[cubic-bezier(0.34, 1.56, 0.64, 1)]
+                  ${isMobileMenuOpen 
+                    ? 'opacity-0 rotate-180 scale-0' 
+                    : 'opacity-100 rotate-0 scale-100'
+                  }
+                `} />
+              </div>
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      {/* ===== MOBILE MENU - Enhanced Animation ===== */}
+      <div className={`
+        lg:hidden overflow-hidden
+        
+        /* Smooth height animation with spring physics */
+        transition-all duration-700 ease-[cubic-bezier(0.34, 1.56, 0.64, 1)]
+        
+        ${isMobileMenuOpen ? 'max-h-[700px] opacity-100 pb-6' : 'max-h-0 opacity-0 pb-0'}
+      `}>
+        <div className={`
+          mx-6 mt-2 rounded-2xl p-2
+          
+          /* Staggered entrance animation */
+          transition-all duration-500 delay-150
+          ${isMobileMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}
+          
+          ${isDark 
+            ? 'bg-[#111]/98 backdrop-blur-xl border border-white/10 shadow-2xl shadow-black/50' 
+            : 'bg-white/98 backdrop-blur-xl border border-gray-200 shadow-2xl shadow-gray-200/50'
+          }
+        `}>
+          {/* Nav Items with staggered animation */}
+          <div className="space-y-1 py-2">
+            {navItems.map((item, index) => {
+              const isActive = activeLink === item.name;
+              
+              return (
+                <button
+                  key={item.name}
+                  onClick={() => scrollToSection(item.id)}
+                  onMouseEnter={() => setIsHovering(`mobile-${item.name}`)}
+                  onMouseLeave={() => setIsHovering(null)}
+                  className={`
+                    w-full flex items-center justify-between px-4 py-3.5 rounded-xl
+                    text-left font-semibold text-base
+                    overflow-hidden
+                    relative
+                    
+                    /* Smooth spring transition */
+                    transition-all duration-500 ease-[cubic-bezier(0.34, 1.56, 0.64, 1)]
+                    
+                    transform hover:translate-x-2 active:scale-[0.98]
+                  
+                    ${isActive 
+                      ? isDark 
+                        ? 'bg-gradient-to-r from-blue-600/30 to-purple-600/30 text-white shadow-lg shadow-blue-500/20' 
+                        : 'bg-gradient-to-r from-blue-50 to-purple-50 text-blue-600 shadow-md'
+                      : isDark 
+                        ? 'text-gray-400 hover:text-white hover:bg-white/10' 
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                    }
+                  `}
+                  style={{
+                    animationDelay: `${index * 70}ms`,
+                  }}
+                >
+                  {/* Hover background slide */}
+                  <span className={`
+                    absolute inset-0 rounded-xl
+                    transition-all duration-500 ease-out
+                    ${isHovering === `mobile-${item.name}` && !isActive 
+                      ? isDark ? 'bg-white/5' : 'bg-gray-50' 
+                      : ''
+                    }
+                  `} />
+                  
+                  <span className="relative flex items-center gap-3">
+                    {item.name}
+                    
+                    {isActive && (
+                      <span className={`
+                        w-2 h-2 rounded-full
+                        transition-all duration-500
+                        ${isDark 
+                          ? 'bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.8)] animate-pulse' 
+                          : 'bg-blue-600 shadow-[0_0_6px_rgba(37,99,235,0.6)] animate-pulse'
+                        }
+                      `} />
+                    )}
+                  </span>
+                  
+                  {/* Arrow indicator on hover */}
+                  {isHovering === `mobile-${item.name}` && !isActive && (
+                    <ArrowRight className={`
+                      w-4 h-4 relative
+                      transition-all duration-300
+                      ${isDark ? 'text-gray-500' : 'text-gray-400'}
+                    `} />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* CTA in mobile menu - Enhanced */}
+          <div className={`px-2 pt-4 pb-2 border-t mt-3 transition-colors duration-300 ${isDark ? 'border-white/10' : 'border-gray-200'}`}>
+            <button 
+              onClick={() => scrollToSection('contact')}
+              onMouseEnter={() => setIsHovering('mobile-cta')}
+              onMouseLeave={() => setIsHovering(null)}
+              className="
+                w-full relative flex items-center justify-center gap-2 py-4 rounded-xl
+                font-bold text-sm
+                overflow-hidden
+                
+                transition-all duration-500 ease-[cubic-bezier(0.34, 1.56, 0.64, 1)]
+                transform hover:scale-[1.02] active:scale-[0.98]
+                
+                bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 
+                text-white 
                 shadow-lg shadow-blue-500/25
                 hover:shadow-xl hover:shadow-blue-500/30
               "
             >
               {/* Shimmer effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000 skew-x-12"></div>
+              <span className={`
+                absolute inset-0 
+                bg-gradient-to-r from-transparent via-white/25 to-transparent
+                translate-x-[-100%]
+                transition-transform duration-1000 ease-out
+                ${isHovering === 'mobile-cta' ? 'translate-x-[100%]' : ''}
+              `} />
               
-              {/* Button content */}
-              <span className="relative z-10 flex items-center gap-2">
-                Hire Me
-                <svg className="w-4 h-4 group-hover/btn:translate-x-1 group-hover/btn:-translate-y-0.5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
+              <span className="relative flex items-center gap-2">
+                Get In Touch
+                <ArrowRight className={`
+                  w-4 h-4 
+                  transition-all duration-500 ease-[cubic-bezier(0.34, 1.56, 0.64, 1)]
+                  ${isHovering === 'mobile-cta' ? 'translate-x-1' : ''}
+                `} />
               </span>
-
-              {/* Button underline shimmer on hover */}
-              <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-white/70 rounded-full group-hover/btn:w-3/4 transition-all duration-500 shadow-sm shadow-white/30"></span>
-            </a>
+            </button>
           </div>
-
-          {/* Mobile Menu Button - Clean White Style */}
-          <button 
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="
-              md:hidden relative p-3 rounded-xl
-              bg-gray-100 border border-gray-200
-              text-gray-600 hover:text-gray-900 
-              hover:bg-gray-200 hover:border-gray-300
-              hover:shadow-md
-              transition-all duration-300
-              group/mob-btn
-            "
-          >
-            {isMenuOpen ? (
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            ) : (
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            )}
-          </button>
         </div>
+      </div>
 
-        {/* Mobile Menu - Clean White Panel */}
-        {isMenuOpen && (
-          <div className="
-            md:hidden absolute top-full left-0 right-0 
-            mx-4 mt-3 p-7 rounded-2xl 
-            bg-white backdrop-blur-xl 
-            shadow-2xl shadow-gray-200/50 
-            border border-gray-200
-            animate-in slide-in-from-top-4 fade-in duration-500
-            relative overflow-hidden
-          ">
-            {/* Background gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-white to-cyan-50/30 pointer-events-none"></div>
-            
-            <div className="relative z-10">
-              {/* Mobile Search - Clean White Style */}
-              <div className="relative mb-7" ref={searchRef}>
-                <input 
-                  type="text" 
-                  placeholder="Search anything..." 
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onFocus={() => setIsSearchFocused(true)}
-                  onKeyDown={handleSearchKeyDown}
-                  className="
-                    relative w-full pl-12 pr-10 py-4 rounded-xl text-sm font-medium
-                    bg-gray-50 text-gray-800 placeholder-gray-400
-                    border border-gray-200 focus:border-blue-400
-                    focus:outline-none focus:shadow-lg focus:shadow-blue-100/50
-                    transition-all
-                  "
-                />
-                
-                {/* Search icon */}
-                <div className="absolute left-4 top-1/2 -translate-y-1/2">
-                  {isSearching ? (
-                    <svg className="w-5 h-5 animate-spin text-blue-500" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                  )}
-                </div>
+      {/* ===== CUSTOM ANIMATIONS ===== */}
+      <style>{`
+        @keyframes fadeSlideUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
 
-                {/* Clear button */}
-                {searchQuery && (
-                  <button
-                    onClick={clearSearch}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-gray-100 transition-all hover:rotate-90"
-                  >
-                    <svg className="w-4 h-4 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                )}
+        @keyframes slideInUp {
+          from {
+            opacity: 0;
+            transform: translateY(15px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
 
-                {/* Mobile search results */}
-                {showSearchResults && (
-                  <div className="mt-3 rounded-xl overflow-hidden bg-white border border-gray-200 shadow-lg max-h-72 overflow-y-auto">
-                    <div className="px-4 py-2.5 border-b border-gray-100 bg-gray-50/80">
-                      <span className="text-xs font-bold text-blue-600">
-                        {searchResults.length} found
-                      </span>
-                    </div>
-                    
-                    {searchResults.map((result) => (
-                      <button
-                        key={result.id}
-                        onClick={() => navigateToSection(result.id)}
-                        className="
-                          w-full text-left px-4 py-3.5 flex items-center gap-3
-                          hover:bg-blue-50/50 transition-all
-                          border-b border-gray-100 last:border-b-0
-                        "
-                      >
-                        <div className="w-1 h-10 rounded-full bg-gradient-to-b from-blue-500 to-cyan-500 flex-shrink-0"></div>
-                        
-                        <div className="flex-grow min-w-0">
-                          <div className="font-bold text-gray-900">{result.label}</div>
-                          <div className="text-xs text-gray-500 mt-0.5">{result.description}</div>
-                        </div>
-                        
-                        <svg className="w-4 h-4 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
+        @keyframes shimmer {
+          0% {
+            transform: translateX(-100%);
+          }
+          100% {
+            transform: translateX(100%);
+          }
+        }
 
-              {/* Mobile Nav Links - Clean Cards */}
-              <ul className="space-y-2 mb-7">
-                {navItems.map((item, index) => (
-                  <li key={item.id}>
-                    <a 
-                      href={`#${item.id}`}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        navigateToSection(item.id);
-                      }}
-                      className="
-                        relative block px-5 py-4 rounded-xl text-base font-semibold
-                        text-gray-700 hover:text-gray-900
-                        bg-gray-50/50 hover:bg-blue-50/60
-                        border border-gray-100 hover:border-blue-100
-                        hover:shadow-md hover:shadow-blue-100/20
-                        transition-all duration-300
-                        group/link overflow-hidden
-                      "
-                      style={{animationDelay: `${index * 50}ms`}}
-                    >
-                      {/* Left accent line on hover */}
-                      <div className="absolute left-0 top-0 bottom-0 w-0 bg-gradient-to-b from-blue-400/0 via-blue-500 to-blue-400/0 group-hover/link:w-1 transition-all duration-500"></div>
-                      
-                      {/* UNDERLINE EFFECT for mobile links */}
-                      <span className={`
-                        absolute bottom-2 left-5 
-                        h-[2px] rounded-full
-                        bg-gradient-to-r from-blue-500 to-cyan-500
-                        transition-all duration-500
-                        group-hover/link:w-[calc(100%-2.5rem)]
-                        w-0
-                        shadow-sm shadow-blue-300/50
-                      `}></span>
-                      
-                      <div className="flex items-center justify-between relative z-10">
-                        <span>{item.label}</span>
-                        
-                        {/* Arrow icon */}
-                        <svg className="w-5 h-5 text-gray-300 group-hover/link:text-blue-500 group-hover/link:translate-x-1 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                        </svg>
-                      </div>
-                    </a>
-                  </li>
-                ))}
-              </ul>
+        @keyframes pulse-slow {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.6;
+          }
+        }
 
-              {/* Mobile CTA - Premium White Style */}
-              <a 
-                href="#contact"
-                onClick={(e) => {
-                  e.preventDefault();
-                  navigateToSection('contact');
-                }}
-                className="
-                  relative block w-full text-center px-6 py-4 
-                  text-white font-bold text-base uppercase tracking-wider rounded-xl
-                  overflow-hidden group/mob-cta
-                  transition-all duration-500
-                  hover:scale-[1.02] hover:-translate-y-0.5
-                  active:scale-[0.98]
-                  bg-gradient-to-r from-blue-600 to-cyan-500
-                  shadow-lg shadow-blue-500/25
-                  hover:shadow-xl hover:shadow-blue-500/30
-                "
-              >
-                {/* Shimmer effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/mob-cta:translate-x-full transition-transform duration-1000 skew-x-12"></div>
-                
-                {/* Underline shimmer */}
-                <span className="absolute bottom-3 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-white/70 rounded-full group-hover/mob-cta:w-1/2 transition-all duration-500 shadow-sm shadow-white/30"></span>
-                
-                <span className="relative z-10 flex items-center justify-center gap-3">
-                  Let's Work Together
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                  </svg>
-                </span>
-              </a>
-            </div>
-          </div>
-        )}
-      </nav>
+        .animate-pulse-slow {
+          animation: pulse-slow 2s ease-in-out infinite;
+        }
+
+        html {
+          scroll-behavior: smooth;
+        }
+
+        ::selection {
+          background-color: #3b82f6;
+          color: white;
+        }
+
+        button:focus-visible,
+        a:focus-visible {
+          outline: 2px solid #3b82f6;
+          outline-offset: 2px;
+          border-radius: 8px;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+          width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+          background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+          background: linear-gradient(180deg, #4B5563, #374151);
+          border-radius: 4px;
+          transition: background 0.3s ease;
+        }
+
+        .dark ::-webkit-scrollbar-thumb {
+          background: linear-gradient(180deg, #6B7280, #4B5563);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+          background: linear-gradient(180deg, #6B7280, #4B5563);
+        }
+
+        /* Remove default button tap highlight on mobile */
+        @media (hover: none) {
+          button:active {
+            -webkit-tap-highlight-color: transparent;
+          }
+        }
+
+        /* Performance optimization for animations */
+        .will-change-transform {
+          will-change: transform;
+        }
+      `}</style>
     </header>
   );
 };

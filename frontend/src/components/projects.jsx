@@ -1,7 +1,30 @@
+import { useState, useEffect } from 'react';
+import { 
+  ExternalLink, ArrowRight, Filter,
+  Check, Sparkles, Zap, Eye, Calendar,
+  Layers, Star, ChevronRight
+} from 'lucide-react';
 
-import { useState } from 'react';
+// Custom GitHub Icon Component (fallback)
+const GitHub = ({ className, size = 24 }) => (
+  <svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    width={size} 
+    height={size} 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2" 
+    strokeLinecap="round" 
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/>
+    <path d="M9 18c-4.51 2-5-2-7-2"/>
+  </svg>
+);
 
-
+// Image imports (keep yours)
 import samriCollection from '../assets/samri_collection.png';
 import ecommerce from '../assets/e-commerce.png';
 import elibrary from '../assets/Elibrary.png';
@@ -12,48 +35,66 @@ import naniCafe from '../assets/nani Cafe.png';
 import onlineExam from '../assets/online exam.png';
 
 const Projects = () => {
+  const [isDark, setIsDark] = useState(false);
   const [activeFilter, setActiveFilter] = useState('all');
 
-  // All projects with real data and images
+  // Detect dark mode
+  useEffect(() => {
+    const checkTheme = () => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    };
+    
+    checkTheme();
+    
+    const observer = new MutationObserver(checkTheme);
+    observer.observe(document.documentElement, { 
+      attributes: true, 
+      attributeFilter: ['class'] 
+    });
+    
+    return () => observer.disconnect();
+  }, []);
+
+  // All projects data (kept same)
   const projects = [
     {
       id: 1,
       title: 'Samri Collection',
       subtitle: 'E-Commerce Company',
-      description: 'Complete e-commerce solution for Samri Collection company featuring product catalog management, shopping cart system, secure payment integration with multiple gateways, order tracking, inventory management, customer accounts, and comprehensive admin dashboard for business operations.',
+      description: 'Complete e-commerce solution featuring product catalog management, shopping cart system, secure payment integration, order tracking, inventory management, and comprehensive admin dashboard.',
       category: ['ecommerce', 'fullstack'],
       images: [samriCollection, ecommerce],
-      techStack: ['React.js', 'Django', 'PostgreSQL','Tailwind'],
+      techStack: ['React.js', 'Django', 'PostgreSQL', 'Tailwind'],
       features: ['Product Catalog', 'Shopping Cart', 'Payment Gateway', 'Order Tracking', 'Admin Dashboard'],
       liveUrl: 'https://frontend-5vi742394-abelala-cs-projects.vercel.app/',
       githubUrl: 'https://github.com/abelsam-coder/samri-collection-frontend/',
       status: 'Live',
-      color: 'from-violet-600 to-purple-600',
+      color: 'from-violet-500 to-purple-600',
       year: '2024'
     },
     {
       id: 2,
       title: 'Dodai Platform',
       subtitle: 'Rebuilt & Enhanced',
-      description: 'Complete rebuild of Dodai platform with modern architecture. Enhanced performance with optimized database queries, improved UI/UX design, better security implementation, responsive layout for all devices, and scalable cloud infrastructure deployment.',
+      description: 'Complete rebuild with modern architecture, enhanced performance, optimized database queries, improved UI/UX design, better security implementation, and scalable cloud deployment.',
       category: ['web', 'fullstack'],
       images: [dodai],
-      techStack: ['React.js', 'Django','PostgreSql'],
+      techStack: ['React.js', 'Django', 'PostgreSQL'],
       features: ['Performance Optimization', 'Modern UI/UX', 'API Integration', 'Cloud Deployment', 'CI/CD Pipeline'],
       liveUrl: 'https://dodai-umber.vercel.app/',
       githubUrl: 'https://github.com/abelsam-coder/dodai',
       status: 'Completed',
-      color: 'from-blue-600 to-cyan-500',
+      color: 'from-blue-500 to-cyan-500',
       year: '2024'
     },
     {
       id: 3,
       title: 'Nani Cafe & Restaurant',
       subtitle: 'Food & Beverage Platform',
-      description: 'Digital transformation solution for Nani Cafe featuring online food ordering system, table reservation management, digital menu display, kitchen display system for orders, delivery tracking integration, customer loyalty program, and real-time analytics dashboard.',
+      description: 'Digital transformation solution featuring online food ordering, table reservation management, digital menu display, kitchen display system, delivery tracking, and customer loyalty program.',
       category: ['ecommerce', 'mobile'],
       images: [naniCafe],
-      techStack: ['React.js', 'Django', 'Postgresql','Tailwind'],
+      techStack: ['React.js', 'Django', 'PostgreSQL', 'Tailwind'],
       features: ['Online Ordering', 'Table Reservation', 'Digital Menu', 'Delivery Tracking', 'Loyalty Program'],
       liveUrl: '#',
       githubUrl: 'https://github.com/abelsam-coder/Nano-Cafe',
@@ -63,57 +104,58 @@ const Projects = () => {
     },
     {
       id: 4,
-      title: 'Online Exam Management System',
+      title: 'Online Exam System',
       subtitle: 'Education Technology',
-      description: 'Comprehensive examination platform that handles complete online test lifecycle including question bank management with multiple question types (MCQ, descriptive, coding), automated proctoring with AI monitoring, timed exams with auto-submission, instant result generation, detailed performance analytics, and certificate generation.',
+      description: 'Comprehensive examination platform with question bank management, automated proctoring with AI monitoring, timed exams with auto-submission, instant result generation, and certificate generation.',
       category: ['education', 'web'],
       images: [onlineExam],
-      techStack: ['Python', 'Flask', 'Mysql', 'Html','Css'],
+      techStack: ['Python', 'Flask', 'MySQL', 'HTML/CSS'],
       features: ['Online Test Handling', 'Auto-Proctoring', 'Question Bank', 'Result Analytics', 'Certificate Generation'],
       liveUrl: '#',
       githubUrl: 'https://github.com/abelsam-coder/Nesha',
       status: 'Active',
-      color: 'from-emerald-600 to-teal-500',
+      color: 'from-emerald-500 to-teal-500',
       year: '2023'
     },
     {
       id: 5,
       title: 'Ethioglobal Digital',
       subtitle: 'Business Solutions + AI Chatbot',
-      description: 'Enterprise-grade digital business platform integrated with AI-powered chatbot for intelligent customer support. Features include CRM system, invoice generation and management, project tracking with milestones, team collaboration tools, document management, comprehensive reporting dashboard, and 24/7 AI chatbot assistance.',
+      description: 'Enterprise-grade platform integrated with AI-powered chatbot for intelligent customer support, CRM system, invoice management, project tracking, team collaboration tools, and smart analytics.',
       category: ['business', 'fullstack', 'ai'],
       images: [ethioGlobal],
-      techStack: ['React.js', 'Django REST', 'PostgreSQL', 'groq'],
+      techStack: ['React.js', 'Django REST', 'PostgreSQL', 'Groq'],
       features: ['AI Chatbot Integration', 'CRM System', 'Invoice Management', 'Project Tracking', 'Smart Analytics'],
       liveUrl: '#',
       githubUrl: 'https://github.com/abelsam-coder/EthioGlobal-digital',
       status: 'Active',
-      color: 'from-indigo-600 to-blue-600',
+      color: 'from-indigo-500 to-blue-600',
       year: '2023'
     },
     {
       id: 6,
       title: 'E-Library System',
       subtitle: 'Digital Library Platform',
-      description: 'Modern digital library management system with ebook reader supporting multiple formats (PDF, EPUB), reading progress tracking across devices, advanced bookmarking and note-taking system, personalized book recommendations using algorithms, admin panel for library management, and user borrowing history.',
+      description: 'Modern digital library management system with ebook reader supporting multiple formats, reading progress tracking, advanced bookmarking, personalized recommendations, and admin panel for library management.',
       category: ['education', 'web'],
       images: [elibrary, elibraryAdmin],
-      techStack: ['Html','Css', 'Flask', 'Mysql'],
+      techStack: ['HTML/CSS', 'Flask', 'MySQL'],
       features: ['Ebook Reader', 'Progress Tracking', 'Bookmarks & Notes', 'Recommendations', 'Admin Panel'],
       liveUrl: '#',
       githubUrl: '#',
       status: 'Completed',
-      color: 'from-pink-600 to-rose-500',
+      color: 'from-pink-500 to-rose-500',
       year: '2023'
     }
   ];
 
+  // Filters
   const filters = [
-    { id: 'all', label: 'All Projects' },
-    { id: 'ecommerce', label: 'E-Commerce' },
-    { id: 'web', label: 'Web App' },
-    { id: 'education', label: 'Education' },
-    { id: 'business', label: 'Business' }
+    { id: 'all', label: 'All Projects', icon: Layers },
+    { id: 'ecommerce', label: 'E-Commerce', icon: Star },
+    { id: 'web', label: 'Web App', icon: Zap },
+    { id: 'education', label: 'Education', icon: Eye },
+    { id: 'business', label: 'Business', icon: Filter }
   ];
 
   const filteredProjects = activeFilter === 'all' 
@@ -121,75 +163,185 @@ const Projects = () => {
     : projects.filter(p => p.category.includes(activeFilter));
 
   return (
-    <section id="projects" className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="projects" className={`
+      relative py-20 lg:py-28 overflow-hidden transition-colors duration-700
+      ${isDark ? 'bg-[#030712]' : 'bg-white'}
+    `}>
+      
+      {/* ===== BACKGROUND GRADIENTS ===== */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
         
-        {/* Header */}
-        <div className="text-center mb-16">
-          <span className="inline-block px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4 bg-blue-100 text-blue-600 border border-blue-200">
+        {/* Top right orb */}
+        <div className={`
+          absolute top-[-10%] right-[-5%] w-[550px] h-[550px] rounded-full blur-[130px]
+          animate-pulse-slow
+          ${isDark 
+            ? 'bg-gradient-to-br from-violet-600/15 via-purple-600/10 to-transparent' 
+            : 'bg-gradient-to-br from-violet-300/30 via-purple-200/20 to-transparent'
+          }
+        `}></div>
+
+        {/* Bottom left orb */}
+        <div className={`
+          absolute bottom-[-10%] left-[-5%] w-[480px] h-[480px] rounded-full blur-[120px]
+          animate-float-slow
+          ${isDark 
+            ? 'bg-gradient-to-tr from-blue-600/12 via-cyan-600/8 to-transparent' 
+            : 'bg-gradient-to-tr from-blue-200/25 via-cyan-200/15 to-transparent'
+          }
+        `}></div>
+
+        {/* Grid pattern */}
+        <div className={`
+          absolute inset-0 opacity-[0.02]
+          ${isDark ? 'opacity-[0.03]' : ''}
+        `} style={{
+          backgroundImage: `
+            linear-gradient(${isDark ? 'rgba(139,92,246,0.3)' : 'rgba(139,92,246,0.2)'} 1px, transparent 1px),
+            linear-gradient(90deg, ${isDark ? 'rgba(139,92,246,0.3)' : 'rgba(139,92,246,0.2)'} 1px, transparent 1px)
+          `,
+          backgroundSize: '50px 50px'
+        }}></div>
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
+        
+        {/* ===== SECTION HEADER ===== */}
+        <div className="text-center mb-16 lg:mb-20">
+          
+          {/* Badge */}
+          <div className={`
+            inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider mb-6
+            border backdrop-blur-sm transition-all duration-500
+            ${isDark 
+              ? 'bg-violet-500/10 border-violet-500/20 text-violet-300' 
+              : 'bg-violet-50 border-violet-200 text-violet-700'
+            }
+          `}>
+            <Sparkles className="w-4 h-4" />
             My Portfolio
-          </span>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-slate-900">
-            Featured Projects
+          </div>
+
+          {/* Title */}
+          <h2 className={`
+            text-4xl md:text-5xl lg:text-6xl font-black tracking-tight mb-6
+            transition-colors duration-500
+            ${isDark ? 'text-white' : 'text-gray-900'}
+          `}>
+            Featured{' '}
+            <span className={`
+              bg-clip-text text-transparent bg-gradient-to-r bg-[length:200%_auto] animate-gradient
+              ${isDark 
+                ? 'from-violet-400 via-purple-400 to-violet-400' 
+                : 'from-violet-600 via-purple-600 to-indigo-600'
+              }
+            `}>
+              Projects
+            </span>
           </h2>
-          <p className="max-w-2xl mx-auto text-base mb-8 text-slate-600">
+
+          <p className={`
+            max-w-2xl mx-auto text-base lg:text-lg leading-relaxed mb-10
+            transition-colors duration-500
+            ${isDark ? 'text-gray-400' : 'text-gray-600'}
+          `}>
             Real-world solutions built for businesses across e-commerce, education, food & beverage, and enterprise sectors
           </p>
 
-          {/* Stats */}
-          <div className="flex flex-wrap justify-center gap-6 md:gap-12">
+          {/* Stats Row */}
+          <div className={`
+            flex flex-wrap justify-center gap-8 lg:gap-16 p-8 rounded-2xl
+            transition-all duration-500
+            ${isDark 
+              ? 'bg-white/[0.02] border border-white/10' 
+              : 'bg-gradient-to-r from-violet-50/50 to-purple-50/50 border border-violet-100'
+            }
+          `}>
             {[
-              { num: '6+', label: 'Projects' },
-              { num: '15+', label: 'Technologies' },
-              { num: '3', label: 'Live Systems' }
+              { num: '6+', label: 'Projects Built', gradient: 'from-violet-500 to-purple-500' },
+              { num: '15+', label: 'Technologies', gradient: 'from-blue-500 to-cyan-500' },
+              { num: '3', label: 'Live Systems', gradient: 'from-emerald-500 to-teal-500' }
             ].map((stat, i) => (
-              <div key={i} className="text-center">
-                <p className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
+              <div key={i} className="group text-center cursor-default">
+                <p className={`
+                  text-3xl lg:text-4xl font-black mb-1
+                  bg-clip-text text-transparent bg-gradient-to-r ${stat.gradient}
+                `}>
                   {stat.num}
                 </p>
-                <p className="text-xs md:text-sm mt-1 text-slate-400">
+                <p className={`
+                  text-xs font-semibold uppercase tracking-wider
+                  transition-colors duration-300
+                  ${isDark ? 'text-gray-500 group-hover:text-gray-300' : 'text-gray-500 group-hover:text-gray-700'}
+                `}>
                   {stat.label}
                 </p>
+                
+                {/* Underline on hover */}
+                <div className={`
+                  mt-2 h-0.5 rounded-full bg-gradient-to-r ${stat.gradient}
+                  scale-x-0 group-hover:scale-x-100 transition-transform duration-400 origin-center
+                `}></div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Filter Buttons */}
+        {/* ===== FILTER BUTTONS ===== */}
         <div className="flex flex-wrap justify-center gap-3 mb-12">
           {filters.map((filter) => (
             <button
               key={filter.id}
               onClick={() => setActiveFilter(filter.id)}
               className={`
-                px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300
+                relative px-6 py-2.5 rounded-xl text-sm font-semibold
+                transition-all duration-300 border flex items-center gap-2
                 ${activeFilter === filter.id
-                  ? 'bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-lg shadow-blue-500/25 scale-105'
-                  : 'bg-white/80 text-slate-600 border border-slate-200 hover:border-slate-300 hover:text-slate-900'
+                  ? isDark 
+                    ? 'bg-white text-black shadow-lg shadow-white/20 scale-105' 
+                    : 'bg-gray-900 text-white shadow-lg shadow-gray-900/20 scale-105'
+                  : isDark
+                    ? 'bg-transparent border-white/10 text-gray-400 hover:border-white/20 hover:text-white hover:bg-white/5'
+                    : 'bg-transparent border-gray-200 text-gray-600 hover:border-gray-300 hover:text-gray-900 hover:bg-gray-50'
                 }
               `}
             >
+              <filter.icon className="w-4 h-4" />
               {filter.label}
+              
+              {/* Active indicator dot */}
+              {activeFilter === filter.id && (
+                <span className={`
+                  absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full
+                  ${isDark ? 'bg-white' : 'bg-gray-900'}
+                `}></span>
+              )}
             </button>
           ))}
         </div>
 
-        {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* ===== PROJECTS GRID ===== */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           {filteredProjects.map((project) => (
             <div
               key={project.id}
-              className="
-                group relative rounded-3xl overflow-hidden backdrop-blur-xl border 
+              className={`
+                group relative rounded-2xl overflow-hidden
                 transition-all duration-500 hover:-translate-y-2
-                bg-white/80 border-slate-200 hover:border-slate-300 hover:shadow-2xl hover:shadow-slate-200/50
-              "
+                border backdrop-blur-sm
+                ${isDark 
+                  ? 'bg-white/[0.03] border-white/10 hover:border-white/20 shadow-xl hover:shadow-2xl hover:shadow-black/30' 
+                  : 'bg-white border-gray-200 hover:border-gray-300 shadow-lg hover:shadow-xl hover:shadow-gray-200/40'
+                }
+              `}
             >
               
-              {/* Image Section */}
+              {/* ===== IMAGE SECTION - REMOVED VIEW PROJECT OVERLAY ===== */}
               <div className="relative overflow-hidden aspect-[16/10]">
+                
                 {project.images.length > 1 ? (
-                  <div className="grid grid-cols-2 h-full gap-0.5 bg-slate-200">
+                  /* Multiple Images Grid */
+                  <div className={`grid grid-cols-2 h-full gap-0.5 ${isDark ? 'bg-white/5' : 'bg-gray-200'}`}>
                     {project.images.map((img, idx) => (
                       <div key={idx} className="relative overflow-hidden h-full">
                         <img 
@@ -197,108 +349,189 @@ const Projects = () => {
                           alt={`${project.title} view ${idx + 1}`}
                           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       </div>
                     ))}
                   </div>
                 ) : (
+                  /* Single Image - NO OVERLAY, JUST SMOOTH ZOOM */
                   <>
                     <img 
                       src={project.images[0]} 
                       alt={project.title}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
-                      <span className={`
-                        transform translate-y-8 group-hover:translate-y-0 transition-transform duration-300
-                        px-6 py-3 rounded-full text-sm font-semibold shadow-xl
-                        bg-gradient-to-r ${project.color} text-white
-                      `}>
-                        View Project →
-                      </span>
-                    </div>
+                    {/* ✅ REMOVED: "View Project" overlay button */}
+                    {/* Only subtle gradient at bottom for text readability if needed */}
+                    <div className={`
+                      absolute inset-x-0 bottom-0 h-12
+                      pointer-events-none
+                      ${isDark 
+                        ? 'bg-gradient-to-t from-black/30 to-transparent' 
+                        : 'bg-gradient-to-t from-black/10 to-transparent'
+                      }
+                    `}></div>
                   </>
                 )}
 
-                {/* Status Badge */}
-                <div className="absolute top-4 left-4 z-10">
+                {/* Status Badge - Top Left */}
+                <div className="absolute top-3 left-3 z-10">
                   <span className={`
-                    px-3 py-1 rounded-full text-xs font-bold backdrop-blur-md
+                    px-3 py-1 rounded-lg text-[11px] font-bold backdrop-blur-md
+                    flex items-center gap-1.5
                     ${project.status === 'Live' || project.status === 'Active'
-                      ? 'bg-green-500/90 text-white shadow-lg' 
-                      : 'bg-white/90 text-slate-900 shadow-lg'}
+                      ? isDark 
+                        ? 'bg-emerald-500/90 text-white shadow-lg shadow-emerald-500/30' 
+                        : 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/25'
+                      : isDark
+                        ? 'bg-white/90 text-gray-900 shadow-lg shadow-white/20'
+                        : 'bg-white text-gray-900 shadow-lg shadow-gray-200/50 border border-gray-200'
+                    }
                   `}>
+                    <span className={`w-1.5 h-1.5 rounded-full ${
+                      project.status === 'Live' || project.status === 'Active' ? 'bg-white animate-pulse' : 'bg-gray-500'
+                    }`}></span>
                     {project.status}
                   </span>
                 </div>
 
-                {/* Year Badge */}
-                <div className="absolute top-4 right-4 z-10">
-                  <span className="px-3 py-1 rounded-full text-xs font-bold backdrop-blur-md bg-white/90 text-slate-700 border border-slate-200">
+                {/* Year Badge - Top Right */}
+                <div className="absolute top-3 right-3 z-10">
+                  <span className={`
+                    px-3 py-1 rounded-lg text-[11px] font-bold backdrop-blur-md flex items-center gap-1.5
+                    ${isDark 
+                      ? 'bg-white/10 text-gray-300 border border-white/10' 
+                      : 'bg-white/90 text-gray-700 border border-gray-200 shadow-sm'
+                    }
+                  `}>
+                    <Calendar className="w-3 h-3" />
                     {project.year}
                   </span>
                 </div>
 
-                {/* Bottom Accent Line */}
-                <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${project.color} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left`} />
+                {/* Bottom Gradient Accent Line */}
+                <div className={`
+                  absolute bottom-0 left-0 right-0 h-1
+                  bg-gradient-to-r ${project.color}
+                  transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left
+                `}></div>
               </div>
 
-              {/* Content */}
-              <div className="p-6">
+              {/* ===== CONTENT SECTION ===== */}
+              <div className={`p-5 lg:p-6`}>
                 
                 {/* Subtitle */}
-                <p className="text-xs font-semibold uppercase tracking-wider mb-2 text-blue-600">
+                <p className={`
+                  text-[11px] font-bold uppercase tracking-widest mb-2
+                  ${isDark ? 'text-violet-400' : 'text-violet-600'}
+                `}>
                   {project.subtitle}
                 </p>
 
                 {/* Title */}
-                <h3 className="text-xl font-bold mb-3 group-hover:text-blue-500 transition-colors text-slate-900">
+                <h3 className={`
+                  text-lg lg:text-xl font-bold mb-3 transition-colors duration-300
+                  group-hover:bg-clip-text group-hover:text-transparent
+                  group-hover:bg-gradient-to-r ${project.color}
+                  ${isDark ? 'text-white' : 'text-gray-900'}
+                `}>
                   {project.title}
                 </h3>
 
                 {/* Description */}
-                <p className="text-sm leading-relaxed mb-4 line-clamp-3 text-slate-600">
+                <p className={`
+                  text-sm leading-relaxed mb-4 line-clamp-2
+                  transition-colors duration-300
+                  ${isDark ? 'text-gray-400' : 'text-gray-600'}
+                `}>
                   {project.description}
                 </p>
 
-                {/* Features */}
-                <div className="space-y-2 mb-5">
-                  {project.features.slice(0, 4).map((feature, idx) => (
+                {/* Features List */}
+                <div className="space-y-1.5 mb-4">
+                  {project.features.slice(0, 3).map((feature, idx) => (
                     <div key={idx} className="flex items-center gap-2">
-                      <svg className="w-4 h-4 flex-shrink-0 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"/>
-                      </svg>
-                      <span className="text-xs truncate text-slate-600">
+                      <Check className={`
+                        w-3.5 h-3.5 flex-shrink-0
+                        ${isDark ? 'text-emerald-400' : 'text-emerald-600'}
+                      `} />
+                      <span className={`
+                        text-xs truncate
+                        transition-colors duration-300
+                        ${isDark ? 'text-gray-400' : 'text-gray-600'}
+                      `}>
                         {feature}
                       </span>
                     </div>
                   ))}
+                  
+                  {project.features.length > 3 && (
+                    <span className={`
+                      text-xs font-medium pl-5.5
+                      ${isDark ? 'text-gray-500' : 'text-gray-400'}
+                    `}>
+                      +{project.features.length - 3} more...
+                    </span>
+                  )}
                 </div>
 
-                {/* Tech Stack */}
+                {/* Tech Stack Pills */}
                 <div className="flex flex-wrap gap-1.5 mb-5">
-                  {project.techStack.map((tech, idx) => (
-                    <span key={idx} className="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                  {project.techStack.slice(0, 4).map((tech, idx) => (
+                    <span key={idx} className={`
+                      px-2.5 py-1 rounded-lg text-[11px] font-medium
+                      transition-all duration-300
+                      ${isDark 
+                        ? 'bg-white/5 text-gray-300 border border-white/10' 
+                        : 'bg-gray-100 text-gray-700 border border-gray-200'
+                      }
+                    `}>
                       {tech}
                     </span>
                   ))}
                 </div>
 
-                {/* Actions */}
-                <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-                  <a href={project.liveUrl} className="inline-flex items-center gap-1.5 text-sm font-semibold transition-all duration-300 hover:gap-2 text-blue-600 hover:text-blue-700">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                    </svg>
+                {/* Action Buttons */}
+                <div className={`
+                  flex items-center justify-between pt-4
+                  border-t transition-colors duration-300
+                  ${isDark ? 'border-white/5' : 'border-gray-100'}
+                `}>
+                  
+                  {/* Live Demo Link */}
+                  <a 
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`
+                      inline-flex items-center gap-2 text-sm font-semibold
+                      transition-all duration-300 group/link
+                      ${isDark 
+                        ? 'text-blue-400 hover:text-blue-300' 
+                        : 'text-blue-600 hover:text-blue-700'
+                      }
+                    `}
+                  >
+                    <ExternalLink className="w-4 h-4" />
                     Live Demo
+                    <ChevronRight className="w-3.5 h-3.5 transform group-hover/link:translate-x-1 transition-transform" />
                   </a>
                   
-                  <a href={project.githubUrl} className="p-2 rounded-lg transition-colors text-slate-500 hover:text-slate-900 hover:bg-slate-100" title="GitHub">
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                    </svg>
+                  {/* GitHub Link - Using our custom component */}
+                  <a 
+                    href={project.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`
+                      p-2 rounded-xl transition-all duration-300
+                      ${isDark 
+                        ? 'text-gray-500 hover:text-white hover:bg-white/10' 
+                        : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
+                      }
+                    `}
+                    title="View Source Code"
+                  >
+                    <GitHub className="w-5 h-5" />
                   </a>
                 </div>
               </div>
@@ -306,68 +539,150 @@ const Projects = () => {
           ))}
         </div>
 
-        {/* Empty State */}
+        {/* ===== EMPTY STATE ===== */}
         {filteredProjects.length === 0 && (
-          <div className="text-center py-20 rounded-3xl border-2 border-dashed border-slate-200">
-            <div className="w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center bg-slate-100">
-              <svg className="w-10 h-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-              </svg>
+          <div className={`
+            text-center py-20 rounded-3xl border-2 border-dashed
+            transition-colors duration-500
+            ${isDark 
+              ? 'border-white/10 bg-white/[0.01]' 
+              : 'border-gray-200 bg-gray-50'
+            }
+          `}>
+            <div className={`
+              w-20 h-20 mx-auto mb-6 rounded-2xl flex items-center justify-center
+              ${isDark ? 'bg-white/5' : 'bg-gray-100'}
+            `}>
+              <Layers className={`w-10 h-10 ${isDark ? 'text-gray-600' : 'text-gray-400'}`} />
             </div>
-            <h3 className="text-xl font-bold mb-2 text-slate-900">
+            <h3 className={`
+              text-xl font-bold mb-2
+              transition-colors duration-500
+              ${isDark ? 'text-white' : 'text-gray-900'}
+            `}>
               No projects found
             </h3>
-            <p className="text-slate-400">
+            <p className={`${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
               Try selecting a different filter
             </p>
           </div>
         )}
 
-        {/* CTA Section */}
-        <div className="mt-16 p-10 md:p-14 rounded-3xl text-center backdrop-blur-xl border bg-gradient-to-br from-blue-50 to-cyan-50/30 border-blue-100">
-          <h3 className="text-2xl md:text-3xl font-bold mb-4 text-slate-900">
-            Want to Build Something Amazing?
-          </h3>
-          <p className="max-w-xl mx-auto mb-8 text-slate-600">
-            I am available for freelance projects and full-time opportunities. Let us bring your ideas to life.
-          </p>
+        {/* ===== CTA SECTION ===== */}
+        <div className={`
+          mt-20 relative rounded-3xl p-10 lg:p-16 overflow-hidden text-center
+          border backdrop-blur-sm transition-all duration-500
+          ${isDark 
+            ? 'bg-gradient-to-br from-violet-600/10 via-purple-600/5 to-blue-600/10 border-white/10' 
+            : 'bg-gradient-to-br from-violet-50 via-purple-50/50 to-blue-50/50 border-violet-100'
+          }
+        `}>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="#contact"
-              className="
-                inline-flex items-center justify-center gap-2 px-8 py-4 
-                bg-gradient-to-r from-blue-600 to-cyan-500 text-white 
-                rounded-full font-semibold text-sm
-                hover:from-blue-500 hover:to-cyan-400 
-                transition-all duration-300 shadow-lg shadow-blue-500/30 
-                hover:shadow-xl hover:-translate-y-0.5
-              "
-            >
-              Start a Project
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z"/>
-              </svg>
-            </a>
+          {/* Background glow */}
+          <div className={`
+            absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[280px] rounded-full blur-[110px] pointer-events-none
+            ${isDark ? 'bg-violet-600/20' : 'bg-violet-400/30'}
+          `}></div>
+
+          <div className="relative z-10">
             
-            <a
-              href="https://github.com/abelsam-coder/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="
-                inline-flex items-center justify-center gap-2 px-8 py-4 
-                rounded-full font-semibold text-sm border transition-all duration-300 hover:-translate-y-0.5
-                border-slate-300 text-slate-700 hover:bg-white hover:shadow-lg
-              "
-            >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-              </svg>
-              View GitHub
-            </a>
+            {/* Icon */}
+            <div className={`
+              inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-6
+              bg-gradient-to-br from-violet-600 to-blue-600 text-white
+              shadow-xl transform transition-transform duration-500 hover:scale-110 hover:rotate-6
+              ${isDark ? 'shadow-violet-500/30' : 'shadow-violet-500/25'}
+            `}>
+              <Zap className="w-8 h-8" />
+            </div>
+
+            <h3 className={`
+              text-2xl md:text-3xl lg:text-4xl font-black mb-4
+              transition-colors duration-500
+              ${isDark ? 'text-white' : 'text-gray-900'}
+            `}>
+              Want to Build Something Amazing?
+            </h3>
+            
+            <p className={`
+              max-w-lg mx-auto mb-8 text-base
+              transition-colors duration-500
+              ${isDark ? 'text-gray-400' : 'text-gray-600'}
+            `}>
+              I'm available for freelance projects and full-time opportunities. Let's bring your ideas to life.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              
+              {/* Primary CTA */}
+              <a
+                href="#contact"
+                className={`
+                  group inline-flex items-center justify-center gap-3 px-8 py-4 
+                  rounded-2xl font-bold text-sm
+                  bg-gradient-to-r text-white transition-all duration-300
+                  hover:-translate-y-1 active:scale-[0.98]
+                  shadow-xl hover:shadow-2xl
+                  from-violet-600 to-blue-600
+                  hover:from-violet-500 hover:to-blue-500
+                  ${isDark ? 'shadow-violet-500/30 hover:shadow-violet-500/50' : 'shadow-violet-500/25 hover:shadow-violet-500/40'}
+                `}
+              >
+                Start a Project
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </a>
+              
+              {/* Secondary CTA - GitHub */}
+              <a
+                href="https://github.com/abelsam-coder/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`
+                  group inline-flex items-center justify-center gap-3 px-8 py-4 
+                  rounded-2xl font-bold text-sm border transition-all duration-300
+                  hover:-translate-y-1
+                  ${isDark 
+                    ? 'border-white/20 text-gray-300 hover:bg-white/5 hover:border-white/30 hover:text-white' 
+                    : 'border-gray-300 text-gray-700 hover:bg-white hover:border-gray-400 hover:text-gray-900'
+                  }
+                `}
+              >
+                <GitHub className="w-5 h-5" />
+                View GitHub Profile
+              </a>
+            </div>
           </div>
         </div>
+
       </div>
+
+      {/* ===== CSS ANIMATIONS ===== */}
+      <style jsx>{`
+        @keyframes pulse-slow {
+          0%, 100% { opacity: 0.7; transform: scale(1); }
+          50% { opacity: 1; transform: scale(1.02); }
+        }
+        .animate-pulse-slow {
+          animation: pulse-slow 6s ease-in-out infinite;
+        }
+
+        @keyframes float-slow {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-18px); }
+        }
+        .animate-float-slow {
+          animation: float-slow 8s ease-in-out infinite;
+        }
+
+        @keyframes gradient {
+          0% { background-position: 0% center; }
+          50% { background-position: 100% center; }
+          100% { background-position: 0% center; }
+        }
+        .animate-gradient {
+          animation: gradient 4s ease infinite;
+        }
+      `}</style>
     </section>
   );
 };
