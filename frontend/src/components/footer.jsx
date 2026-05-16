@@ -1,7 +1,6 @@
+
 import { useState, useEffect } from 'react';
 import logo from '../assets/logo.png';
-
-// ===== CUSTOM ICON COMPONENTS (100% Safe - No Import Errors) =====
 
 const HomeIcon = ({ className = "w-5 h-5" }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
@@ -91,7 +90,6 @@ const CheckCircleIcon = ({ className = "w-5 h-5" }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
 );
 
-// Social Icons
 const GitHubIcon = ({ className = "w-5 h-5" }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
     <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
@@ -114,12 +112,16 @@ const SendIcon = ({ className = "w-5 h-5" }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
 );
 
-// ===== FOOTER COMPONENT =====
 const Footer = () => {
   const [isDark, setIsDark] = useState(false);
-  const [showCookieConsent, setShowCookieConsent] = useState(true);
+  const [showCookieConsent, setShowCookieConsent] = useState(false);
   const [activeModal, setActiveModal] = useState(null);
   const [showTechReview, setShowTechReview] = useState(false);
+  const [cookiePreferences, setCookiePreferences] = useState({
+    essential: true,
+    analytics: false,
+    preference: false
+  });
 
   useEffect(() => {
     const checkTheme = () => setIsDark(document.documentElement.classList.contains('dark'));
@@ -127,32 +129,57 @@ const Footer = () => {
     const observer = new MutationObserver(checkTheme);
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
     
-    const cookieAccepted = localStorage.getItem('cookieConsent');
-    if (cookieAccepted === 'accepted') {
-      setShowCookieConsent(false);
+    const cookieStatus = localStorage.getItem('cookieConsent');
+    if (!cookieStatus || cookieStatus === 'pending') {
+      setTimeout(() => setShowCookieConsent(true), 1000);
     }
     
     return () => observer.disconnect();
   }, []);
 
-  const acceptCookies = () => {
+  const handleAcceptCookies = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     localStorage.setItem('cookieConsent', 'accepted');
+    setCookiePreferences({ essential: true, analytics: true, preference: true });
     setShowCookieConsent(false);
   };
 
-  const rejectCookies = () => {
+  const handleRejectCookies = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     localStorage.setItem('cookieConsent', 'rejected');
+    setCookiePreferences({ essential: true, analytics: false, preference: false });
     setShowCookieConsent(false);
+  };
+
+  const handleCustomizeCookies = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setActiveModal('cookies');
+  };
+
+  const handleSavePreferences = () => {
+    localStorage.setItem('cookieConsent', 'customized');
+    localStorage.setItem('cookiePrefs', JSON.stringify(cookiePreferences));
+    setShowCookieConsent(false);
+    setActiveModal(null);
+  };
+
+  const toggleCookiePreference = (key) => {
+    if (key === 'essential') return;
+    setCookiePreferences(prev => ({
+      ...prev,
+      [key]: !prev[key]
+    }));
   };
 
   const currentYear = new Date().getFullYear();
 
-  // Navigation links
   const footerLinks = {
     navigation: [
       { name: 'Home', href: '#home', icon: <HomeIcon className="w-4 h-4" /> },
       { name: 'About', href: '#about', icon: <UserIcon className="w-4 h-4" /> },
-      
       { name: 'Services', href: '#services', icon: <WrenchIcon className="w-4 h-4" /> },
       { name: 'Projects', href: '#projects', icon: <BriefcaseIcon className="w-4 h-4" /> },
       { name: 'Testimonials', href: '#testimony', icon: <StarIcon className="w-4 h-4" /> },
@@ -169,7 +196,6 @@ const Footer = () => {
     ]
   };
 
-  // Social links
   const socialLinks = [
     { name: 'GitHub', icon: <GitHubIcon />, url: 'https://github.com/abelsam-coder/' },
     { name: 'LinkedIn', icon: <LinkedinIcon />, url: 'https://www.linkedin.com/in/abel-samuel-b079b7379/' },
@@ -177,7 +203,6 @@ const Footer = () => {
     { name: 'Telegram', icon: <SendIcon />, url: 'https://t.me/abelala-c' }
   ];
 
-  // Legal content
   const legalContent = {
     privacy: {
       title: 'Privacy Policy',
@@ -205,13 +230,12 @@ const Footer = () => {
       sections: [
         { heading: 'What Are Cookies', content: 'Cookies are small text files stored on your device when you visit this website.' },
         { heading: 'Types of Cookies We Use', content: 'Essential, Analytics, and Preference cookies.' },
-        { heading: 'Managing Cookies', content: 'You can control cookies through your browser settings.' },
+        { heading: 'Managing Cookies', content: 'You can control cookies through your browser settings or this consent banner.' },
         { heading: 'Third-Party Cookies', content: 'We may use third-party services like Google Analytics.' }
       ]
     }
   };
 
-  // Tech Review Data
   const techData = {
     development: [
       { name: 'HTML5', level: 95, status: 'expert' },
@@ -270,9 +294,8 @@ const Footer = () => {
 
   return (
     <>
-      <footer className={`relative pt-20 pb-8 overflow-hidden transition-colors duration-700 ${isDark ? 'bg-[#030712]' : 'bg-gray-900'}`}>
+      <footer className={`relative pt-20 pb-8 overflow-hidden transition-colors duration-700 ${isDark ? 'bg-[#030712]' : 'bg-gray-900'} z-[1]`}>
         
-        {/* Background Effects */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div className={`absolute top-0 left-0 right-0 h-px bg-gradient-to-r ${isDark ? 'from-transparent via-violet-500/50 to-transparent' : 'from-transparent via-white/20 to-transparent'}`}></div>
           <div className={`absolute -top-40 -left-40 w-[500px] h-[500px] rounded-full blur-[120px] opacity-20 bg-gradient-to-br from-violet-600 to-purple-600 ${isDark ? 'opacity-10' : ''}`}></div>
@@ -281,10 +304,8 @@ const Footer = () => {
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
           
-          {/* Main Grid */}
           <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12 pb-12 border-b mb-8`} style={{ borderColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.1)' }}>
             
-            {/* Brand Column */}
             <div className="lg:col-span-1">
               <a href="#home" className="inline-block mb-6 group">
                 <img src={logo} alt="Abel Samuel" className={`h-10 w-auto transition-all duration-300 group-hover:scale-105 ${isDark ? 'brightness-100 opacity-90 hover:opacity-100' : 'brightness-0 invert opacity-80 hover:opacity-100'}`} />
@@ -302,7 +323,6 @@ const Footer = () => {
                 Available for Projects
               </div>
               
-              {/* Social Icons */}
               <div className="flex gap-3">
                 {socialLinks.map((social, index) => (
                   <a key={index} href={social.url} target="_blank" rel="noopener noreferrer" className={`p-2.5 rounded-xl transition-all duration-300 hover:scale-110 hover:-translate-y-1 ${isDark ? 'bg-white/[0.05] text-gray-500 hover:text-white hover:bg-white/10' : 'bg-white/10 text-gray-400 hover:text-white hover:bg-white/20'}`} aria-label={social.name}>
@@ -312,7 +332,6 @@ const Footer = () => {
               </div>
             </div>
 
-            {/* Quick Links Column */}
             <div>
               <h4 className={`font-semibold text-sm uppercase tracking-wider mb-6 ${isDark ? 'text-white' : 'text-white'}`}>Quick Links</h4>
               <ul className="space-y-3">
@@ -328,7 +347,6 @@ const Footer = () => {
               </ul>
             </div>
 
-            {/* Services Column */}
             <div>
               <h4 className={`font-semibold text-sm uppercase tracking-wider mb-6 ${isDark ? 'text-white' : 'text-white'}`}>Services</h4>
               <ul className="space-y-3">
@@ -348,7 +366,6 @@ const Footer = () => {
               </ul>
             </div>
 
-            {/* Legal & Tech Review Column */}
             <div>
               <h4 className={`font-semibold text-sm uppercase tracking-wider mb-6 ${isDark ? 'text-white' : 'text-white'}`}>Legal</h4>
               
@@ -359,7 +376,7 @@ const Footer = () => {
                   { id: 'cookies', label: 'Cookie Settings', icon: <CookieIcon className="w-4 h-4" /> }
                 ].map((item) => (
                   <li key={item.id}>
-                    <button onClick={() => setActiveModal(item.id)} className={`text-sm inline-flex items-center gap-2 group transition-colors duration-200 ${isDark ? 'text-gray-500 hover:text-pink-400' : 'text-gray-400 hover:text-pink-400'}`}>
+                    <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setActiveModal(item.id); }} className={`text-sm inline-flex items-center gap-2 group transition-colors duration-200 ${isDark ? 'text-gray-500 hover:text-pink-400' : 'text-gray-400 hover:text-pink-400'}`}>
                       <span className="transition-transform group-hover:scale-110">{item.icon}</span>
                       <span className="w-0 group-hover:w-2 h-0.5 rounded-full transition-all duration-300 bg-gradient-to-r from-pink-500 to-rose-500"></span>
                       {item.label}
@@ -368,8 +385,7 @@ const Footer = () => {
                 ))}
               </ul>
 
-              {/* Tech Review Button */}
-              <button onClick={() => setShowTechReview(true)} className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 mb-4 ${isDark ? 'bg-violet-500/10 text-violet-400 border border-violet-500/20 hover:bg-violet-500/20' : 'bg-violet-500/20 text-violet-300 border border-violet-500/30 hover:bg-violet-500/30'}`}>
+              <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowTechReview(true); }} className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 mb-4 ${isDark ? 'bg-violet-500/10 text-violet-400 border border-violet-500/20 hover:bg-violet-500/20' : 'bg-violet-500/20 text-violet-300 border border-violet-500/30 hover:bg-violet-500/30'}`}>
                 <BarChartIcon className="w-4 h-4" />
                 View Skills Summary ({techData.development.length + techData.security.length + techData.tools.length} total)
               </button>
@@ -382,7 +398,6 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Bottom Bar */}
           <div className="pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
             <p className={`text-sm text-center md:text-left ${isDark ? 'text-gray-600' : 'text-gray-500'}`}>
               © {currentYear}{' '}
@@ -392,7 +407,7 @@ const Footer = () => {
 
             <div className="flex items-center gap-4">
               <span className={`text-xs flex items-center gap-1 ${isDark ? 'text-gray-600' : 'text-gray-500'}`}><CodeIcon className="w-3 h-3" /> Built By Abel Samuel</span>
-              <a href="#" className={`p-3 rounded-xl transition-all duration-300 hover:-translate-y-1 group ${isDark ? 'bg-white/[0.05] text-gray-500 hover:text-white hover:bg-white/10' : 'bg-white/10 text-gray-400 hover:text-white hover:bg-white/20'}`} aria-label="Back to top">
+              <a href="#" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className={`p-3 rounded-xl transition-all duration-300 hover:-translate-y-1 group ${isDark ? 'bg-white/[0.05] text-gray-500 hover:text-white hover:bg-white/10' : 'bg-white/10 text-gray-400 hover:text-white hover:bg-white/20'}`} aria-label="Back to top">
                 <ArrowUpIcon className="w-5 h-5 transform group-hover:-translate-y-0.5 transition-transform" />
               </a>
             </div>
@@ -402,37 +417,35 @@ const Footer = () => {
         </div>
       </footer>
 
-      {/* COOKIE CONSENT BANNER */}
       {showCookieConsent && (
-        <div className={`fixed bottom-0 left-0 right-0 z-50 p-4 backdrop-blur-xl border-t animate-slide-up ${isDark ? 'bg-[#0a0a0f]/95 border-white/10' : 'bg-white/95 border-gray-200'}`}>
+        <div className="fixed bottom-0 left-0 right-0 z-[9999] p-4 backdrop-blur-xl border-t animate-slide-up" style={{ backgroundColor: isDark ? 'rgba(10, 10, 15, 0.95)' : 'rgba(255, 255, 255, 0.95)', borderTopColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)' }}>
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-start gap-3">
               <CookieIcon className="w-6 h-6 text-orange-500 shrink-0 mt-0.5" />
               <div>
                 <p className={`text-sm font-medium mb-1 ${isDark ? 'text-white' : 'text-gray-900'}`}>We value your privacy</p>
-                <p className={`text-xs max-w-lg ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>This website uses cookies to enhance your browsing experience. By clicking "Accept All", you consent to our use of cookies.</p>
+                <p className={`text-xs max-w-lg ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>This website uses cookies to enhance your browsing experience. By clicking Accept All, you consent to our use of cookies.</p>
               </div>
             </div>
             
             <div className="flex gap-3 shrink-0">
-              <button onClick={() => setActiveModal('cookies')} className={`px-4 py-2 rounded-lg text-xs font-medium transition-colors ${isDark ? 'text-gray-400 hover:text-white hover:bg-white/10' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'}`}>Customize</button>
-              <button onClick={rejectCookies} className={`px-4 py-2 rounded-lg text-xs font-medium transition-colors ${isDark ? 'text-gray-400 hover:text-white hover:bg-white/10' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'}`}>Reject</button>
-              <button onClick={acceptCookies} className="px-6 py-2 rounded-lg text-xs font-bold text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 transition-all duration-300 shadow-lg shadow-violet-500/25 hover:shadow-xl hover:-translate-y-0.5">Accept All</button>
+              <button onClick={handleCustomizeCookies} className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 hover:scale-105 ${isDark ? 'text-gray-400 hover:text-white hover:bg-white/10 border border-transparent hover:border-white/20' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 border border-transparent hover:border-gray-300'}`}>Customize</button>
+              <button onClick={handleRejectCookies} className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 hover:scale-105 ${isDark ? 'text-gray-400 hover:text-white hover:bg-white/10 border border-transparent hover:border-white/20' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 border border-transparent hover:border-gray-300'}`}>Reject</button>
+              <button onClick={handleAcceptCookies} className="px-6 py-2 rounded-lg text-xs font-bold text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 transition-all duration-300 shadow-lg shadow-violet-500/25 hover:shadow-xl hover:-translate-y-0.5 hover:scale-105">Accept All</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* LEGAL MODALS */}
       {activeModal && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in" onClick={() => setActiveModal(null)}>
+        <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setActiveModal(null); }}>
           <div className={`relative w-full max-w-2xl max-h-[85vh] overflow-hidden rounded-2xl shadow-2xl animate-scale-in ${isDark ? 'bg-gray-900 border border-white/10' : 'bg-white border border-gray-200'}`} onClick={(e) => e.stopPropagation()}>
             <div className={`sticky top-0 z-10 p-6 border-b flex items-start justify-between backdrop-blur-xl ${isDark ? 'bg-gray-900/95 border-white/10' : 'bg-white/95 border-gray-200'}`}>
               <div>
                 <h3 className={`text-xl font-bold mb-1 ${isDark ? 'text-white' : 'text-gray-900'}`}>{legalContent[activeModal].title}</h3>
                 <p className={`text-xs ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Last updated: {legalContent[activeModal].lastUpdated}</p>
               </div>
-              <button onClick={() => setActiveModal(null)} className={`p-2 rounded-xl transition-colors ${isDark ? 'hover:bg-white/10 text-gray-400 hover:text-white' : 'hover:bg-gray-100 text-gray-500 hover:text-gray-700'}`}>
+              <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setActiveModal(null); }} className={`p-2 rounded-xl transition-colors ${isDark ? 'hover:bg-white/10 text-gray-400 hover:text-white' : 'hover:bg-gray-100 text-gray-500 hover:text-gray-700'}`}>
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/></svg>
               </button>
             </div>
@@ -451,12 +464,18 @@ const Footer = () => {
                     <p className={`text-sm font-medium mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>Manage Your Preferences</p>
                     <div className="space-y-3">
                       {[
-                        { name: 'Essential Cookies', required: true, desc: 'Required for basic site functionality' },
-                        { name: 'Analytics Cookies', required: false, desc: 'Help us improve user experience' },
-                        { name: 'Preference Cookies', required: false, desc: 'Remember your settings' }
+                        { name: 'Essential Cookies', key: 'essential', required: true, desc: 'Required for basic site functionality' },
+                        { name: 'Analytics Cookies', key: 'analytics', required: false, desc: 'Help us improve user experience' },
+                        { name: 'Preference Cookies', key: 'preference', required: false, desc: 'Remember your settings' }
                       ].map((cookie, i) => (
-                        <label key={i} className="flex items-start gap-3 cursor-pointer group">
-                          <input type="checkbox" checked={cookie.required} disabled={cookie.required} className="mt-0.5 w-4 h-4 rounded border-gray-300 text-violet-600 focus:ring-violet-500" />
+                        <label key={i} className="flex items-start gap-3 cursor-pointer group" onClick={(e) => e.stopPropagation()}>
+                          <input 
+                            type="checkbox" 
+                            checked={cookiePreferences[cookie.key]} 
+                            disabled={cookie.required} 
+                            onChange={() => toggleCookiePreference(cookie.key)}
+                            className="mt-0.5 w-4 h-4 rounded border-gray-300 text-violet-600 focus:ring-violet-500 cursor-pointer" 
+                          />
                           <div>
                             <p className={`text-sm font-medium ${isDark ? 'text-gray-200' : 'text-gray-700'}`}>{cookie.name}{cookie.required && (<span className={`ml-2 text-xs px-2 py-0.5 rounded ${isDark ? 'bg-violet-500/20 text-violet-400' : 'bg-violet-100 text-violet-600'}`}>Required</span>)}</p>
                             <p className={`text-xs ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{cookie.desc}</p>
@@ -470,16 +489,17 @@ const Footer = () => {
             </div>
 
             <div className={`sticky bottom-0 p-6 border-t flex justify-end gap-3 backdrop-blur-xl ${isDark ? 'bg-gray-900/95 border-white/10' : 'bg-white/95 border-gray-200'}`}>
-              <button onClick={() => setActiveModal(null)} className={`px-6 py-2.5 rounded-xl text-sm font-medium transition-colors ${isDark ? 'text-gray-400 hover:text-white hover:bg-white/10' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'}`}>Close</button>
-              {activeModal === 'cookies' && (<button onClick={() => { acceptCookies(); setActiveModal(null); }} className="px-6 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 transition-all duration-300 shadow-lg">Save Preferences</button>)}
+              <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setActiveModal(null); }} className={`px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 hover:scale-105 ${isDark ? 'text-gray-400 hover:text-white hover:bg-white/10' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'}`}>Close</button>
+              {activeModal === 'cookies' && (
+                <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleSavePreferences(); }} className="px-6 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 transition-all duration-300 shadow-lg hover:scale-105">Save Preferences</button>
+              )}
             </div>
           </div>
         </div>
       )}
 
-      {/* TECH REVIEW MODAL */}
       {showTechReview && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in" onClick={() => setShowTechReview(false)}>
+        <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowTechReview(false); }}>
           <div className={`relative w-full max-w-4xl max-h-[90vh] overflow-hidden rounded-2xl shadow-2xl animate-scale-in ${isDark ? 'bg-gray-900 border border-white/10' : 'bg-white border border-gray-200'}`} onClick={(e) => e.stopPropagation()}>
             <div className={`sticky top-0 z-10 p-6 border-b flex items-center justify-between backdrop-blur-xl ${isDark ? 'bg-gray-900/95 border-white/10' : 'bg-white/95 border-gray-200'}`}>
               <div className="flex items-center gap-3">
@@ -489,13 +509,12 @@ const Footer = () => {
                   <p className={`text-xs ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{techData.development.length + techData.security.length + techData.tools.length} total skills across 3 categories</p>
                 </div>
               </div>
-              <button onClick={() => setShowTechReview(false)} className={`p-2 rounded-xl transition-colors ${isDark ? 'hover:bg-white/10 text-gray-400 hover:text-white' : 'hover:bg-gray-100 text-gray-500 hover:text-gray-700'}`}>
+              <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowTechReview(false); }} className={`p-2 rounded-xl transition-colors ${isDark ? 'hover:bg-white/10 text-gray-400 hover:text-white' : 'hover:bg-gray-100 text-gray-500 hover:text-gray-700'}`}>
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/></svg>
               </button>
             </div>
 
             <div className="p-6 overflow-y-auto max-h-[calc(90vh-80px)]">
-              {/* Stats Summary */}
               <div className="grid grid-cols-3 gap-4 mb-8">
                 <div className={`p-4 rounded-xl text-center ${isDark ? 'bg-blue-500/10 border border-blue-500/20' : 'bg-blue-50 border border-blue-100'}`}>
                   <CodeIcon className="w-8 h-8 mx-auto mb-2 text-blue-500" />
@@ -517,7 +536,6 @@ const Footer = () => {
                 </div>
               </div>
 
-              {/* Development Skills */}
               <div className="mb-8">
                 <h4 className={`text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2 ${isDark ? 'text-white' : 'text-gray-900'}`}><CodeIcon className="w-4 h-4 text-blue-500" /> Development Stack</h4>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -536,7 +554,6 @@ const Footer = () => {
                 </div>
               </div>
 
-              {/* Security Skills */}
               <div className="mb-8">
                 <h4 className={`text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2 ${isDark ? 'text-white' : 'text-gray-900'}`}><ShieldIcon className="w-4 h-4 text-red-500" /> Security & Hacking</h4>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -555,7 +572,6 @@ const Footer = () => {
                 </div>
               </div>
 
-              {/* Tools */}
               <div>
                 <h4 className={`text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2 ${isDark ? 'text-white' : 'text-gray-900'}`}><TerminalIcon className="w-4 h-4 text-purple-500" /> Tools & Technologies</h4>
                 <div className={`p-4 rounded-xl border ${isDark ? 'bg-white/[0.02] border-white/10' : 'bg-gray-50 border-gray-200'}`}>
@@ -573,18 +589,29 @@ const Footer = () => {
 
             <div className={`p-4 border-t flex items-center justify-between ${isDark ? 'bg-gray-900/95 border-white/10' : 'bg-white/95 border-gray-200'}`}>
               <div className="flex items-center gap-2 text-sm"><TrendingUpIcon className="w-4 h-4 text-green-500" /><span className={isDark ? 'text-gray-400' : 'text-gray-600'}>Overall: Senior Full-Stack Developer + Security Specialist</span></div>
-              <button onClick={() => setShowTechReview(false)} className="px-4 py-2 rounded-lg bg-violet-600 text-white text-sm font-medium hover:bg-violet-700 transition-colors">Close</button>
+              <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowTechReview(false); }} className="px-4 py-2 rounded-lg bg-violet-600 text-white text-sm font-medium hover:bg-violet-700 transition-colors">Close</button>
             </div>
           </div>
         </div>
       )}
 
       <style jsx>{`
-        @keyframes slide-up { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes slide-up { 
+          from { transform: translateY(100%); opacity: 0; } 
+          to { transform: translateY(0); opacity: 1; } 
+        }
         .animate-slide-up { animation: slide-up 0.4s ease-out; }
-        @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+        
+        @keyframes fade-in { 
+          from { opacity: 0; } 
+          to { opacity: 1; } 
+        }
         .animate-fade-in { animation: fade-in 0.2s ease-out; }
-        @keyframes scale-in { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        
+        @keyframes scale-in { 
+          from { opacity: 0; transform: scale(0.95); } 
+          to { opacity: 1; transform: scale(1); } 
+        }
         .animate-scale-in { animation: scale-in 0.25s ease-out; }
       `}</style>
     </>

@@ -21,9 +21,7 @@ sqlparse==0.5.5
 typing-inspection==0.4.2
 typing_extensions==4.15.0
 tzdata==2026.2
-<<<<<<< HEAD
 gunicorn
-=======
 psycopg2-binary
 requests
->>>>>>> 696dd56ac078c1d3e3d2ff04e6681b79352eb4cb
+
