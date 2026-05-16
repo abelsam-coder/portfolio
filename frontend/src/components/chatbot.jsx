@@ -5,7 +5,7 @@ import api from '../../api/api';
 // ── Website Data for Context ──
 const WEBSITE_DATA = {
   name: "Abel Samuel",
-  company: "AB",
+  company: "Abel",
   aiName: "CodeX",
   role: "Full Stack Developer & AI Engineer",
   location: "Hawassa Ethiopia",
