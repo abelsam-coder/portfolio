@@ -4,13 +4,13 @@ import {
   ArrowRight, Check, Zap, ChevronRight, ChevronDown,
   Sparkles, Layers, MessageSquare, Clock, Tag,
   Rocket, Cpu, Lock, Globe, Code2, Database,
-  Terminal, Bug, TestTube
+  Terminal, Bug, TestTube, Send, Film, Palette
 } from 'lucide-react';
 
 const Service = () => {
   const [isDark, setIsDark] = useState(false);
   const [activeTab, setActiveTab] = useState('all');
-  const [expandedService, setExpandedService] = useState(null); // ✅ NEW: Track expanded card
+  const [expandedService, setExpandedService] = useState(null);
 
   // Detect dark mode
   useEffect(() => {
@@ -29,7 +29,6 @@ const Service = () => {
     return () => observer.disconnect();
   }, []);
 
-  // ✅ Toggle function for Learn More
   const toggleExpand = (index) => {
     setExpandedService(expandedService === index ? null : index);
   };
@@ -82,6 +81,42 @@ const Service = () => {
         { tech: 'TensorFlow/PyTorch', desc: 'Model training & tuning' },
         { tech: 'Pandas/NumPy', desc: 'Data processing & analysis' },
         { tech: 'Flask/FastAPI', desc: 'ML model API deployment' }
+      ]
+    },
+    {
+      title: 'Telegram Bots',
+      description: 'Automated bots & Telegram mini-apps',
+      icon: Send,
+      gradient: 'from-sky-500 to-blue-500',
+      howIBuild: [
+        { tech: 'Python/Node.js', desc: 'Core bot development' },
+        { tech: 'Telegraf/python-telegram-bot', desc: 'Bot framework & API' },
+        { tech: 'MongoDB/PostgreSQL', desc: 'Data storage & management' },
+        { tech: 'VPS/Heroku', desc: '24/7 hosting & deployment' }
+      ]
+    },
+    {
+      title: 'Video Editing',
+      description: 'Professional edits & motion graphics',
+      icon: Film,
+      gradient: 'from-pink-500 to-rose-500',
+      howIBuild: [
+        { tech: 'Premiere Pro', desc: 'Professional video editing' },
+        { tech: 'After Effects', desc: 'Motion graphics & VFX' },
+        { tech: 'DaVinci Resolve', desc: 'Color grading & finishing' },
+        { tech: 'CapCut/Filmora', desc: 'Quick social media edits' }
+      ]
+    },
+    {
+      title: 'Graphic Design',
+      description: 'Stunning visuals & brand identity',
+      icon: Palette,
+      gradient: 'from-amber-500 to-yellow-500',
+      howIBuild: [
+        { tech: 'Photoshop', desc: 'Photo editing & manipulation' },
+        { tech: 'Illustrator', desc: 'Vector graphics & logos' },
+        { tech: 'Figma', desc: 'UI/UX & collaborative design' },
+        { tech: 'Canva', desc: 'Social media & quick designs' }
       ]
     }
   ];
@@ -136,11 +171,65 @@ const Service = () => {
     {
       id: 6,
       name: 'API Development',
-      category: 'api',
+      category: 'web',
       price: '80K+',
       tech: ['Django', 'REST'],
       icon: Code,
       color: '#8B5CF6'
+    },
+    {
+      id: 7,
+      name: 'Telegram Mini App',
+      category: 'bot',
+      price: '120K+',
+      tech: ['Node.js', 'Telegraf', 'MongoDB'],
+      icon: Send,
+      color: '#0EA5E9'
+    },
+    {
+      id: 8,
+      name: 'Payment Bot',
+      category: 'bot',
+      price: '150K+',
+      tech: ['Python', 'Chapa/Telebirr'],
+      icon: Send,
+      color: '#38BDF8'
+    },
+    {
+      id: 9,
+      name: 'Promo Video',
+      category: 'video',
+      price: '50K+',
+      tech: ['Premiere Pro', 'After Effects'],
+      icon: Film,
+      color: '#F43F5E'
+    },
+    {
+      id: 10,
+      name: 'YouTube Content',
+      category: 'video',
+      price: '35K+',
+      tech: ['DaVinci Resolve', 'CapCut'],
+      icon: Film,
+      color: '#FB7185'
+    },
+    {
+      id: 11,
+      name: 'Brand Identity',
+      category: 'design',
+      price: '60K+',
+      tech: ['Illustrator', 'Photoshop'],
+      icon: Palette,
+      color: '#F59E0B'
+    },
+    {
+      id: 12,
+      name: 'Social Media Kit',
+      category: 'design',
+      price: '25K+',
+      tech: ['Figma', 'Canva'],
+      icon: Palette,
+      color: '#FBBF24'
     }
   ];
 
@@ -150,7 +239,10 @@ const Service = () => {
     { id: 'web', label: 'Web', icon: Globe },
     { id: 'mobile', label: 'Mobile', icon: Smartphone },
     { id: 'security', label: 'Security', icon: Shield },
-    { id: 'ml', label: 'AI/ML', icon: Cpu }
+    { id: 'ml', label: 'AI/ML', icon: Cpu },
+    { id: 'bot', label: 'Bots', icon: Send },
+    { id: 'video', label: 'Video', icon: Film },
+    { id: 'design', label: 'Design', icon: Palette }
   ];
 
   const filteredProjects = activeTab === 'all' 
@@ -181,6 +273,16 @@ const Service = () => {
           ${isDark 
             ? 'bg-gradient-to-tr from-cyan-600/12 via-blue-600/8 to-transparent' 
             : 'bg-gradient-to-tr from-indigo-200/25 via-blue-200/15 to-transparent'
+          }
+        `}></div>
+
+        {/* Extra gradient for new services */}
+        <div className={`
+          absolute top-[40%] left-[50%] w-[350px] h-[350px] rounded-full blur-[100px]
+          animate-pulse-slow
+          ${isDark 
+            ? 'bg-gradient-to-br from-pink-600/8 via-amber-600/5 to-transparent' 
+            : 'bg-gradient-to-br from-pink-200/20 via-amber-100/15 to-transparent'
           }
         `}></div>
 
@@ -243,7 +345,7 @@ const Service = () => {
         {/* ===== SERVICES GRID - WITH EXPAND FUNCTIONALITY ===== */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6 mb-20">
           {services.map((service, index) => {
-            const isExpanded = expandedService === index; // ✅ Check if this card is expanded
+            const isExpanded = expandedService === index;
             
             return (
               <div
@@ -298,7 +400,7 @@ const Service = () => {
                     {service.description}
                   </p>
 
-                  {/* ✅ EXPANDABLE SECTION - Shows on click */}
+                  {/* EXPANDABLE SECTION */}
                   <div className={`
                     overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.4, 0, 0.2, 1)]
                     ${isExpanded ? 'max-h-[500px] opacity-100 mt-4' : 'max-h-0 opacity-0'}
@@ -350,7 +452,7 @@ const Service = () => {
                     </div>
                   </div>
 
-                  {/* ✅ LEARN MORE BUTTON - Toggles Expand */}
+                  {/* LEARN MORE BUTTON */}
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -369,7 +471,6 @@ const Service = () => {
                       {isExpanded ? 'Show Less' : 'Learn More'}
                     </span>
                     
-                    {/* Animated Chevron Icon */}
                     <ChevronDown className={`
                       w-4 h-4 transform transition-transform duration-500 ease-out
                       ${isExpanded ? 'rotate-180' : 'rotate-0'}
@@ -508,7 +609,9 @@ const Service = () => {
                           ${isDark ? 'text-gray-500' : 'text-gray-500'}
                         `}>
                           <Clock className="w-3 h-3" />
-                          2-6 weeks
+                          {project.category === 'video' ? '1-3 weeks' : 
+                           project.category === 'design' ? '1-2 weeks' : 
+                           project.category === 'bot' ? '1-4 weeks' : '2-6 weeks'}
                         </div>
                       </div>
                     </div>
