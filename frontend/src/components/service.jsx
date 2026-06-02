@@ -95,30 +95,6 @@ const Service = () => {
         { tech: 'VPS/Heroku', desc: '24/7 hosting & deployment' }
       ]
     },
-    {
-      title: 'Video Editing',
-      description: 'Professional edits & motion graphics',
-      icon: Film,
-      gradient: 'from-pink-500 to-rose-500',
-      howIBuild: [
-        { tech: 'Premiere Pro', desc: 'Professional video editing' },
-        { tech: 'After Effects', desc: 'Motion graphics & VFX' },
-        { tech: 'DaVinci Resolve', desc: 'Color grading & finishing' },
-        { tech: 'CapCut/Filmora', desc: 'Quick social media edits' }
-      ]
-    },
-    {
-      title: 'Graphic Design',
-      description: 'Stunning visuals & brand identity',
-      icon: Palette,
-      gradient: 'from-amber-500 to-yellow-500',
-      howIBuild: [
-        { tech: 'Photoshop', desc: 'Photo editing & manipulation' },
-        { tech: 'Illustrator', desc: 'Vector graphics & logos' },
-        { tech: 'Figma', desc: 'UI/UX & collaborative design' },
-        { tech: 'Canva', desc: 'Social media & quick designs' }
-      ]
-    }
   ];
 
   // Projects Data
@@ -179,58 +155,13 @@ const Service = () => {
     },
     {
       id: 7,
-      name: 'Telegram Mini App',
+      name: 'Telegram Bot',
       category: 'bot',
       price: '120K+',
       tech: ['Node.js', 'Telegraf', 'MongoDB'],
       icon: Send,
       color: '#0EA5E9'
     },
-    {
-      id: 8,
-      name: 'Payment Bot',
-      category: 'bot',
-      price: '150K+',
-      tech: ['Python', 'Chapa/Telebirr'],
-      icon: Send,
-      color: '#38BDF8'
-    },
-    {
-      id: 9,
-      name: 'Promo Video',
-      category: 'video',
-      price: '50K+',
-      tech: ['Premiere Pro', 'After Effects'],
-      icon: Film,
-      color: '#F43F5E'
-    },
-    {
-      id: 10,
-      name: 'YouTube Content',
-      category: 'video',
-      price: '35K+',
-      tech: ['DaVinci Resolve', 'CapCut'],
-      icon: Film,
-      color: '#FB7185'
-    },
-    {
-      id: 11,
-      name: 'Brand Identity',
-      category: 'design',
-      price: '60K+',
-      tech: ['Illustrator', 'Photoshop'],
-      icon: Palette,
-      color: '#F59E0B'
-    },
-    {
-      id: 12,
-      name: 'Social Media Kit',
-      category: 'design',
-      price: '25K+',
-      tech: ['Figma', 'Canva'],
-      icon: Palette,
-      color: '#FBBF24'
-    }
   ];
 
   // Categories
@@ -276,7 +207,6 @@ const Service = () => {
           }
         `}></div>
 
-        {/* Extra gradient for new services */}
         <div className={`
           absolute top-[40%] left-[50%] w-[350px] h-[350px] rounded-full blur-[100px]
           animate-pulse-slow
@@ -342,8 +272,13 @@ const Service = () => {
           </p>
         </div>
 
-        {/* ===== SERVICES GRID - WITH EXPAND FUNCTIONALITY ===== */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6 mb-20">
+        {/* ===== SERVICES GRID - AUTO-FIT FOR EQUAL FILL ===== */}
+        <div 
+          className="grid gap-5 lg:gap-6 mb-20"
+          style={{
+            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))'
+          }}
+        >
           {services.map((service, index) => {
             const isExpanded = expandedService === index;
             
@@ -556,8 +491,13 @@ const Service = () => {
             ))}
           </div>
 
-          {/* Projects Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
+          {/* Projects Grid - AUTO-FIT */}
+          <div 
+            className="grid gap-5 lg:gap-6"
+            style={{
+              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))'
+            }}
+          >
             {filteredProjects.map((project) => (
               <div
                 key={project.id}
@@ -703,7 +643,12 @@ const Service = () => {
               </span>
             </h3>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+            <div 
+              className="grid gap-6 lg:gap-8"
+              style={{
+                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))'
+              }}
+            >
               {[
                 { step: '01', title: 'Consultation', desc: 'Discuss your ideas', icon: Zap },
                 { step: '02', title: 'Planning', desc: 'Create roadmap', icon: Layers },
