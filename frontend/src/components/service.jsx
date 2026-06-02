@@ -130,7 +130,17 @@ const Service = () => {
       color: '#10B981'
     },
     {
-      id: 3,
+  id: 3,
+  name: 'ERP System',
+  category: 'enterprise',
+  price: '500K+',
+  tech: ['React', 'Node.js', 'PostgreSQL', 'Redis'],
+  icon: Database,   // or another suitable icon like Layers/Briefcase
+  color: '#6366F1'  // Indigo for enterprise feel
+},
+
+    {
+      id: 4,
       name: 'Mobile App',
       category: 'mobile',
       price: '200K+',
@@ -139,7 +149,7 @@ const Service = () => {
       color: '#EC4899'
     },
     {
-      id: 4,
+      id: 5,
       name: 'Security Audit',
       category: 'security',
       price: '160K',
@@ -148,7 +158,7 @@ const Service = () => {
       color: '#EF4444'
     },
     {
-      id: 5,
+      id: 6,
       name: 'ML Solution',
       category: 'ml',
       price: '600K+',
@@ -157,7 +167,7 @@ const Service = () => {
       color: '#06B6D4'
     },
     {
-      id: 6,
+      id: 7,
       name: 'API Development',
       category: 'web',
       price: '80K+',
@@ -166,7 +176,7 @@ const Service = () => {
       color: '#8B5CF6'
     },
     {
-      id: 7,
+      id: 8,
       name: 'Telegram Bot',
       category: 'bot',
       price: '120K+',
@@ -175,7 +185,7 @@ const Service = () => {
       color: '#0EA5E9'
     },
     {
-      id: 8,
+      id: 9,
       name: 'System Dashboard',
       category: 'management',
       price: '100K+',
