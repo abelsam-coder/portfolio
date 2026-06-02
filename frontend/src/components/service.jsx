@@ -4,7 +4,7 @@ import {
   ArrowRight, Check, Zap, ChevronRight, ChevronDown,
   Sparkles, Layers, MessageSquare, Clock, Tag,
   Rocket, Cpu, Lock, Globe, Code2, Database,
-  Terminal, Bug, TestTube, Send, Film, Palette
+  Terminal, Bug, TestTube, Send, Settings
 } from 'lucide-react';
 
 const Service = () => {
@@ -33,7 +33,7 @@ const Service = () => {
     setExpandedService(expandedService === index ? null : index);
   };
 
-  // Services Data with detailed build info
+  // Services Data - Exactly 6 for 3x2 Grid
   const services = [
     {
       title: 'Web Development',
@@ -95,6 +95,18 @@ const Service = () => {
         { tech: 'VPS/Heroku', desc: '24/7 hosting & deployment' }
       ]
     },
+    {
+      title: 'Software Management',
+      description: 'Control, monitor & maintain your systems',
+      icon: Settings,
+      gradient: 'from-indigo-500 to-violet-500',
+      howIBuild: [
+        { tech: 'Linux/Windows', desc: 'Server administration' },
+        { tech: 'Docker/K8s', desc: 'Container orchestration' },
+        { tech: 'CI/CD Pipelines', desc: 'Automated deployments' },
+        { tech: 'Monitoring Tools', desc: 'Uptime & performance tracking' }
+      ]
+    }
   ];
 
   // Projects Data
@@ -162,9 +174,18 @@ const Service = () => {
       icon: Send,
       color: '#0EA5E9'
     },
+    {
+      id: 8,
+      name: 'System Dashboard',
+      category: 'management',
+      price: '100K+',
+      tech: ['Docker', 'Grafana', 'Prometheus'],
+      icon: Settings,
+      color: '#6366F1'
+    }
   ];
 
-  // Categories
+  // Categories - Updated
   const categories = [
     { id: 'all', label: 'All', icon: Layers },
     { id: 'web', label: 'Web', icon: Globe },
@@ -172,8 +193,7 @@ const Service = () => {
     { id: 'security', label: 'Security', icon: Shield },
     { id: 'ml', label: 'AI/ML', icon: Cpu },
     { id: 'bot', label: 'Bots', icon: Send },
-    { id: 'video', label: 'Video', icon: Film },
-    { id: 'design', label: 'Design', icon: Palette }
+    { id: 'management', label: 'Management', icon: Settings }
   ];
 
   const filteredProjects = activeTab === 'all' 
@@ -211,8 +231,8 @@ const Service = () => {
           absolute top-[40%] left-[50%] w-[350px] h-[350px] rounded-full blur-[100px]
           animate-pulse-slow
           ${isDark 
-            ? 'bg-gradient-to-br from-pink-600/8 via-amber-600/5 to-transparent' 
-            : 'bg-gradient-to-br from-pink-200/20 via-amber-100/15 to-transparent'
+            ? 'bg-gradient-to-br from-indigo-600/8 via-violet-600/5 to-transparent' 
+            : 'bg-gradient-to-br from-indigo-200/20 via-violet-100/15 to-transparent'
           }
         `}></div>
 
@@ -272,13 +292,8 @@ const Service = () => {
           </p>
         </div>
 
-        {/* ===== SERVICES GRID - AUTO-FIT FOR EQUAL FILL ===== */}
-        <div 
-          className="grid gap-5 lg:gap-6 mb-20"
-          style={{
-            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))'
-          }}
-        >
+        {/* ===== SERVICES GRID - 3 COLUMNS 2 ROWS ===== */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6 mb-20">
           {services.map((service, index) => {
             const isExpanded = expandedService === index;
             
@@ -549,9 +564,8 @@ const Service = () => {
                           ${isDark ? 'text-gray-500' : 'text-gray-500'}
                         `}>
                           <Clock className="w-3 h-3" />
-                          {project.category === 'video' ? '1-3 weeks' : 
-                           project.category === 'design' ? '1-2 weeks' : 
-                           project.category === 'bot' ? '1-4 weeks' : '2-6 weeks'}
+                          {project.category === 'bot' ? '1-4 weeks' : 
+                           project.category === 'management' ? '1-3 weeks' : '2-6 weeks'}
                         </div>
                       </div>
                     </div>
@@ -643,12 +657,7 @@ const Service = () => {
               </span>
             </h3>
 
-            <div 
-              className="grid gap-6 lg:gap-8"
-              style={{
-                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))'
-              }}
-            >
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
               {[
                 { step: '01', title: 'Consultation', desc: 'Discuss your ideas', icon: Zap },
                 { step: '02', title: 'Planning', desc: 'Create roadmap', icon: Layers },
