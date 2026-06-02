@@ -71,7 +71,7 @@ website_data = [
 
     {
         "title": "Founder",
-        "content": "Abel Samuel is the founder and lead developer of CodeX systems, specializing in full-stack development, AI engineering, and cybersecurity."
+        "content": "Abel Samuel is the founder , specializing in full-stack development, AI engineering, and cybersecurity."
     },
     {
         "title": "Team",
