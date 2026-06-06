@@ -5,7 +5,7 @@ import {
   Terminal,
   Layers,
   Cpu,
-  Bot, // ✅ CHANGED: Imported Bot instead of Code2
+  Code2,
   ExternalLink,
   Shield,
   Lock,
@@ -167,6 +167,7 @@ const Info = () => {
                 <span className={`
                   relative inline-block
                   bg-clip-text text-transparent bg-gradient-to-r
+                  /* ✅ CHANGED: Unified Blue-Indigo-Purple Gradient */
                   ${isDark 
                     ? 'from-blue-400 via-indigo-400 to-purple-400 bg-[length:200%_auto] animate-gradient' 
                     : 'from-blue-600 via-indigo-600 to-purple-600 bg-[length:200%_auto] animate-gradient'
@@ -184,6 +185,7 @@ const Info = () => {
                   <span className={`
                     text-xl lg:text-2xl font-bold
                     bg-clip-text text-transparent bg-gradient-to-r
+                    /* ✅ CHANGED: Unified Typing Color */
                     ${isDark ? 'from-indigo-400 to-purple-400' : 'from-indigo-600 to-purple-600'}
                   `}>
                     {displayText}
@@ -228,15 +230,17 @@ const Info = () => {
               ))}
             </div>
 
-            {/* CTA Buttons */}
+            {/* CTA Buttons - UNIFIED RELATIVE COLOR */}
             <div className="flex flex-wrap items-center gap-4 pt-3">
               
+              {/* Primary Button - Unified Gradient */}
               <a href="#contact" className={`
                 group relative inline-flex items-center gap-3 px-8 py-4 rounded-2xl
                 font-bold text-white text-sm uppercase tracking-wider
                 overflow-hidden transition-all duration-400
                 hover:scale-105 active:scale-95
                 shadow-xl hover:shadow-2xl
+                /* ✅ CHANGED: Unified Blue-Indigo-Purple */
                 bg-gradient-to-r
                 ${isDark 
                   ? 'from-blue-500 via-indigo-500 to-purple-500 shadow-indigo-500/25 hover:shadow-indigo-500/40' 
@@ -251,11 +255,13 @@ const Info = () => {
                 </span>
               </a>
 
+              {/* Secondary Button - Unified Outline Theme */}
               <a href="#projects" className={`
                 group relative inline-flex items-center gap-2 px-8 py-4 rounded-2xl
                 font-bold text-sm uppercase tracking-wider
                 border-2 transition-all duration-400
                 hover:scale-105 active:scale-95 hover:shadow-xl
+                /* ✅ CHANGED: Unified Indigo outline theme */
                 ${isDark 
                   ? 'border-indigo-500/30 text-indigo-300 hover:bg-indigo-500/10 hover:border-indigo-400/50' 
                   : 'border-indigo-300 text-indigo-700 hover:bg-indigo-50 hover:border-indigo-400'
@@ -266,7 +272,7 @@ const Info = () => {
               </a>
             </div>
 
-            {/* Stats Section */}
+            {/* Stats Section - UNIFIED RELATIVE COLOR */}
             <div className="grid grid-cols-3 gap-4 pt-4 max-w-md">
               {[
                 { num: '3+', label: 'Years Exp', color: 'from-blue-500 to-indigo-500' },
@@ -298,11 +304,11 @@ const Info = () => {
             </div>
           </div>
 
-          {/* ===== RIGHT SIDE - 3D ROBOT HOLOGRAPHIC CORE ===== */}
+          {/* ===== RIGHT SIDE - 3D ICON REPLACEMENT ===== */}
           <div className="hidden lg:flex justify-center items-center order-1 lg:order-2 relative">
             <div className="relative w-full max-w-lg aspect-square flex items-center justify-center">
               
-              {/* Outer massive glow */}
+              {/* Outer massive glow - UNIFIED COLOR */}
               <div className={`
                 absolute inset-10 rounded-full blur-3xl opacity-60 animate-pulse-slow
                 ${isDark 
@@ -321,7 +327,7 @@ const Info = () => {
                 ${isDark ? 'border-purple-500/10' : 'border-purple-200/30'}
               `}></div>
 
-              {/* Central 3D Container */}
+              {/* Central 3D Icon Container - UNIFIED COLOR */}
               <div className={`
                 relative z-10 w-72 h-72 rounded-[3rem] flex items-center justify-center
                 transition-all duration-700 hover:scale-105 hover:rotate-3 group
@@ -339,19 +345,11 @@ const Info = () => {
                 <div className="absolute -bottom-10 -right-10 w-40 h-40 rounded-full bg-purple-400/20 blur-2xl pointer-events-none"></div>
                 <div className="absolute -top-10 -left-10 w-40 h-40 rounded-full bg-blue-400/20 blur-2xl pointer-events-none"></div>
 
-                {/* ✅ 3D Holographic Core Sphere behind Robot */}
-                <div className="absolute w-52 h-52 rounded-full bg-gradient-to-br from-white/10 via-indigo-200/10 to-transparent blur-2xl animate-pulse-slow z-0"></div>
-                <div className="absolute w-40 h-40 rounded-full border border-white/20 animate-spin-very-slow z-0"></div>
-
-                {/* ✅ THE 3D ROBOT ICON */}
-                <Bot className={`
-                  w-40 h-40 relative z-10 
-                  transition-all duration-700 
-                  group-hover:scale-110 group-hover:rotate-6
+                {/* The Big Code Icon */}
+                <Code2 className={`
+                  w-40 h-40 relative z-10 drop-shadow-2xl
+                  transition-transform duration-700 group-hover:rotate-12 group-hover:scale-110
                   text-white
-                  /* 3D Holographic Glow Effect */
-                  drop-shadow-[0_0_30px_rgba(255,255,255,0.6)]
-                  group-hover:drop-shadow-[0_0_50px_rgba(255,255,255,0.8)]
                 `} strokeWidth={1.5} />
               </div>
 
@@ -401,7 +399,7 @@ const Info = () => {
                 <Lock className="w-6 h-6 text-white" />
               </div>
 
-              {/* Floating Element - Bottom Right (Small) */}
+              {/* Floating Element - Bottom Right (Small) - UNIFIED COLOR */}
               <div className={`
                 absolute bottom-24 right-16 w-12 h-12 rounded-xl shadow-xl z-20
                 flex items-center justify-center animate-float
