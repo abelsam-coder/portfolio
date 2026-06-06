@@ -79,7 +79,7 @@ const Info = () => {
       transition-all duration-700
       ${isDark 
         ? 'bg-[#0a0a0f]' 
-        : 'bg-gradient-to-br from-slate-50 via-white to-blue-50/30'
+        : 'bg-gradient-to-br from-slate-50 via-white to-indigo-50/30'
       }
     `}>
       
@@ -89,8 +89,8 @@ const Info = () => {
           absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full blur-[128px]
           animate-pulse-slow
           ${isDark 
-            ? 'bg-gradient-to-br from-blue-600/20 via-purple-500/15 to-transparent' 
-            : 'bg-gradient-to-br from-blue-300/40 via-cyan-200/30 to-transparent'
+            ? 'bg-gradient-to-br from-blue-600/20 via-indigo-500/15 to-transparent' 
+            : 'bg-gradient-to-br from-blue-300/40 via-indigo-200/30 to-transparent'
           }
         `}></div>
 
@@ -98,8 +98,8 @@ const Info = () => {
           absolute -bottom-32 -left-32 w-[500px] h-[500px] rounded-full blur-[120px]
           animate-float
           ${isDark 
-            ? 'bg-gradient-to-tr from-cyan-600/15 via-blue-500/10 to-transparent' 
-            : 'bg-gradient-to-tr from-indigo-200/35 via-blue-200/25 to-transparent'
+            ? 'bg-gradient-to-tr from-purple-600/15 via-blue-500/10 to-transparent' 
+            : 'bg-gradient-to-tr from-purple-200/35 via-blue-200/25 to-transparent'
           }
         `}></div>
 
@@ -107,8 +107,8 @@ const Info = () => {
           absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full blur-[100px]
           opacity-50
           ${isDark 
-            ? 'bg-gradient-to-r from-purple-600/10 to-pink-500/5' 
-            : 'bg-gradient-to-r from-violet-200/20 to-fuchsia-200/10'
+            ? 'bg-gradient-to-r from-indigo-600/10 to-purple-500/5' 
+            : 'bg-gradient-to-r from-indigo-200/20 to-purple-200/10'
           }
         `}></div>
         
@@ -135,7 +135,7 @@ const Info = () => {
             <div className="inline-flex items-center gap-2">
               <div className={`
                 relative px-5 py-2.5 rounded-full font-semibold text-sm
-                bg-gradient-to-r from-emerald-500/10 to-cyan-500/10
+                bg-gradient-to-r from-emerald-500/10 to-indigo-500/10
                 border border-emerald-500/20
                 ${isDark ? 'text-emerald-300' : 'text-emerald-700'}
               `}>
@@ -167,9 +167,10 @@ const Info = () => {
                 <span className={`
                   relative inline-block
                   bg-clip-text text-transparent bg-gradient-to-r
+                  /* ✅ CHANGED: Unified Blue-Indigo-Purple Gradient */
                   ${isDark 
-                    ? 'from-blue-400 via-cyan-400 to-blue-400 bg-[length:200%_auto] animate-gradient' 
-                    : 'from-blue-600 via-cyan-500 to-indigo-600 bg-[length:200%_auto] animate-gradient'
+                    ? 'from-blue-400 via-indigo-400 to-purple-400 bg-[length:200%_auto] animate-gradient' 
+                    : 'from-blue-600 via-indigo-600 to-purple-600 bg-[length:200%_auto] animate-gradient'
                   }
                 `}>
                   Abel Samuel
@@ -178,20 +179,21 @@ const Info = () => {
 
               {/* Typing Animation */}
               <div className="flex items-center gap-3 pt-2">
-                <div className={`h-12 w-1 rounded-full bg-gradient-to-b from-blue-500 via-cyan-500 to-blue-500`}></div>
+                <div className={`h-12 w-1 rounded-full bg-gradient-to-b from-blue-500 via-indigo-500 to-purple-500`}></div>
                 
                 <div className="flex items-center gap-2">
                   <span className={`
                     text-xl lg:text-2xl font-bold
                     bg-clip-text text-transparent bg-gradient-to-r
-                    ${isDark ? 'from-cyan-400 to-blue-400' : 'from-cyan-600 to-blue-600'}
+                    /* ✅ CHANGED: Unified Typing Color */
+                    ${isDark ? 'from-indigo-400 to-purple-400' : 'from-indigo-600 to-purple-600'}
                   `}>
                     {displayText}
                   </span>
                   
                   <span className={`
                     inline-block w-[3px] h-7 rounded-full animate-blink
-                    bg-gradient-to-b from-cyan-400 to-blue-500
+                    bg-gradient-to-b from-indigo-400 to-purple-500
                   `}></span>
                 </div>
               </div>
@@ -200,7 +202,7 @@ const Info = () => {
             {/* Description */}
             <p className={`text-base lg:text-lg leading-relaxed max-w-xl ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
               Crafting{' '}
-              <span className={`font-semibold bg-clip-text text-transparent bg-gradient-to-r ${isDark ? 'from-blue-400 to-cyan-400' : 'from-blue-600 to-cyan-600'}`}>secure digital solutions</span>{' '}
+              <span className={`font-semibold bg-clip-text text-transparent bg-gradient-to-r ${isDark ? 'from-blue-400 to-indigo-400' : 'from-blue-600 to-indigo-600'}`}>secure digital solutions</span>{' '}
               with clean code and modern tech. Full-stack developer &{' '}
               <span className={`font-semibold bg-clip-text text-transparent bg-gradient-to-r ${isDark ? 'from-red-400 to-orange-400' : 'from-red-600 to-orange-600'}`}>cyber security expert</span>.
               I build & protect applications that make an impact.
@@ -209,9 +211,9 @@ const Info = () => {
             {/* Feature Tags */}
             <div className="flex flex-wrap gap-3 pt-1">
               {[
-                { icon: Terminal, text: 'Clean Code', grad: 'from-blue-500/10 to-cyan-500/10', border: 'border-blue-500/20', iconColor: isDark ? 'text-blue-400' : 'text-blue-600' },
+                { icon: Terminal, text: 'Clean Code', grad: 'from-blue-500/10 to-indigo-500/10', border: 'border-blue-500/20', iconColor: isDark ? 'text-blue-400' : 'text-blue-600' },
                 { icon: Shield, text: 'Cyber Security', grad: 'from-red-500/10 to-orange-500/10', border: 'border-red-500/20', iconColor: isDark ? 'text-red-400' : 'text-red-600' },
-                { icon: Layers, text: 'Full Stack', grad: 'from-purple-500/10 to-pink-500/10', border: 'border-purple-500/20', iconColor: isDark ? 'text-purple-400' : 'text-purple-600' },
+                { icon: Layers, text: 'Full Stack', grad: 'from-indigo-500/10 to-purple-500/10', border: 'border-indigo-500/20', iconColor: isDark ? 'text-indigo-400' : 'text-indigo-600' },
                 { icon: Cpu, text: 'AI & ML', grad: 'from-orange-500/10 to-yellow-500/10', border: 'border-orange-500/20', iconColor: isDark ? 'text-orange-400' : 'text-orange-600' },
               ].map((item, idx) => (
                 <div key={idx} className={`
@@ -228,35 +230,41 @@ const Info = () => {
               ))}
             </div>
 
-            {/* CTA Buttons */}
+            {/* CTA Buttons - UNIFIED RELATIVE COLOR */}
             <div className="flex flex-wrap items-center gap-4 pt-3">
+              
+              {/* Primary Button - Unified Gradient */}
               <a href="#contact" className={`
                 group relative inline-flex items-center gap-3 px-8 py-4 rounded-2xl
                 font-bold text-white text-sm uppercase tracking-wider
                 overflow-hidden transition-all duration-400
                 hover:scale-105 active:scale-95
                 shadow-xl hover:shadow-2xl
+                /* ✅ CHANGED: Unified Blue-Indigo-Purple */
                 bg-gradient-to-r
                 ${isDark 
-                  ? 'from-blue-500 via-cyan-500 to-blue-500 shadow-blue-500/25 hover:shadow-blue-500/40' 
-                  : 'from-blue-600 via-cyan-600 to-indigo-600 shadow-blue-500/25 hover:shadow-blue-500/35'
+                  ? 'from-blue-500 via-indigo-500 to-purple-500 shadow-indigo-500/25 hover:shadow-indigo-500/40' 
+                  : 'from-blue-600 via-indigo-600 to-purple-600 shadow-indigo-500/25 hover:shadow-indigo-500/35'
                 }
               `}>
                 <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 skew-x-12"></span>
+                
                 <span className="relative flex items-center gap-3">
                   Get In Touch
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </span>
               </a>
 
+              {/* Secondary Button - Unified Outline Theme */}
               <a href="#projects" className={`
                 group relative inline-flex items-center gap-2 px-8 py-4 rounded-2xl
                 font-bold text-sm uppercase tracking-wider
                 border-2 transition-all duration-400
                 hover:scale-105 active:scale-95 hover:shadow-xl
+                /* ✅ CHANGED: Unified Indigo outline theme */
                 ${isDark 
-                  ? 'border-white/20 text-white hover:bg-white/5 hover:border-white/30' 
-                  : 'border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400'
+                  ? 'border-indigo-500/30 text-indigo-300 hover:bg-indigo-500/10 hover:border-indigo-400/50' 
+                  : 'border-indigo-300 text-indigo-700 hover:bg-indigo-50 hover:border-indigo-400'
                 }
               `}>
                 View Projects
@@ -264,12 +272,12 @@ const Info = () => {
               </a>
             </div>
 
-            {/* Stats Section */}
+            {/* Stats Section - UNIFIED RELATIVE COLOR */}
             <div className="grid grid-cols-3 gap-4 pt-4 max-w-md">
               {[
-                { num: '3+', label: 'Years Exp', color: 'from-blue-500 to-cyan-500', hoverBg: 'group-hover:from-blue-500/10 group-hover:to-cyan-500/10' },
-                { num: '50+', label: 'Projects', color: 'from-purple-500 to-pink-500', hoverBg: 'group-hover:from-purple-500/10 group-hover:to-pink-500/10' },
-                { num: '100%', label: 'Secure', color: 'from-emerald-500 to-green-500', hoverBg: 'group-hover:from-emerald-500/10 group-hover:to-green-500/10' },
+                { num: '3+', label: 'Years Exp', color: 'from-blue-500 to-indigo-500' },
+                { num: '50+', label: 'Projects', color: 'from-indigo-500 to-purple-500' },
+                { num: '100%', label: 'Secure', color: 'from-purple-500 to-pink-500' },
               ].map((stat, idx) => (
                 <div key={idx} className={`
                   group relative p-4 rounded-2xl text-center 
@@ -300,33 +308,33 @@ const Info = () => {
           <div className="hidden lg:flex justify-center items-center order-1 lg:order-2 relative">
             <div className="relative w-full max-w-lg aspect-square flex items-center justify-center">
               
-              {/* Outer massive glow */}
+              {/* Outer massive glow - UNIFIED COLOR */}
               <div className={`
                 absolute inset-10 rounded-full blur-3xl opacity-60 animate-pulse-slow
                 ${isDark 
-                  ? 'bg-gradient-to-br from-blue-600/40 via-purple-500/30 to-cyan-500/40' 
-                  : 'bg-gradient-to-br from-blue-300/60 via-indigo-200/50 to-cyan-300/60'
+                  ? 'bg-gradient-to-br from-blue-600/40 via-indigo-500/30 to-purple-500/40' 
+                  : 'bg-gradient-to-br from-blue-300/60 via-indigo-200/50 to-purple-300/60'
                 }
               `}></div>
 
               {/* Orbiting Rings */}
               <div className={`
                 absolute inset-12 rounded-full border-2 border-dashed animate-spin-very-slow
-                ${isDark ? 'border-white/10' : 'border-indigo-200/40'}
+                ${isDark ? 'border-indigo-500/20' : 'border-indigo-200/40'}
               `}></div>
               <div className={`
                 absolute inset-20 rounded-full border-2 border-dashed animate-spin-slow-reverse
-                ${isDark ? 'border-white/5' : 'border-blue-200/30'}
+                ${isDark ? 'border-purple-500/10' : 'border-purple-200/30'}
               `}></div>
 
-              {/* Central 3D Icon Container */}
+              {/* Central 3D Icon Container - UNIFIED COLOR */}
               <div className={`
                 relative z-10 w-72 h-72 rounded-[3rem] flex items-center justify-center
                 transition-all duration-700 hover:scale-105 hover:rotate-3 group
                 overflow-hidden shadow-2xl
                 ${isDark 
-                  ? 'bg-gradient-to-br from-blue-600 via-indigo-700 to-purple-800 shadow-black/50' 
-                  : 'bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 shadow-blue-500/30'
+                  ? 'bg-gradient-to-br from-blue-500 via-indigo-600 to-purple-700 shadow-black/50' 
+                  : 'bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 shadow-indigo-500/30'
                 }
               `}>
                 
@@ -334,14 +342,14 @@ const Info = () => {
                 <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-white/0 to-black/20 pointer-events-none"></div>
                 
                 {/* Diagonal 3D edge light */}
-                <div className="absolute -bottom-10 -right-10 w-40 h-40 rounded-full bg-cyan-400/20 blur-2xl pointer-events-none"></div>
+                <div className="absolute -bottom-10 -right-10 w-40 h-40 rounded-full bg-purple-400/20 blur-2xl pointer-events-none"></div>
                 <div className="absolute -top-10 -left-10 w-40 h-40 rounded-full bg-blue-400/20 blur-2xl pointer-events-none"></div>
 
                 {/* The Big Code Icon */}
                 <Code2 className={`
                   w-40 h-40 relative z-10 drop-shadow-2xl
                   transition-transform duration-700 group-hover:rotate-12 group-hover:scale-110
-                  ${isDark ? 'text-white' : 'text-white'}
+                  text-white
                 `} strokeWidth={1.5} />
               </div>
 
@@ -352,8 +360,8 @@ const Info = () => {
                 animate-float backdrop-blur-md
                 border
                 ${isDark 
-                  ? 'bg-[#0a0a0f]/80 border-white/10 text-cyan-400' 
-                  : 'bg-white/90 border-gray-200 text-blue-600'
+                  ? 'bg-[#0a0a0f]/80 border-indigo-500/20 text-indigo-400' 
+                  : 'bg-white/90 border-indigo-200 text-indigo-600'
                 }
               `}>
                 <span className="flex items-center gap-2">
@@ -369,8 +377,8 @@ const Info = () => {
                 animate-float-delayed backdrop-blur-md
                 border
                 ${isDark 
-                  ? 'bg-[#0a0a0f]/80 border-white/10 text-emerald-400' 
-                  : 'bg-white/90 border-gray-200 text-emerald-600'
+                  ? 'bg-[#0a0a0f]/80 border-purple-500/20 text-purple-400' 
+                  : 'bg-white/90 border-purple-200 text-purple-600'
                 }
               `}>
                 <span className="flex items-center gap-2">
@@ -391,13 +399,13 @@ const Info = () => {
                 <Lock className="w-6 h-6 text-white" />
               </div>
 
-              {/* Floating Element - Bottom Right (Small) */}
+              {/* Floating Element - Bottom Right (Small) - UNIFIED COLOR */}
               <div className={`
                 absolute bottom-24 right-16 w-12 h-12 rounded-xl shadow-xl z-20
                 flex items-center justify-center animate-float
                 ${isDark 
-                  ? 'bg-gradient-to-br from-purple-500 to-pink-500' 
-                  : 'bg-gradient-to-br from-purple-400 to-pink-400'
+                  ? 'bg-gradient-to-br from-indigo-500 to-purple-500' 
+                  : 'bg-gradient-to-br from-indigo-400 to-purple-400'
                 }
               `}>
                 <Braces className="w-6 h-6 text-white" />
