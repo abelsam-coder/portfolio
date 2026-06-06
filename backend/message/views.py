@@ -23,6 +23,11 @@ def send_email(to_email, subject, html_content):
 
     response = requests.post(url, json=data, headers=headers)
     return response.json()
+
+class StartServer(APIView):
+    def get(self, request):
+        return Response({"message": "Server is running"}, status=200)
+
 class MessageApi(APIView):
     permission_classes = [AllowAny]
 
