@@ -10,9 +10,24 @@ import Service from './components/service';
 import Tech from './components/tech';
 import Testimony from './components/testimony';
 import { ThemeProvider } from './context/ThemeContext';
+import { useEffect } from 'react';
+import api from '../api/api';
 
 
 export default function Home() {
+  useEffect(() => {
+    const checkServer = async () => {
+      try {
+        const response = await api.get('/start/');
+        console.log(response.data.message);
+      } catch (error) {
+        console.error('Error connecting to the server:', error);
+      }
+    };
+
+    checkServer();
+  }, []);
+
   return (
     <ThemeProvider>
    
