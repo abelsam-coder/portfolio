@@ -8,7 +8,9 @@ import {
   Code2,
   ExternalLink,
   Shield,
-  Lock
+  Lock,
+  Braces,
+  Box
 } from 'lucide-react';
 
 const Info = () => {
@@ -17,10 +19,6 @@ const Info = () => {
   const [displayText, setDisplayText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const [charIndex, setCharIndex] = useState(0);
-  
-  // Image state with loading
-  const [imageUrl, setImageUrl] = useState('');
-  const [imageLoaded, setImageLoaded] = useState(false);
 
   // Detect dark mode
   useEffect(() => {
@@ -37,27 +35,6 @@ const Info = () => {
     });
     
     return () => observer.disconnect();
-  }, []);
-
-  // Fetch random tech image from Unsplash API
-  useEffect(() => {
-    const unsplashUrl = `https://source.unsplash.com/800x800/?coding,programming,cybersecurity,hacker,workspace,computer&sig=${Date.now()}`;
-    
-    const techImages = [
-      'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80', // Cyber security
-      'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&q=80', // Code on screen
-      'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&q=80', // Coding setup
-      'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&q=80', // Multiple screens
-      'https://images.unsplash.com/photo-1587620962725-abab7fe55159?w=800&q=80', // Developer working
-      'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&q=80', // Laptop code
-    ];
-    
-    const randomImage = techImages[Math.floor(Math.random() * techImages.length)];
-    setImageUrl(unsplashUrl);
-    
-    const img = new Image();
-    img.onload = () => setImageLoaded(true);
-    img.src = unsplashUrl;
   }, []);
 
   const roles = [
@@ -108,8 +85,6 @@ const Info = () => {
       
       {/* ===== GRADIENT BACKGROUND ORBS ===== */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        
-        {/* Large gradient orb - top right */}
         <div className={`
           absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full blur-[128px]
           animate-pulse-slow
@@ -119,7 +94,6 @@ const Info = () => {
           }
         `}></div>
 
-        {/* Second orb - bottom left */}
         <div className={`
           absolute -bottom-32 -left-32 w-[500px] h-[500px] rounded-full blur-[120px]
           animate-float
@@ -129,7 +103,6 @@ const Info = () => {
           }
         `}></div>
 
-        {/* Third accent orb - center */}
         <div className={`
           absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full blur-[100px]
           opacity-50
@@ -139,7 +112,6 @@ const Info = () => {
           }
         `}></div>
         
-        {/* Grid overlay */}
         <div className={`
           absolute inset-0 opacity-[0.025]
           ${isDark ? 'opacity-[0.04]' : ''}
@@ -159,7 +131,7 @@ const Info = () => {
           {/* ===== LEFT SIDE - TEXT CONTENT ===== */}
           <div className="space-y-7 order-2 lg:order-1">
             
-            {/* Status Badge with Gradient Border */}
+            {/* Status Badge */}
             <div className="inline-flex items-center gap-2">
               <div className={`
                 relative px-5 py-2.5 rounded-full font-semibold text-sm
@@ -183,10 +155,7 @@ const Info = () => {
 
             {/* Main Heading */}
             <div className="space-y-3">
-              <p className={`
-                text-lg font-medium tracking-wide
-                ${isDark ? 'text-gray-400' : 'text-gray-600'}
-              `}>
+              <p className={`text-lg font-medium tracking-wide ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                 Welcome to my universe
               </p>
               
@@ -207,21 +176,15 @@ const Info = () => {
                 </span>
               </h1>
 
-              {/* Typing Animation Row */}
+              {/* Typing Animation */}
               <div className="flex items-center gap-3 pt-2">
-                <div className={`
-                  h-12 w-1 rounded-full
-                  bg-gradient-to-b from-blue-500 via-cyan-500 to-blue-500
-                `}></div>
+                <div className={`h-12 w-1 rounded-full bg-gradient-to-b from-blue-500 via-cyan-500 to-blue-500`}></div>
                 
                 <div className="flex items-center gap-2">
                   <span className={`
                     text-xl lg:text-2xl font-bold
                     bg-clip-text text-transparent bg-gradient-to-r
-                    ${isDark 
-                      ? 'from-cyan-400 to-blue-400' 
-                      : 'from-cyan-600 to-blue-600'
-                    }
+                    ${isDark ? 'from-cyan-400 to-blue-400' : 'from-cyan-600 to-blue-600'}
                   `}>
                     {displayText}
                   </span>
@@ -234,25 +197,16 @@ const Info = () => {
               </div>
             </div>
 
-            {/* Description Paragraph - WITH CYBER SECURITY EMPHASIS */}
-            <p className={`
-              text-base lg:text-lg leading-relaxed max-w-xl
-              ${isDark ? 'text-gray-400' : 'text-gray-600'}
-            `}>
+            {/* Description */}
+            <p className={`text-base lg:text-lg leading-relaxed max-w-xl ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
               Crafting{' '}
-              <span className={`
-                font-semibold bg-clip-text text-transparent bg-gradient-to-r
-                ${isDark ? 'from-blue-400 to-cyan-400' : 'from-blue-600 to-cyan-600'}
-              `}>secure digital solutions</span>{' '}
+              <span className={`font-semibold bg-clip-text text-transparent bg-gradient-to-r ${isDark ? 'from-blue-400 to-cyan-400' : 'from-blue-600 to-cyan-600'}`}>secure digital solutions</span>{' '}
               with clean code and modern tech. Full-stack developer &{' '}
-              <span className={`
-                font-semibold bg-clip-text text-transparent bg-gradient-to-r
-                ${isDark ? 'from-red-400 to-orange-400' : 'from-red-600 to-orange-600'}
-              `}>cyber security expert</span>.
+              <span className={`font-semibold bg-clip-text text-transparent bg-gradient-to-r ${isDark ? 'from-red-400 to-orange-400' : 'from-red-600 to-orange-600'}`}>cyber security expert</span>.
               I build & protect applications that make an impact.
             </p>
 
-            {/* Feature Tags with Gradient Backgrounds - ADDED SECURITY */}
+            {/* Feature Tags */}
             <div className="flex flex-wrap gap-3 pt-1">
               {[
                 { icon: Terminal, text: 'Clean Code', grad: 'from-blue-500/10 to-cyan-500/10', border: 'border-blue-500/20', iconColor: isDark ? 'text-blue-400' : 'text-blue-600' },
@@ -269,17 +223,13 @@ const Info = () => {
                   cursor-default
                 `}>
                   <item.icon className={`w-4 h-4 ${item.iconColor}`} />
-                  <span className={`text-sm font-semibold ${
-                    isDark ? 'text-gray-200' : 'text-gray-800'
-                  }`}>{item.text}</span>
+                  <span className={`text-sm font-semibold ${isDark ? 'text-gray-200' : 'text-gray-800'}`}>{item.text}</span>
                 </div>
               ))}
             </div>
 
-            {/* CTA Buttons - NO DOWNLOAD BUTTON */}
+            {/* CTA Buttons */}
             <div className="flex flex-wrap items-center gap-4 pt-3">
-              
-              {/* Primary Button - Gradient */}
               <a href="#contact" className={`
                 group relative inline-flex items-center gap-3 px-8 py-4 rounded-2xl
                 font-bold text-white text-sm uppercase tracking-wider
@@ -293,14 +243,12 @@ const Info = () => {
                 }
               `}>
                 <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 skew-x-12"></span>
-                
                 <span className="relative flex items-center gap-3">
                   Get In Touch
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </span>
               </a>
 
-              {/* Secondary Button - Outline */}
               <a href="#projects" className={`
                 group relative inline-flex items-center gap-2 px-8 py-4 rounded-2xl
                 font-bold text-sm uppercase tracking-wider
@@ -316,236 +264,145 @@ const Info = () => {
               </a>
             </div>
 
-           {/* Stats Section - FIXED VISIBILITY ON HOVER! */}
-<div className="grid grid-cols-3 gap-4 pt-4 max-w-md">
-  {[
-    { num: '3+', label: 'Years Exp', color: 'from-blue-500 to-cyan-500', textColor: 'text-blue-500' },
-    { num: '50+', label: 'Projects', color: 'from-purple-500 to-pink-500', textColor: 'text-purple-500' },
-    { num: '100%', label: 'Secure', color: 'from-green-500 to-emerald-500', textColor: 'text-green-500' },
-  ].map((stat, idx) => (
-    <div key={idx} className={`
-      group relative p-4 rounded-2xl text-center 
-      transition-all duration-400 hover:-translate-y-1
-      cursor-default overflow-hidden
-      ${isDark 
-        ? 'bg-white/[0.03] hover:bg-white/[0.08] border border-transparent hover:border-white/15' 
-        : 'bg-white/60 hover:bg-white/90 border border-transparent hover:border-gray-200 shadow-sm hover:shadow-lg'
-      }
-    `}>
-      
-      {/* ✅ FIXED: Subtle background glow - NOT overpowering */}
-      <div className={`
-        absolute inset-0 rounded-2xl 
-        bg-gradient-to-br ${stat.color}
-        opacity-0 group-hover:opacity-[0.08] transition-opacity duration-500
-        ${isDark ? '' : 'group-hover:opacity-[0.12]'}
-      `}></div>
-      
-      {/* Decorative top line */}
-      <div className={`
-        absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[2px] rounded-full
-        bg-gradient-to-r ${stat.color}
-        scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-center
-      `}></div>
+            {/* Stats Section */}
+            <div className="grid grid-cols-3 gap-4 pt-4 max-w-md">
+              {[
+                { num: '3+', label: 'Years Exp', color: 'from-blue-500 to-cyan-500', hoverBg: 'group-hover:from-blue-500/10 group-hover:to-cyan-500/10' },
+                { num: '50+', label: 'Projects', color: 'from-purple-500 to-pink-500', hoverBg: 'group-hover:from-purple-500/10 group-hover:to-pink-500/10' },
+                { num: '100%', label: 'Secure', color: 'from-emerald-500 to-green-500', hoverBg: 'group-hover:from-emerald-500/10 group-hover:to-green-500/10' },
+              ].map((stat, idx) => (
+                <div key={idx} className={`
+                  group relative p-4 rounded-2xl text-center 
+                  transition-all duration-400 hover:-translate-y-1
+                  cursor-default overflow-hidden
+                  ${isDark 
+                    ? 'bg-white/[0.03] hover:bg-white/[0.08] border border-transparent hover:border-white/15' 
+                    : 'bg-white/60 hover:bg-white/90 border border-transparent hover:border-gray-200 shadow-sm hover:shadow-lg'
+                  }
+                `}>
+                  <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${stat.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}></div>
+                  
+                  <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[2px] rounded-full bg-gradient-to-r ${stat.color} scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-center`}></div>
 
-      {/* Number - ALWAYS VISIBLE with high contrast */}
-      <p className={`
-        text-2xl lg:text-3xl font-black relative z-10
-        transition-all duration-400
-        
-        /* Base state: Solid dark/light color */
-        ${isDark 
-          ? 'text-white' 
-          : 'text-gray-900'
-        }
-        
-        /* Hover state: Gradient text BUT with brightness */
-        group-hover:bg-gradient-to-r group-hover:bg-clip-text group-hover:text-transparent
-        group-hover:${stat.color}
-        
-        /* Ensure readability */
-        drop-shadow-sm
-      `}>
-        {stat.num}
-      </p>
-      
-      {/* Label */}
-      <p className={`
-        text-xs font-semibold uppercase tracking-wider mt-1.5 relative z-10
-        transition-colors duration-400
-        ${isDark 
-          ? 'text-gray-500 group-hover:text-gray-300' 
-          : 'text-gray-500 group-hover:text-gray-700'
-        }
-      `}>
-        {stat.label}
-      </p>
-      
-      {/* Bottom gradient line - appears on hover */}
-      <div className={`
-        absolute bottom-3 left-4 right-4 h-[2px] rounded-full
-        bg-gradient-to-r ${stat.color}
-        scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-center
-        shadow-sm
-        ${isDark 
-          ? `shadow-${stat.color.includes('blue') ? 'blue' : stat.color.includes('purple') ? 'purple' : 'green'}-500/50` 
-          : ''
-        }
-      `}></div>
-    </div>
-  ))}
-</div>
+                  <p className={`text-2xl lg:text-3xl font-black relative z-10 transition-colors duration-400 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                    {stat.num}
+                  </p>
+                  
+                  <p className={`text-xs font-semibold uppercase tracking-wider mt-1.5 relative z-10 transition-colors duration-400 ${isDark ? 'text-gray-500 group-hover:text-gray-300' : 'text-gray-500 group-hover:text-gray-700'}`}>
+                    {stat.label}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* ===== RIGHT SIDE - API IMAGE (HIDDEN ON MOBILE!) ===== */}
+          {/* ===== RIGHT SIDE - 3D ICON REPLACEMENT ===== */}
           <div className="hidden lg:flex justify-center items-center order-1 lg:order-2 relative">
-            <div className="relative w-full max-w-lg">
+            <div className="relative w-full max-w-lg aspect-square flex items-center justify-center">
               
-              {/* Outer glow ring - Gradient */}
+              {/* Outer massive glow */}
               <div className={`
-                absolute inset-0 rounded-[2.5rem] blur-2xl opacity-70
-                bg-gradient-to-br
+                absolute inset-10 rounded-full blur-3xl opacity-60 animate-pulse-slow
                 ${isDark 
-                  ? 'from-blue-600/30 via-purple-500/20 to-cyan-500/30' 
-                  : 'from-blue-300/50 via-indigo-200/40 to-cyan-300/50'
+                  ? 'bg-gradient-to-br from-blue-600/40 via-purple-500/30 to-cyan-500/40' 
+                  : 'bg-gradient-to-br from-blue-300/60 via-indigo-200/50 to-cyan-300/60'
                 }
-                animate-pulse-slow
               `}></div>
 
-              {/* Main card container */}
+              {/* Orbiting Rings */}
               <div className={`
-                relative rounded-[2rem] p-6 lg:p-8
-                backdrop-blur-2xl
-                transition-all duration-700
+                absolute inset-12 rounded-full border-2 border-dashed animate-spin-very-slow
+                ${isDark ? 'border-white/10' : 'border-indigo-200/40'}
+              `}></div>
+              <div className={`
+                absolute inset-20 rounded-full border-2 border-dashed animate-spin-slow-reverse
+                ${isDark ? 'border-white/5' : 'border-blue-200/30'}
+              `}></div>
+
+              {/* Central 3D Icon Container */}
+              <div className={`
+                relative z-10 w-72 h-72 rounded-[3rem] flex items-center justify-center
+                transition-all duration-700 hover:scale-105 hover:rotate-3 group
+                overflow-hidden shadow-2xl
                 ${isDark 
-                  ? 'bg-white/[0.03] border border-white/10' 
-                  : 'bg-white/80 border border-white/60 shadow-2xl shadow-gray-200/50'
+                  ? 'bg-gradient-to-br from-blue-600 via-indigo-700 to-purple-800 shadow-black/50' 
+                  : 'bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 shadow-blue-500/30'
                 }
               `}>
                 
-                {/* Corner gradient accents */}
-                <div className={`
-                  absolute top-0 left-0 w-24 h-24 rounded-tl-[2rem]
-                  bg-gradient-to-br from-blue-500/20 to-transparent blur-sm
-                `}></div>
-                <div className={`
-                  absolute bottom-0 right-0 w-24 h-24 rounded-br-[2rem]
-                  bg-gradient-to-tl from-cyan-500/20 to-transparent blur-sm
-                `}></div>
+                {/* 3D Glass Shine Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-white/0 to-black/20 pointer-events-none"></div>
+                
+                {/* Diagonal 3D edge light */}
+                <div className="absolute -bottom-10 -right-10 w-40 h-40 rounded-full bg-cyan-400/20 blur-2xl pointer-events-none"></div>
+                <div className="absolute -top-10 -left-10 w-40 h-40 rounded-full bg-blue-400/20 blur-2xl pointer-events-none"></div>
 
-                {/* Image Container */}
-                <div className="relative aspect-square rounded-2xl overflow-hidden"
-                  style={{
-                    backgroundImage: isDark 
-                      ? 'linear-gradient(135deg, rgba(59,130,246,0.2), rgba(147,51,234,0.2), rgba(34,211,238,0.2))'
-                      : 'linear-gradient(135deg, rgba(59,130,246,0.1), rgba(147,51,234,0.1), rgba(34,211,238,0.1))'
-                  }}
-                >
-                  
-                  {!imageLoaded && (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className={`
-                        w-16 h-16 rounded-2xl animate-pulse
-                        ${isDark ? 'bg-white/10' : 'bg-gray-200'}
-                      `}></div>
-                    </div>
-                  )}
-                  
-                  <div className={`
-                    absolute inset-0 z-10 pointer-events-none
-                    bg-gradient-to-t
-                    ${isDark 
-                      ? 'from-[#0a0a0f]/80 via-transparent to-transparent' 
-                      : 'from-white/60 via-transparent to-transparent'
-                    }
-                  `}></div>
-
-                  {imageUrl && (
-                    <img 
-                      src={imageUrl}
-                      alt="Cyber Security & Development Workspace"
-                      className={`
-                        w-full h-full object-cover
-                        transition-all duration-700 ease-out
-                        hover:scale-110 hover:rotate-1
-                        ${imageLoaded ? 'opacity-100' : 'opacity-0'}
-                      `}
-                      onLoad={() => setImageLoaded(true)}
-                      onError={(e) => {
-                        e.target.src = 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80';
-                      }}
-                    />
-                  )}
-
-                  <div className={`
-                    absolute inset-0 z-20 opacity-0 hover:opacity-100 transition-opacity duration-500
-                    bg-gradient-to-t
-                    ${isDark 
-                      ? 'from-blue-600/20 via-transparent to-cyan-600/10' 
-                      : 'from-blue-200/40 via-transparent to-cyan-200/30'
-                    }
-                  `}></div>
-                </div>
-
-                {/* Bottom info bar */}
-                <div className={`
-                  mt-5 p-4 rounded-xl relative overflow-hidden
-                  ${isDark ? 'bg-white/[0.02]' : 'bg-gradient-to-r from-gray-50 to-slate-50'}
-                `}>
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full hover:translate-x-full transition-transform duration-1000"></div>
-                  
-                  <div className="relative flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className={`
-                        p-2.5 rounded-xl
-                        bg-gradient-to-br from-blue-500 to-cyan-500
-                        shadow-lg
-                        ${isDark ? 'shadow-blue-500/25' : 'shadow-blue-500/20'}
-                      `}>
-                        <Lock className="w-5 h-5 text-white" />
-                      </div>
-                      <div>
-                        <p className={`font-bold text-sm ${
-                          isDark ? 'text-white' : 'text-gray-900'
-                        }`}>Security First</p>
-                        <p className={`text-xs ${
-                          isDark ? 'text-gray-500' : 'text-gray-500'
-                        }`}>Building secure apps 🔒</p>
-                      </div>
-                    </div>
-                    
-                    
-                  </div>
-                </div>
+                {/* The Big Code Icon */}
+                <Code2 className={`
+                  w-40 h-40 relative z-10 drop-shadow-2xl
+                  transition-transform duration-700 group-hover:rotate-12 group-hover:scale-110
+                  ${isDark ? 'text-white' : 'text-white'}
+                `} strokeWidth={1.5} />
               </div>
 
-              {/* Floating badge - Top Right */}
+              {/* Floating Element - Top Right */}
               <div className={`
-                absolute -top-3 -right-3 px-4 py-2 rounded-xl
-                font-mono text-xs font-bold shadow-2xl
-                animate-float
-                bg-gradient-to-r
+                absolute top-12 right-8 px-4 py-2.5 rounded-xl
+                font-mono text-xs font-bold shadow-2xl z-20
+                animate-float backdrop-blur-md
+                border
                 ${isDark 
-                  ? 'from-blue-600 to-cyan-600 text-white shadow-blue-500/30' 
-                  : 'from-blue-500 to-cyan-500 text-white shadow-blue-500/25'
+                  ? 'bg-[#0a0a0f]/80 border-white/10 text-cyan-400' 
+                  : 'bg-white/90 border-gray-200 text-blue-600'
                 }
               `}>
-                {'<Dev />'}
+                <span className="flex items-center gap-2">
+                  <Terminal className="w-3.5 h-3.5" />
+                  npm run dev
+                </span>
               </div>
 
-              {/* Floating badge - Bottom Left - SECURITY THEME */}
+              {/* Floating Element - Bottom Left */}
               <div className={`
-                absolute -bottom-3 -left-3 px-4 py-2 rounded-xl
-                font-mono text-xs font-bold shadow-2xl
-                animate-float-delayed
-                bg-gradient-to-r
+                absolute bottom-12 left-8 px-4 py-2.5 rounded-xl
+                font-mono text-xs font-bold shadow-2xl z-20
+                animate-float-delayed backdrop-blur-md
+                border
                 ${isDark 
-                  ? 'from-red-600 to-orange-600 text-white shadow-red-500/30' 
-                  : 'from-red-500 to-orange-500 text-white shadow-red-500/25'
+                  ? 'bg-[#0a0a0f]/80 border-white/10 text-emerald-400' 
+                  : 'bg-white/90 border-gray-200 text-emerald-600'
                 }
               `}>
-                {'{ secure: true }'}
+                <span className="flex items-center gap-2">
+                  <Shield className="w-3.5 h-3.5" />
+                  Secure: ✓
+                </span>
               </div>
+
+              {/* Floating Element - Top Left (Small) */}
+              <div className={`
+                absolute top-24 left-16 w-12 h-12 rounded-xl shadow-xl z-20
+                flex items-center justify-center animate-float-delayed-fast
+                ${isDark 
+                  ? 'bg-gradient-to-br from-red-500 to-orange-500' 
+                  : 'bg-gradient-to-br from-red-400 to-orange-400'
+                }
+              `}>
+                <Lock className="w-6 h-6 text-white" />
+              </div>
+
+              {/* Floating Element - Bottom Right (Small) */}
+              <div className={`
+                absolute bottom-24 right-16 w-12 h-12 rounded-xl shadow-xl z-20
+                flex items-center justify-center animate-float
+                ${isDark 
+                  ? 'bg-gradient-to-br from-purple-500 to-pink-500' 
+                  : 'bg-gradient-to-br from-purple-400 to-pink-400'
+                }
+              `}>
+                <Braces className="w-6 h-6 text-white" />
+              </div>
+
             </div>
           </div>
         </div>
@@ -578,6 +435,15 @@ const Info = () => {
           animation-delay: 2s;
         }
 
+        @keyframes float-delayed-fast {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-8px); }
+        }
+        .animate-float-delayed-fast {
+          animation: float 3s ease-in-out infinite;
+          animation-delay: 1.5s;
+        }
+
         @keyframes pulse-slow {
           0%, 100% { opacity: 0.7; transform: scale(1); }
           50% { opacity: 1; transform: scale(1.02); }
@@ -593,6 +459,22 @@ const Info = () => {
         }
         .animate-gradient {
           animation: gradient 4s ease infinite;
+        }
+
+        @keyframes spin-very-slow {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        .animate-spin-very-slow {
+          animation: spin-very-slow 20s linear infinite;
+        }
+
+        @keyframes spin-slow-reverse {
+          from { transform: rotate(360deg); }
+          to { transform: rotate(0deg); }
+        }
+        .animate-spin-slow-reverse {
+          animation: spin-slow-reverse 25s linear infinite;
         }
       `}</style>
     </section>
