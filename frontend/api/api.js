@@ -1,8 +1,12 @@
 import axios from 'axios'
 
+// Get API base URL from environment variables
+// Falls back to localhost for development if not set
+const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+
 const api = axios.create({
-       baseURL : 'https://portfolio-dbq5.onrender.com',
-       withCredentials : true,
+       baseURL: baseURL,
+       withCredentials: true,
        headers: {
       'Content-Type': 'application/json'
    }
