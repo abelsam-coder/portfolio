@@ -596,7 +596,7 @@ const Info = () => {
           100% { transform: translateX(-33.33%); }
         }
         .animate-scroll-left {
-          animation: scroll-left 25s linear infinite;
+          animation: scroll-left 10s linear infinite;
         }
 
         @keyframes scroll-right {
@@ -604,7 +604,7 @@ const Info = () => {
           100% { transform: translateX(0); }
         }
         .animate-scroll-right {
-          animation: scroll-right 30s linear infinite;
+          animation: scroll-right 10s linear infinite;
         }
       `}</style>
     </section>
