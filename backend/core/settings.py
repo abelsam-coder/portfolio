@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'chatbot.apps.ChatbotConfig',
     'message.apps.MessagesConfig',
-    'admin_panel.apps.AdminPanelConfig'
 ]
 
 MIDDLEWARE = [

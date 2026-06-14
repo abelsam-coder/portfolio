@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message Received - Abel Samuel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .wrapper {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .container {
+            background: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Header Section */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+
+        .header::before {
+            content: '✓';
+            font-size: 60px;
+            display: block;
+            margin-bottom: 15px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+
+        /* Main Content */
+        .content {
+            padding: 45px 30px;
+        }
+
+        .greeting {
+            font-size: 18px;
+            color: #1a202c;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .message-box {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 25px 0;
+            line-height: 1.8;
+            color: #2d3748;
+        }
+
+        .message-box strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 10px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .details-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 8px;
+        }
+
+        .detail-item {
+            display: flex;
+            margin-bottom: 15px;
+            align-items: flex-start;
+        }
+
+        .detail-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #667eea;
+            min-width: 80px;
+            font-size: 14px;
+        }
+
+        .detail-value {
+            color: #2d3748;
+            flex: 1;
+            word-break: break-word;
+        }
+
+        .main-text {
+            font-size: 16px;
+            color: #4a5568;
+            line-height: 1.8;
+            margin: 20px 0;
+        }
+
+        .cta-section {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px 0;
+        }
+
+        .cta-text {
+            color: #718096;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.6);
+        }
+
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #cbd5e0, transparent);
+            margin: 30px 0;
+        }
+
+        /* Footer Section */
+        .footer {
+            background: #f7fafc;
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .footer-content {
+            color: #718096;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .social-links {
+            margin: 15px 0;
+        }
+
+        .social-links a {
+            display: inline-block;
+            width: 36px;
+            height: 36px;
+            background: #e2e8f0;
+            border-radius: 50%;
+            line-height: 36px;
+            text-align: center;
+            margin: 0 8px;
+            text-decoration: none;
+            color: #667eea;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            background: #667eea;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .copyright {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            color: #a0aec0;
+            font-size: 12px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .content {
+                padding: 30px 20px;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .greeting {
+                font-size: 16px;
+            }
+
+            .detail-item {
+                flex-direction: column;
+            }
+
+            .detail-label {
+                margin-bottom: 5px;
+            }
+        }
+
+        /* Animation */
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        .highlight {
+            color: #667eea;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container">
+            <!-- Header -->
+            <div class="header">
+                <h1>Message Received!</h1>
+                <p>We've got your message and we're excited to connect</p>
+            </div>
+
+            <!-- Main Content -->
+            <div class="content">
+                <div class="greeting">
+                    Hello <span class="highlight">{{ full_name }}</span>,
+                </div>
+
+                <p class="main-text">
+                    Thank you for reaching out! We appreciate you taking the time to send us a message. 
+                    Your inquiry is very important to us, and we're committed to providing you with the 
+                    best response possible.
+                </p>
+
+                <!-- Message Details -->
+                <div class="message-box">
+                    <strong>📝 Your Message Summary</strong>
+                    <div style="margin-top: 10px;">
+                        <strong>Subject:</strong> {{ subject }}<br><br>
+                        <strong>Message:</strong> {{ message }}
+                    </div>
+                </div>
+
+                <!-- Contact Details -->
+                <div class="details-section">
+                    <div class="detail-item">
+                        <div class="detail-label">📧 Email:</div>
+                        <div class="detail-value">{{ email }}</div>
+                    </div>
+                    {% if phone %}
+                    <div class="detail-item">
+                        <div class="detail-label">📱 Phone:</div>
+                        <div class="detail-value">{{ phone }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <p class="main-text">
+                    We typically respond to inquiries within <span class="highlight">24-48 hours</span>. 
+                    In the meantime, feel free to explore our latest work and projects. If you have any 
+                    urgent matters, please reach out directly through our contact page.
+                </p>
+
+                <!-- CTA Section -->
+                <div class="cta-section">
+                    <div class="cta-text">Check out our latest projects and updates</div>
+                    <a href="https://abel-portfolio.vercel.app" class="cta-button">Visit Our Portfolio</a>
+                </div>
+
+                <div class="divider"></div>
+
+                <p class="main-text" style="text-align: center; color: #718096; font-size: 14px;">
+                    We're looking forward to working with you and creating something amazing together!
+                </p>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <div class="footer-content">
+                    <strong>Abel Samuel</strong><br>
+                    Full Stack Developer | AI Engineer | Cybersecurity Specialist<br>
+                    📍 Hawassa, Ethiopia | 🌍 Available Worldwide
+                </div>
+
+                <div class="social-links">
+                    <a href="https://linkedin.com/in/abel-samuel" title="LinkedIn">in</a>
+                    <a href="https://github.com/abel-samuel" title="GitHub">gh</a>
+                    <a href="https://twitter.com/abel_samuel" title="Twitter">tw</a>
+                </div>
+
+                <div class="copyright">
+                    This is an automated email. Please do not reply directly to this message.
+                    <br>© 2026 Abel Samuel. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

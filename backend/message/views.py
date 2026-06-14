@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.template.loader import render_to_string
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -37,68 +38,22 @@ class MessageApi(APIView):
         if serializer.is_valid():
             serializer.save()
 
+            # Prepare context for email template
+            context = {
+                'full_name': request.data.get('full_name', 'User'),
+                'email': request.data.get('email'),
+                'subject': request.data.get('subject', 'N/A'),
+                'message': request.data.get('message'),
+                'phone': request.data.get('phone', None),
+            }
+
+            # Render email template
+            html_content = render_to_string('message_received_email.html', context)
+
             send_email(
                 to_email=request.data['email'],
-                subject="Message Received Successfully",
-                html_content=f"""
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <style>
-                        body {{
-                            font-family: Arial, sans-serif;
-                            background-color: #f4f4f4;
-                            padding: 20px;
-                        }}
-
-                        .container {{
-                            max-width: 600px;
-                            margin: auto;
-                            background: white;
-                            border-radius: 10px;
-                            padding: 30px;
-                            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-                        }}
-
-                        h1 {{
-                            color: #2563eb;
-                        }}
-
-                        p {{
-                            color: #333;
-                            line-height: 1.6;
-                        }}
-
-                        .footer {{
-                            margin-top: 30px;
-                            font-size: 12px;
-                            color: gray;
-                        }}
-                    </style>
-                </head>
-
-                <body>
-                    <div class="container">
-                        <h1>Thank You!</h1>
-
-                        <p>Hello {request.data.get('full_name', 'User')},</p>
-
-                        <p>
-                            Your message has been received successfully.
-                            We will review it and get back to you soon.
-                        </p>
-
-                        <p>
-                            Thanks for contacting us.
-                        </p>
-
-                        <div class="footer">
-                            © 2026 Your Company. All rights reserved.
-                        </div>
-                    </div>
-                </body>
-                </html>
-                """
+                subject="Message Received Successfully ✓",
+                html_content=html_content
             )
 
             return Response({"status": "success"}, status=200)
