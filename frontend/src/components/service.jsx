@@ -104,27 +104,17 @@ const Service = () => {
       ]
     },
     {
-      title: 'Video Editing',
-      description: 'Professional edits & motion graphics',
-      icon: Film,
-      gradient: 'from-pink-500 to-rose-500',
+      title: 'Software Management',
+      description: 'Full infrastructure control, monitoring and maintenance',
+      icon: ServerCog, // Server/DevOps specific icon
+      gradient: 'from-indigo-500 to-purple-600',
+      accentColor: '#7C3AED', // Purple
+      stats: '25+ Systems',
       howIBuild: [
-        { tech: 'Premiere Pro', desc: 'Professional video editing' },
-        { tech: 'After Effects', desc: 'Motion graphics & VFX' },
-        { tech: 'DaVinci Resolve', desc: 'Color grading & finishing' },
-        { tech: 'CapCut/Filmora', desc: 'Quick social media edits' }
-      ]
-    },
-    {
-      title: 'Graphic Design',
-      description: 'Stunning visuals & brand identity',
-      icon: Palette,
-      gradient: 'from-amber-500 to-yellow-500',
-      howIBuild: [
-        { tech: 'Photoshop', desc: 'Photo editing & manipulation' },
-        { tech: 'Illustrator', desc: 'Vector graphics & logos' },
-        { tech: 'Figma', desc: 'UI/UX & collaborative design' },
-        { tech: 'Canva', desc: 'Social media & quick designs' }
+        { tech: 'Linux/Windows', desc: 'Server admin' },
+        { tech: 'Docker/K8s', desc: 'Container orchestration' },
+        { tech: 'CI/CD', desc: 'Automated deploys' },
+        { tech: 'Monitoring', desc: 'Uptime & performance' }
       ]
     }
   ];
