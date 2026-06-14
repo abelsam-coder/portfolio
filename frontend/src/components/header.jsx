@@ -5,7 +5,6 @@ import {
   Moon, 
   Menu, 
   X,
-  ArrowRight,
   Code2
 } from 'lucide-react';
 import logo from '../assets/logo.png';
@@ -31,7 +30,7 @@ const Header = () => {
   const [activeLink, setActiveLink] = useState('Home');
   const [isHovering, setIsHovering] = useState(null);
 
-  // Navigation items with IDs (Icons removed)
+  // Navigation items with IDs
   const navItems = [
     { name: 'Home', id: 'home' },
     { name: 'Service', id: 'services' },
@@ -226,18 +225,9 @@ const Header = () => {
                     transition-transform duration-1000 ease-[cubic-bezier(0.25, 0.46, 0.45, 0.94)]
                   " />
                   
-                  {/* Text content */}
-                  <span className="relative flex items-center gap-2 transition-transform duration-300 group-hover:translate-x-0.5">
+                  {/* Text content - REMOVED ARROW ICON */}
+                  <span className="relative transition-transform duration-300 group-hover:translate-x-0.5">
                     {item.name}
-                    
-                    {isActive && (
-                      <ArrowRight className={`
-                        w-3.5 h-3.5
-                        transition-all duration-500 ease-[cubic-bezier(0.34, 1.56, 0.64, 1)]
-                        ${isDark ? 'text-blue-400' : 'text-blue-600'}
-                        animate-pulse-slow
-                      `} />
-                    )}
                   </span>
 
                   {/* Active indicator dot with glow */}
@@ -359,11 +349,6 @@ const Header = () => {
               
               <span className="relative flex items-center gap-2 transition-transform duration-300">
                 Hire Me
-                <ArrowRight className={`
-                  w-4 h-4 
-                  transition-all duration-500 ease-[cubic-bezier(0.34, 1.56, 0.64, 1)]
-                  ${isHovering === 'cta' ? 'translate-x-1 translate-y-0' : ''}
-                `} />
               </span>
             </button>
 
@@ -478,13 +463,7 @@ const Header = () => {
                     )}
                   </span>
                   
-                  {isHovering === `mobile-${item.name}` && !isActive && (
-                    <ArrowRight className={`
-                      w-4 h-4 relative
-                      transition-all duration-300
-                      ${isDark ? 'text-gray-500' : 'text-gray-400'}
-                    `} />
-                  )}
+                  {/* REMOVED ARROW ICON HERE */}
                 </button>
               );
             })}
@@ -519,11 +498,6 @@ const Header = () => {
               
               <span className="relative flex items-center gap-2">
                 Get In Touch
-                <ArrowRight className={`
-                  w-4 h-4 
-                  transition-all duration-500 ease-[cubic-bezier(0.34, 1.56, 0.64, 1)]
-                  ${isHovering === 'mobile-cta' ? 'translate-x-1' : ''}
-                `} />
               </span>
             </button>
           </div>
