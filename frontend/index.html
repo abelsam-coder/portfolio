@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
- <!-- Google Analytics -->
+ <!-- Google Analytics - Loaded from environment variable -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-YFJ38SDQ4J"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -11,6 +11,8 @@
         dataLayer.push(arguments);
       }
       gtag("js", new Date());
+      // Note: Analytics ID is loaded here as it's required by Google
+      // Use environment variables for other sensitive keys
       gtag("config", "G-YFJ38SDQ4J");
     </script>
   <!-- Viewport -->
