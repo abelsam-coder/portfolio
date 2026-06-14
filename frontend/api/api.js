@@ -1,8 +1,11 @@
 import axios from 'axios'
 
 const api = axios.create({
-       baseURL : 'https://portfolio-dbq5.onrender.com',
-       withCredentials : true
+       baseURL : 'http://127.0.0.1:8000/',
+       withCredentials : true,
+       headers: {
+      'Content-Type': 'application/json'
+   }
 })
 
 export default api

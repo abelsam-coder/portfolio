@@ -20,5 +20,6 @@ from django.urls import path,include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('chatbot.urls')),
-    path('',include('message.urls'))
+    path('',include('message.urls')),
+    path('',include('admin_panel.urls'))
 ]

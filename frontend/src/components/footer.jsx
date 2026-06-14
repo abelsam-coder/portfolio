@@ -179,7 +179,6 @@ const Footer = () => {
   const footerLinks = {
     navigation: [
       { name: 'Home', href: '#home', icon: <HomeIcon className="w-4 h-4" /> },
-      { name: 'About', href: '#about', icon: <UserIcon className="w-4 h-4" /> },
       { name: 'Services', href: '#services', icon: <WrenchIcon className="w-4 h-4" /> },
       { name: 'Projects', href: '#projects', icon: <BriefcaseIcon className="w-4 h-4" /> },
       { name: 'Testimonials', href: '#testimony', icon: <StarIcon className="w-4 h-4" /> },
