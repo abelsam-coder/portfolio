@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { 
   Sun, 
@@ -5,19 +6,32 @@ import {
   Menu, 
   X,
   ArrowRight,
-  Code2  // ✅ Changed from Zap to Code2
+  Code2
 } from 'lucide-react';
 import logo from '../assets/logo.png';
 
 const Header = () => {
-  // DEFAULT TO DARK MODE ON FIRST LOAD
-  const [isDark, setIsDark] = useState(true);
+  // Initialize state synchronously from localStorage, default to dark
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const isDarkMode = localStorage.getItem('theme') !== 'light';
+      // Apply class synchronously before React paints the screen
+      if (isDarkMode) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+      return isDarkMode;
+    }
+    return true;
+  });
+
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeLink, setActiveLink] = useState('Home');
   const [isHovering, setIsHovering] = useState(null);
 
-  // Navigation items with IDs
+  // Navigation items with IDs (Icons removed)
   const navItems = [
     { name: 'Home', id: 'home' },
     { name: 'Service', id: 'services' },
@@ -27,12 +41,9 @@ const Header = () => {
     { name: 'Contact us', id: 'contact' }
   ];
 
-  // Handle scroll effect & active link detection
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
-      
-      // Update active link based on scroll position
       const scrollPosition = window.scrollY + 100;
 
       for (let i = navItems.length - 1; i >= 0; i--) {
@@ -45,14 +56,11 @@ const Header = () => {
     };
 
     window.addEventListener('scroll', handleScroll);
-    
-    // Initial call to set active state
     handleScroll();
-    
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Apply dark mode to document
+  // Apply dark mode whenever it's toggled
   useEffect(() => {
     if (isDark) {
       document.documentElement.classList.add('dark');
@@ -63,33 +71,16 @@ const Header = () => {
     }
   }, [isDark]);
 
-  // Initialize dark mode on mount - ALWAYS DARK FIRST
-  useEffect(() => {
-    // Force dark mode on first load
-    document.documentElement.classList.add('dark');
-    setIsDark(true);
-    localStorage.setItem('theme', 'dark');
-  }, []);
+  const toggleDarkMode = () => setIsDark(!isDark);
+  const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
-  const toggleDarkMode = () => {
-    setIsDark(!isDark);
-  };
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
-  // Smooth scroll to section
   const scrollToSection = (id) => {
     const element = document.getElementById(id);
     if (element) {
-      const offsetTop = element.offsetTop - 88; // Account for fixed header height
-      window.scrollTo({
-        top: offsetTop,
-        behavior: 'smooth'
-      });
+      const offsetTop = element.offsetTop - 88;
+      window.scrollTo({ top: offsetTop, behavior: 'smooth' });
     }
-    setIsMobileMenuOpen(false); // Close mobile menu after click
+    setIsMobileMenuOpen(false);
   };
 
   return (
@@ -165,7 +156,6 @@ const Header = () => {
                 transition-all duration-500 ease-out
                 ${isDark ? 'text-gray-500 group-hover:text-gray-300' : 'text-gray-400 group-hover:text-gray-600'}
               `}>
-                {/* ✅ CHANGED: Code2 icon instead of Zap */}
                 <Code2 className="w-3 h-3 transition-transform duration-300 group-hover:rotate-180" />
                 Developer
               </p>
@@ -189,10 +179,7 @@ const Header = () => {
                     text-sm font-semibold tracking-wide
                     overflow-hidden cursor-pointer
                     
-                    /* Smooth cubic-bezier for buttery transitions */
                     transition-all duration-500 ease-[cubic-bezier(0.25, 0.46, 0.45, 0.94)]
-                    
-                    /* Scale transform on hover */
                     transform hover:scale-105 active:scale-95
                     
                     ${isActive 
@@ -231,7 +218,7 @@ const Header = () => {
                     }
                   `} />
                   
-                  {/* Shimmer effect - slower and smoother */}
+                  {/* Shimmer effect */}
                   <span className="
                     absolute inset-0 rounded-xl
                     bg-gradient-to-r from-transparent via-white/15 to-transparent
@@ -239,7 +226,7 @@ const Header = () => {
                     transition-transform duration-1000 ease-[cubic-bezier(0.25, 0.46, 0.45, 0.94)]
                   " />
                   
-                  {/* Text content with subtle movement */}
+                  {/* Text content */}
                   <span className="relative flex items-center gap-2 transition-transform duration-300 group-hover:translate-x-0.5">
                     {item.name}
                     
@@ -283,18 +270,14 @@ const Header = () => {
           {/* ===== RIGHT SIDE ACTIONS ===== */}
           <div className="flex items-center gap-3">
             
-            {/* Dark Mode Toggle - Enhanced */}
+            {/* Dark Mode Toggle */}
             <button
               onClick={toggleDarkMode}
               onMouseEnter={() => setIsHovering('darkmode')}
               onMouseLeave={() => setIsHovering(null)}
               className={`
-                relative p-3 rounded-xl
-                overflow-hidden
-                
-                /* Ultra-smooth spring-like transition */
+                relative p-3 rounded-xl overflow-hidden
                 transition-all duration-700 ease-[cubic-bezier(0.34, 1.56, 0.64, 1)]
-                
                 transform hover:scale-110 active:scale-90
                 
                 ${isDark 
@@ -304,7 +287,6 @@ const Header = () => {
               `}
               aria-label="Toggle dark mode"
             >
-              {/* Background glow on hover */}
               <span className={`
                 absolute inset-0 rounded-xl
                 opacity-0 transition-opacity duration-500
@@ -315,7 +297,6 @@ const Header = () => {
                 }
               `} />
 
-              {/* Icon container with smooth rotation */}
               <div className="relative w-5 h-5">
                 <Sun className={`
                   absolute inset-0 w-5 h-5
@@ -336,7 +317,6 @@ const Header = () => {
                 `} />
               </div>
 
-              {/* Orbiting decoration - smoother rotation */}
               <span className={`
                 absolute inset-0 rounded-xl
                 border-2 border-dashed
@@ -348,7 +328,7 @@ const Header = () => {
               `} />
             </button>
 
-            {/* CTA Button - Premium feel */}
+            {/* CTA Button */}
             <button 
               onClick={() => scrollToSection('contact')}
               onMouseEnter={() => setIsHovering('cta')}
@@ -358,22 +338,17 @@ const Header = () => {
                 rounded-xl text-sm font-bold
                 overflow-hidden
                 
-                /* Premium spring transition */
                 transition-all duration-500 ease-[cubic-bezier(0.34, 1.56, 0.64, 1)]
-                
                 transform hover:scale-105 hover:-translate-y-0.5 active:scale-95 active:translate-y-0
                 
-                /* Gradient background */
                 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 
                 text-white 
                 
-                /* Enhanced shadows */
                 shadow-lg shadow-blue-500/30 
                 hover:shadow-2xl hover:shadow-blue-500/40 
                 hover:from-blue-500 hover:via-purple-500 hover:to-pink-500
               "
             >
-              {/* Animated shimmer overlay */}
               <span className={`
                 absolute inset-0 
                 bg-gradient-to-r from-transparent via-white/30 to-transparent
@@ -382,7 +357,6 @@ const Header = () => {
                 ${isHovering === 'cta' ? 'translate-x-[100%]' : ''}
               `} />
               
-              {/* Button content */}
               <span className="relative flex items-center gap-2 transition-transform duration-300">
                 Hire Me
                 <ArrowRight className={`
@@ -393,7 +367,7 @@ const Header = () => {
               </span>
             </button>
 
-            {/* Mobile Menu Toggle - ONLY ON MOBILE */}
+            {/* Mobile Menu Toggle */}
             <button
               onClick={toggleMobileMenu}
               onMouseEnter={() => setIsHovering('mobile')}
@@ -411,7 +385,6 @@ const Header = () => {
               `}
               aria-label="Toggle menu"
             >
-              {/* Background pulse on hover */}
               <span className={`
                 absolute inset-0 rounded-xl
                 opacity-0 transition-opacity duration-300
@@ -443,19 +416,14 @@ const Header = () => {
         </div>
       </nav>
 
-      {/* ===== MOBILE MENU - Enhanced Animation ===== */}
+      {/* ===== MOBILE MENU ===== */}
       <div className={`
         lg:hidden overflow-hidden
-        
-        /* Smooth height animation with spring physics */
         transition-all duration-700 ease-[cubic-bezier(0.34, 1.56, 0.64, 1)]
-        
         ${isMobileMenuOpen ? 'max-h-[700px] opacity-100 pb-6' : 'max-h-0 opacity-0 pb-0'}
       `}>
         <div className={`
           mx-6 mt-2 rounded-2xl p-2
-          
-          /* Staggered entrance animation */
           transition-all duration-500 delay-150
           ${isMobileMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}
           
@@ -464,7 +432,6 @@ const Header = () => {
             : 'bg-white/98 backdrop-blur-xl border border-gray-200 shadow-2xl shadow-gray-200/50'
           }
         `}>
-          {/* Nav Items with staggered animation */}
           <div className="space-y-1 py-2">
             {navItems.map((item, index) => {
               const isActive = activeLink === item.name;
@@ -478,12 +445,9 @@ const Header = () => {
                   className={`
                     w-full flex items-center justify-between px-4 py-3.5 rounded-xl
                     text-left font-semibold text-base
-                    overflow-hidden
-                    relative
+                    overflow-hidden relative
                     
-                    /* Smooth spring transition */
                     transition-all duration-500 ease-[cubic-bezier(0.34, 1.56, 0.64, 1)]
-                    
                     transform hover:translate-x-2 active:scale-[0.98]
                   
                     ${isActive 
@@ -499,16 +463,6 @@ const Header = () => {
                     animationDelay: `${index * 70}ms`,
                   }}
                 >
-                  {/* Hover background slide */}
-                  <span className={`
-                    absolute inset-0 rounded-xl
-                    transition-all duration-500 ease-out
-                    ${isHovering === `mobile-${item.name}` && !isActive 
-                      ? isDark ? 'bg-white/5' : 'bg-gray-50' 
-                      : ''
-                    }
-                  `} />
-                  
                   <span className="relative flex items-center gap-3">
                     {item.name}
                     
@@ -524,7 +478,6 @@ const Header = () => {
                     )}
                   </span>
                   
-                  {/* Arrow indicator on hover */}
                   {isHovering === `mobile-${item.name}` && !isActive && (
                     <ArrowRight className={`
                       w-4 h-4 relative
@@ -537,7 +490,6 @@ const Header = () => {
             })}
           </div>
 
-          {/* CTA in mobile menu - Enhanced */}
           <div className={`px-2 pt-4 pb-2 border-t mt-3 transition-colors duration-300 ${isDark ? 'border-white/10' : 'border-gray-200'}`}>
             <button 
               onClick={() => scrollToSection('contact')}
@@ -557,7 +509,6 @@ const Header = () => {
                 hover:shadow-xl hover:shadow-blue-500/30
               "
             >
-              {/* Shimmer effect */}
               <span className={`
                 absolute inset-0 
                 bg-gradient-to-r from-transparent via-white/25 to-transparent
@@ -581,44 +532,9 @@ const Header = () => {
 
       {/* ===== CUSTOM ANIMATIONS ===== */}
       <style>{`
-        @keyframes fadeSlideUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes slideInUp {
-          from {
-            opacity: 0;
-            transform: translateY(15px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes shimmer {
-          0% {
-            transform: translateX(-100%);
-          }
-          100% {
-            transform: translateX(100%);
-          }
-        }
-
         @keyframes pulse-slow {
-          0%, 100% {
-            opacity: 1;
-          }
-          50% {
-            opacity: 0.6;
-          }
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.6; }
         }
 
         .animate-pulse-slow {
@@ -641,7 +557,6 @@ const Header = () => {
           border-radius: 8px;
         }
 
-        /* Scrollbar styling */
         ::-webkit-scrollbar {
           width: 8px;
         }
@@ -664,16 +579,10 @@ const Header = () => {
           background: linear-gradient(180deg, #6B7280, #4B5563);
         }
 
-        /* Remove default button tap highlight on mobile */
         @media (hover: none) {
           button:active {
             -webkit-tap-highlight-color: transparent;
           }
-        }
-
-        /* Performance optimization for animations */
-        .will-change-transform {
-          will-change: transform;
         }
       `}</style>
     </header>

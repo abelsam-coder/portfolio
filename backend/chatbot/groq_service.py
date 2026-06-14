@@ -20,7 +20,7 @@ def ask_groq(message, context):
                 {
                     "role": "system",
                     "content": f"""
-You are AB Nexus, an AI assistant.
+You are Codex, an AI assistant.
 
 Rules:
 - Always identify yourself as AB Nexus
