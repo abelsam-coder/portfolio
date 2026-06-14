@@ -20,24 +20,24 @@ A modern full-stack portfolio project with an AI-powered chatbot, client contact
 - **Live deployment-ready architecture** for frontend + backend separation
 
 ## 🧩 Tech stack
+
 ### Frontend
-- React 19
-- Vite
-- Tailwind CSS 4
-- Framer Motion
-- Axios
-- React Router DOM
-- Three.js / React Three Fiber
-- Heroicons, Lucide React
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-8%2B-646CFF?logo=vite&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS%204-06B6D4?logo=tailwindcss&logoColor=white)
+![Framer Motion](https://img.shields.io/badge/Framer-Motion-0055FF?logo=framer&logoColor=white)
+![Axios](https://img.shields.io/badge/Axios-1.16-5A29E4?logo=axios&logoColor=white)
+![React Router](https://img.shields.io/badge/React%20Router-7-CA4245?logo=reactrouter&logoColor=white)
+![Three.js](https://img.shields.io/badge/Three.js-0.184-000000?logo=threedotjs&logoColor=white)
+![Lucide](https://img.shields.io/badge/Lucide%20React-Icons-F97316?logoColor=white)
 
 ### Backend
-- Django 6
-- Django REST Framework
-- django-cors-headers
-- Groq SDK for AI assistant completions
-- PostgreSQL database driver (`psycopg2-binary`)
-- Resend email API integration
-- Python Dotenv
+![Django](https://img.shields.io/badge/Django-6.0-092E20?logo=django&logoColor=white)
+![DRF](https://img.shields.io/badge/Django%20REST-Framework-red?logo=django&logoColor=white)
+![Groq](https://img.shields.io/badge/Groq-AI%20API-FF6B35?logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Latest-4169E1?logo=postgresql&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?logo=python&logoColor=white)
+![Gunicorn](https://img.shields.io/badge/Gunicorn-26-499848?logo=gunicorn&logoColor=white)
 
 ## 📁 Repository structure
 
@@ -125,11 +125,28 @@ npm run dev
 - Contact form email sending is handled via `backend/message/views.py` and the Resend API
 - Database credentials are environment-driven in `backend/core/settings.py`
 
-## 📌 Contact
+## ⭐ Support this project
+
+If you find this project useful, consider:
+
+- **⭐ Star this repository** on GitHub to show your support
+- **💬 Share your feedback** — open an issue or discussion
+- **🤝 Contribute** — submit pull requests and improvements
+- **💼 Hire Abel** — contact for freelance or full-time opportunities
+- **☕ Buy me coffee** — support via PayPal or sponsorship
+
+Your support keeps this project maintained and helps inspire future work!
+
+## 📌 Contact & socials
 - **Owner:** Abel Samuel
 - **Email:** abelsamuel841@gmail.com
-- **Project path:** `c:\Users\ABELA\OneDrive\Documents\My_Projects\portfolio`
+- **Phone:** 0957576652
+- **GitHub:** [Visit my GitHub](https://github.com/abelsamuel)
+- **Portfolio:** This repository itself
+- **Available for:** Freelance projects, full-time roles, AI solutions, web dev, mobile apps
 
 ---
 
 Built to present an intelligent portfolio with modern UI, chat-driven engagement, and backend API support.
+
+If you find value in this work, please consider leaving a ⭐ or reaching out. Thanks!
