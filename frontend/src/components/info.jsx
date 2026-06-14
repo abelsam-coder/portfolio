@@ -10,7 +10,20 @@ import {
   Shield,
   Lock,
   Braces,
-  Box
+  Box,
+  Download,
+  // Tech Stack Icons
+  Database, 
+  Server, 
+  Layout, 
+  Wind, 
+  Smartphone, 
+  Zap, 
+  Globe, 
+  Code,
+  Atom,      // <--- For React
+  Hexagon,   // <--- For Node
+  Coffee     // <--- For Flask
 } from 'lucide-react';
 
 const Info = () => {
@@ -73,9 +86,29 @@ const Info = () => {
     return () => clearTimeout(timeout);
   }, [charIndex, isDeleting, currentRoleIndex]);
 
+  // Tech Stack Data - Using closer shape matches to logos
+  const techStack = [
+    { name: 'Python', icon: Terminal },
+    { name: 'Flask', icon: Coffee },   // Shape matches Flask
+    { name: 'Django', icon: Globe },
+    { name: 'Node.js', icon: Hexagon }, // Shape matches Node logo
+    { name: 'Express', icon: Zap },
+    { name: 'PostgreSQL', icon: Database },
+    { name: 'MySQL', icon: Database },
+    { name: 'React JS', icon: Atom },   // Shape matches Atom logo
+    { name: 'Tailwind', icon: Wind },
+    { name: 'ThreeJS', icon: Box },
+    { name: 'React Native', icon: Smartphone },
+    { name: 'XAMPP', icon: Server },
+  ];
+
+  // Split into 2 rows for the marquee
+  const stackRow1 = techStack.slice(0, 6);
+  const stackRow2 = techStack.slice(6);
+
   return (
     <section id="home" className={`
-      relative min-h-screen flex items-center overflow-hidden
+      relative min-h-screen flex flex-col items-center overflow-hidden
       transition-all duration-700
       ${isDark 
         ? 'bg-[#0a0a0f]' 
@@ -125,7 +158,7 @@ const Info = () => {
       </div>
 
       {/* ===== MAIN CONTENT ===== */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-20">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-20 flex-grow">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           
           {/* ===== LEFT SIDE - TEXT CONTENT ===== */}
@@ -167,7 +200,6 @@ const Info = () => {
                 <span className={`
                   relative inline-block
                   bg-clip-text text-transparent bg-gradient-to-r
-                  /* ✅ CHANGED: Unified Blue-Indigo-Purple Gradient */
                   ${isDark 
                     ? 'from-blue-400 via-indigo-400 to-purple-400 bg-[length:200%_auto] animate-gradient' 
                     : 'from-blue-600 via-indigo-600 to-purple-600 bg-[length:200%_auto] animate-gradient'
@@ -185,7 +217,6 @@ const Info = () => {
                   <span className={`
                     text-xl lg:text-2xl font-bold
                     bg-clip-text text-transparent bg-gradient-to-r
-                    /* ✅ CHANGED: Unified Typing Color */
                     ${isDark ? 'from-indigo-400 to-purple-400' : 'from-indigo-600 to-purple-600'}
                   `}>
                     {displayText}
@@ -230,17 +261,16 @@ const Info = () => {
               ))}
             </div>
 
-            {/* CTA Buttons - UNIFIED RELATIVE COLOR */}
+            {/* CTA Buttons */}
             <div className="flex flex-wrap items-center gap-4 pt-3">
               
-              {/* Primary Button - Unified Gradient */}
+              {/* Primary Button */}
               <a href="#contact" className={`
                 group relative inline-flex items-center gap-3 px-8 py-4 rounded-2xl
                 font-bold text-white text-sm uppercase tracking-wider
                 overflow-hidden transition-all duration-400
                 hover:scale-105 active:scale-95
                 shadow-xl hover:shadow-2xl
-                /* ✅ CHANGED: Unified Blue-Indigo-Purple */
                 bg-gradient-to-r
                 ${isDark 
                   ? 'from-blue-500 via-indigo-500 to-purple-500 shadow-indigo-500/25 hover:shadow-indigo-500/40' 
@@ -248,31 +278,34 @@ const Info = () => {
                 }
               `}>
                 <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 skew-x-12"></span>
-                
                 <span className="relative flex items-center gap-3">
                   Get In Touch
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </span>
               </a>
 
-              {/* Secondary Button - Unified Outline Theme */}
-              <a href="#projects" className={`
-                group relative inline-flex items-center gap-2 px-8 py-4 rounded-2xl
-                font-bold text-sm uppercase tracking-wider
-                border-2 transition-all duration-400
-                hover:scale-105 active:scale-95 hover:shadow-xl
-                /* ✅ CHANGED: Unified Indigo outline theme */
-                ${isDark 
-                  ? 'border-indigo-500/30 text-indigo-300 hover:bg-indigo-500/10 hover:border-indigo-400/50' 
-                  : 'border-indigo-300 text-indigo-700 hover:bg-indigo-50 hover:border-indigo-400'
-                }
-              `}>
-                View Projects
-                <Sparkles className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+              {/* Download CV Button */}
+              <a 
+                href="/Abel_Samuel_CV.pdf" 
+                download 
+                className={`
+                  group relative inline-flex items-center gap-3 px-8 py-4 rounded-2xl
+                  font-bold text-sm uppercase tracking-wider
+                  border-2 transition-all duration-400
+                  hover:scale-105 active:scale-95 hover:shadow-xl
+                  ${isDark 
+                    ? 'border-purple-500/30 text-purple-300 hover:bg-purple-500/10 hover:border-purple-400/50' 
+                    : 'border-purple-300 text-purple-700 hover:bg-purple-50 hover:border-purple-400'
+                  }
+                `}
+              >
+                <Download className="w-5 h-5 group-hover:translate-y-0.5 transition-transform" />
+                <span>Download CV</span>
               </a>
+
             </div>
 
-            {/* Stats Section - UNIFIED RELATIVE COLOR */}
+            {/* Stats Section */}
             <div className="grid grid-cols-3 gap-4 pt-4 max-w-md">
               {[
                 { num: '3+', label: 'Years Exp', color: 'from-blue-500 to-indigo-500' },
@@ -289,7 +322,6 @@ const Info = () => {
                   }
                 `}>
                   <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${stat.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}></div>
-                  
                   <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[2px] rounded-full bg-gradient-to-r ${stat.color} scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-center`}></div>
 
                   <p className={`text-2xl lg:text-3xl font-black relative z-10 transition-colors duration-400 ${isDark ? 'text-white' : 'text-gray-900'}`}>
@@ -308,7 +340,7 @@ const Info = () => {
           <div className="hidden lg:flex justify-center items-center order-1 lg:order-2 relative">
             <div className="relative w-full max-w-lg aspect-square flex items-center justify-center">
               
-              {/* Outer massive glow - UNIFIED COLOR */}
+              {/* Outer massive glow */}
               <div className={`
                 absolute inset-10 rounded-full blur-3xl opacity-60 animate-pulse-slow
                 ${isDark 
@@ -327,7 +359,7 @@ const Info = () => {
                 ${isDark ? 'border-purple-500/10' : 'border-purple-200/30'}
               `}></div>
 
-              {/* Central 3D Icon Container - UNIFIED COLOR */}
+              {/* Central 3D Icon Container */}
               <div className={`
                 relative z-10 w-72 h-72 rounded-[3rem] flex items-center justify-center
                 transition-all duration-700 hover:scale-105 hover:rotate-3 group
@@ -337,10 +369,8 @@ const Info = () => {
                   : 'bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 shadow-indigo-500/30'
                 }
               `}>
-                
                 {/* 3D Glass Shine Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-white/0 to-black/20 pointer-events-none"></div>
-                
                 {/* Diagonal 3D edge light */}
                 <div className="absolute -bottom-10 -right-10 w-40 h-40 rounded-full bg-purple-400/20 blur-2xl pointer-events-none"></div>
                 <div className="absolute -top-10 -left-10 w-40 h-40 rounded-full bg-blue-400/20 blur-2xl pointer-events-none"></div>
@@ -357,8 +387,7 @@ const Info = () => {
               <div className={`
                 absolute top-12 right-8 px-4 py-2.5 rounded-xl
                 font-mono text-xs font-bold shadow-2xl z-20
-                animate-float backdrop-blur-md
-                border
+                animate-float backdrop-blur-md border
                 ${isDark 
                   ? 'bg-[#0a0a0f]/80 border-indigo-500/20 text-indigo-400' 
                   : 'bg-white/90 border-indigo-200 text-indigo-600'
@@ -374,8 +403,7 @@ const Info = () => {
               <div className={`
                 absolute bottom-12 left-8 px-4 py-2.5 rounded-xl
                 font-mono text-xs font-bold shadow-2xl z-20
-                animate-float-delayed backdrop-blur-md
-                border
+                animate-float-delayed backdrop-blur-md border
                 ${isDark 
                   ? 'bg-[#0a0a0f]/80 border-purple-500/20 text-purple-400' 
                   : 'bg-white/90 border-purple-200 text-purple-600'
@@ -399,7 +427,7 @@ const Info = () => {
                 <Lock className="w-6 h-6 text-white" />
               </div>
 
-              {/* Floating Element - Bottom Right (Small) - UNIFIED COLOR */}
+              {/* Floating Element - Bottom Right (Small) */}
               <div className={`
                 absolute bottom-24 right-16 w-12 h-12 rounded-xl shadow-xl z-20
                 flex items-center justify-center animate-float
@@ -413,6 +441,84 @@ const Info = () => {
 
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* ===== 2-ROW TECH STACK MARQUEE WITH CLOUD EFFECT ===== */}
+      <div className="relative w-full py-10 overflow-hidden z-10">
+        
+        {/* Cloud Effect - Left Side (Matches Background Color) */}
+        <div className={`
+          absolute inset-y-0 left-0 w-48 z-20 pointer-events-none
+          bg-gradient-to-r blur-2xl
+          ${isDark ? 'from-[#0a0a0f] to-transparent' : 'from-slate-50 to-transparent'}
+        `}></div>
+
+        {/* Cloud Effect - Right Side (Matches Background Color) */}
+        <div className={`
+          absolute inset-y-0 right-0 w-48 z-20 pointer-events-none
+          bg-gradient-to-l blur-2xl
+          ${isDark ? 'from-[#0a0a0f] to-transparent' : 'from-slate-50 to-transparent'}
+        `}></div>
+
+        {/* ROW 1: Moves Left */}
+        <div className="flex animate-scroll-left whitespace-nowrap mb-6">
+          {[...stackRow1, ...stackRow1, ...stackRow1].map((tech, idx) => (
+            <div key={`row1-${idx}`} className={`
+              inline-flex items-center gap-3 mx-4 px-6 py-3 rounded-full
+              border backdrop-blur-md transition-transform hover:scale-110
+              ${isDark 
+                ? 'bg-white/[0.04] border-white/10 text-white hover:bg-white/[0.08]' 
+                : 'bg-white/80 border-gray-200 text-gray-800 hover:bg-white hover:shadow-lg'
+              }
+            `}>
+              {/* Icon Color Logic */}
+              {tech.name === 'Python' && <tech.icon className={`w-5 h-5 ${isDark ? 'text-yellow-400' : 'text-yellow-600'}`} />}
+              {tech.name === 'Flask' && <tech.icon className={`w-5 h-5 ${isDark ? 'text-white' : 'text-gray-800'}`} />}
+              {tech.name === 'Django' && <tech.icon className={`w-5 h-5 ${isDark ? 'text-green-400' : 'text-green-600'}`} />}
+              {tech.name === 'Node.js' && <tech.icon className={`w-5 h-5 ${isDark ? 'text-green-400' : 'text-green-600'}`} />}
+              {tech.name === 'Express' && <tech.icon className={`w-5 h-5 ${isDark ? 'text-gray-400' : 'text-gray-600'}`} />}
+              {tech.name === 'PostgreSQL' && <tech.icon className={`w-5 h-5 ${isDark ? 'text-blue-400' : 'text-blue-600'}`} />}
+              {tech.name === 'MySQL' && <tech.icon className={`w-5 h-5 ${isDark ? 'text-blue-400' : 'text-orange-500'}`} />}
+              {tech.name === 'React JS' && <tech.icon className={`w-5 h-5 ${isDark ? 'text-cyan-400' : 'text-cyan-600'}`} />}
+              {tech.name === 'Tailwind' && <tech.icon className={`w-5 h-5 ${isDark ? 'text-cyan-400' : 'text-cyan-500'}`} />}
+              {tech.name === 'ThreeJS' && <tech.icon className={`w-5 h-5 ${isDark ? 'text-white' : 'text-gray-900'}`} />}
+              {tech.name === 'React Native' && <tech.icon className={`w-5 h-5 ${isDark ? 'text-cyan-400' : 'text-cyan-600'}`} />}
+              {tech.name === 'XAMPP' && <tech.icon className={`w-5 h-5 ${isDark ? 'text-orange-400' : 'text-orange-600'}`} />}
+              
+              <span className="font-semibold text-sm">{tech.name}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* ROW 2: Moves Right */}
+        <div className="flex animate-scroll-right whitespace-nowrap">
+          {[...stackRow2, ...stackRow2, ...stackRow2].map((tech, idx) => (
+            <div key={`row2-${idx}`} className={`
+              inline-flex items-center gap-3 mx-4 px-6 py-3 rounded-full
+              border backdrop-blur-md transition-transform hover:scale-110
+              ${isDark 
+                ? 'bg-white/[0.04] border-white/10 text-white hover:bg-white/[0.08]' 
+                : 'bg-white/80 border-gray-200 text-gray-800 hover:bg-white hover:shadow-lg'
+              }
+            `}>
+              {/* Icon Color Logic Repeated for Row 2 */}
+              {tech.name === 'Python' && <tech.icon className={`w-5 h-5 ${isDark ? 'text-yellow-400' : 'text-yellow-600'}`} />}
+              {tech.name === 'Flask' && <tech.icon className={`w-5 h-5 ${isDark ? 'text-white' : 'text-gray-800'}`} />}
+              {tech.name === 'Django' && <tech.icon className={`w-5 h-5 ${isDark ? 'text-green-400' : 'text-green-600'}`} />}
+              {tech.name === 'Node.js' && <tech.icon className={`w-5 h-5 ${isDark ? 'text-green-400' : 'text-green-600'}`} />}
+              {tech.name === 'Express' && <tech.icon className={`w-5 h-5 ${isDark ? 'text-gray-400' : 'text-gray-600'}`} />}
+              {tech.name === 'PostgreSQL' && <tech.icon className={`w-5 h-5 ${isDark ? 'text-blue-400' : 'text-blue-600'}`} />}
+              {tech.name === 'MySQL' && <tech.icon className={`w-5 h-5 ${isDark ? 'text-blue-400' : 'text-orange-500'}`} />}
+              {tech.name === 'React JS' && <tech.icon className={`w-5 h-5 ${isDark ? 'text-cyan-400' : 'text-cyan-600'}`} />}
+              {tech.name === 'Tailwind' && <tech.icon className={`w-5 h-5 ${isDark ? 'text-cyan-400' : 'text-cyan-500'}`} />}
+              {tech.name === 'ThreeJS' && <tech.icon className={`w-5 h-5 ${isDark ? 'text-white' : 'text-gray-900'}`} />}
+              {tech.name === 'React Native' && <tech.icon className={`w-5 h-5 ${isDark ? 'text-cyan-400' : 'text-cyan-600'}`} />}
+              {tech.name === 'XAMPP' && <tech.icon className={`w-5 h-5 ${isDark ? 'text-orange-400' : 'text-orange-600'}`} />}
+
+              <span className="font-semibold text-sm">{tech.name}</span>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -483,6 +589,22 @@ const Info = () => {
         }
         .animate-spin-slow-reverse {
           animation: spin-slow-reverse 25s linear infinite;
+        }
+
+        @keyframes scroll-left {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-33.33%); }
+        }
+        .animate-scroll-left {
+          animation: scroll-left 25s linear infinite;
+        }
+
+        @keyframes scroll-right {
+          0% { transform: translateX(-33.33%); }
+          100% { transform: translateX(0); }
+        }
+        .animate-scroll-right {
+          animation: scroll-right 30s linear infinite;
         }
       `}</style>
     </section>
