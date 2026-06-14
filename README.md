@@ -179,7 +179,7 @@ VITE_API_URL=http://localhost:8000
 ### Production (Vercel)
 You'll set this in Vercel Dashboard:
 ```
-VITE_API_URL=https://portfolio-dbq5.onrender.com
+VITE_API_URL=https://your.onrender.com
 ```
 
 ---
@@ -213,7 +213,7 @@ VITE_API_URL=https://portfolio-dbq5.onrender.com
    - Add:
      ```
      Name: VITE_API_URL
-     Value: https://portfolio-dbq5.onrender.com
+     Value: https://your.onrender.com
      ```
    - Select: Production, Preview
    - Click "Add"
@@ -233,7 +233,7 @@ vercel
 
 # Add env var
 vercel env add VITE_API_URL
-# Enter: https://portfolio-dbq5.onrender.com
+# Enter: https://your.onrender.com
 
 # Deploy to production
 vercel --prod
@@ -246,7 +246,7 @@ vercel --prod
 1. Visit your Vercel URL
 2. Open DevTools (F12) → Network tab
 3. Test chatbot
-4. Check that API calls go to: `https://portfolio-dbq5.onrender.com/chat/`
+4. Check that API calls go to: `https://your.onrender.com/chat/`
 
 ---
 
@@ -259,7 +259,7 @@ const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
 This means:
 - **Locally:** Uses `http://localhost:8000` (from .env.local)
-- **On Vercel:** Uses `https://portfolio-dbq5.onrender.com` (from Vercel env vars)
+- **On Vercel:** Uses `https://your.onrender.com` (from Vercel env vars)
 
 ---
 
@@ -274,7 +274,7 @@ This means:
 
 ## 🚀 Final Checklist
 
-- [ ] Backend running on Render (https://portfolio-dbq5.onrender.com)
+- [ ] Backend running on Render (https://your.onrender.com)
 - [ ] Frontend code pushed to GitHub
 - [ ] Vercel project created and connected
 - [ ] Environment variable `VITE_API_URL` set in Vercel
@@ -377,12 +377,12 @@ Replace `https://your-backend.onrender.com` with your actual Render backend URL:
 
 **Your Render Backend:**
 ```
-https://portfolio-dbq5.onrender.com
+https://your.onrender.com
 ```
 
 So in Vercel, set:
 ```
-VITE_API_URL=https://portfolio-dbq5.onrender.com
+VITE_API_URL=https://your.onrender.com
 ```
 
 ## Step 5: Deploy
@@ -412,7 +412,7 @@ VITE_API_URL=http://localhost:8000
 
 ### Production (Vercel)
 ```bash
-VITE_API_URL=https://portfolio-dbq5.onrender.com
+VITE_API_URL=https://your.onrender.com
 ```
 
 ## Backend API Endpoints
