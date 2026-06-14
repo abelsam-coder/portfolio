@@ -140,6 +140,361 @@ npm run dev
 
 ---
 
+# Quick Setup Guide - Windows PowerShell
+
+## 1️⃣ Local Development Setup
+
+### Step 1: Start Backend
+```powershell
+cd backend
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+python manage.py runserver
+```
+✅ Backend running at: `http://localhost:8000`
+
+### Step 2: Start Frontend (New Terminal)
+```powershell
+cd frontend
+npm install
+npm run dev
+```
+✅ Frontend running at: `http://localhost:5173`
+
+### Step 3: Test Locally
+- Visit http://localhost:5173
+- Test chatbot and contact form
+- Check DevTools → Network tab to verify API calls to localhost:8000
+
+---
+
+## 2️⃣ Environment Variables Setup
+
+### Local Development (.env.local - already created)
+```
+VITE_API_URL=http://localhost:8000
+```
+
+### Production (Vercel)
+You'll set this in Vercel Dashboard:
+```
+VITE_API_URL=https://portfolio-dbq5.onrender.com
+```
+
+---
+
+## 3️⃣ Deploy to Vercel (Step-by-Step)
+
+### Option A: Via Vercel Dashboard (Easiest)
+
+1. **Push to GitHub**
+   ```powershell
+   git add .
+   git commit -m "Setup env variables"
+   git push origin main
+   ```
+
+2. **Go to Vercel:** https://vercel.com/dashboard
+
+3. **Click "Add New" → "Project"**
+
+4. **Import your GitHub repo**
+   - Select your portfolio repository
+   - Click "Import"
+
+5. **Configure Project**
+   - Root Directory: `frontend`
+   - Framework Preset: Vite
+   - Click "Continue"
+
+6. **Add Environment Variable**
+   - Click "Environment Variables"
+   - Add:
+     ```
+     Name: VITE_API_URL
+     Value: https://portfolio-dbq5.onrender.com
+     ```
+   - Select: Production, Preview
+   - Click "Add"
+
+7. **Deploy**
+   - Click "Deploy"
+   - Wait 2-3 minutes
+   - Get your Vercel URL: `https://your-project.vercel.app`
+
+### Option B: Via Vercel CLI
+
+```powershell
+npm install -g vercel
+cd frontend
+vercel
+# Follow prompts and select "frontend" as root
+
+# Add env var
+vercel env add VITE_API_URL
+# Enter: https://portfolio-dbq5.onrender.com
+
+# Deploy to production
+vercel --prod
+```
+
+---
+
+## 4️⃣ Verify Deployment
+
+1. Visit your Vercel URL
+2. Open DevTools (F12) → Network tab
+3. Test chatbot
+4. Check that API calls go to: `https://portfolio-dbq5.onrender.com/chat/`
+
+---
+
+## 5️⃣ Frontend Code Changes (Done ✅)
+
+Your `frontend/api/api.js` now uses:
+```javascript
+const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+```
+
+This means:
+- **Locally:** Uses `http://localhost:8000` (from .env.local)
+- **On Vercel:** Uses `https://portfolio-dbq5.onrender.com` (from Vercel env vars)
+
+---
+
+## 📋 Files Created/Modified
+
+✅ `frontend/api/api.js` - Updated to use env variables
+✅ `frontend/.env.example` - Template for env vars
+✅ `frontend/.env.local` - Local dev configuration
+✅ `frontend/.gitignore` - Already ignores .env.local
+
+---
+
+## 🚀 Final Checklist
+
+- [ ] Backend running on Render (https://portfolio-dbq5.onrender.com)
+- [ ] Frontend code pushed to GitHub
+- [ ] Vercel project created and connected
+- [ ] Environment variable `VITE_API_URL` set in Vercel
+- [ ] Vercel deployment complete
+- [ ] Tested API calls from Vercel frontend to Render backend
+- [ ] Everything working! 🎉
+
+---
+
+## 💡 Useful Commands
+
+```powershell
+# Check if variables are loaded (run in browser console)
+console.log(import.meta.env.VITE_API_URL)
+
+# Build for production
+npm run build
+
+# Check build output
+npm run preview
+
+# Deploy from CLI
+vercel --prod
+```
+
+---
+
+## 🆘 Common Issues
+
+| Issue | Solution |
+|-------|----------|
+| "Cannot reach backend" | Check Render status, verify API URL |
+| "Env var not loading" | Redeploy Vercel, hard refresh (Ctrl+Shift+R) |
+| "CORS error" | Add Vercel domain to Django CORS settings |
+| ".env.local committed" | Already in .gitignore, you're good! |
+
+---
+
+Need help? Check `VERCEL_DEPLOYMENT_GUIDE.md` for detailed instructions!
+
+# Vercel Deployment Guide with Environment Variables
+
+## Step 1: Prepare Your Repository
+
+1. Make sure your frontend code is pushed to GitHub
+2. Add your `.env.local` to `.gitignore` (don't commit local env vars)
+   ```bash
+   echo ".env.local" >> .gitignore
+   ```
+
+## Step 2: Deploy to Vercel
+
+### Option A: Using Vercel CLI
+```bash
+npm install -g vercel
+cd frontend
+vercel
+```
+
+### Option B: Using Vercel Dashboard
+1. Go to https://vercel.com/dashboard
+2. Click "Add New" → "Project"
+3. Import your GitHub repository
+4. Select the `frontend` directory as root
+
+## Step 3: Configure Environment Variables in Vercel
+
+### Via Vercel Dashboard:
+1. Go to your project settings
+2. Navigate to **Settings** → **Environment Variables**
+3. Add the following variables:
+
+| Variable | Development | Production | Preview |
+|----------|-------------|------------|---------|
+| `VITE_API_URL` | `http://localhost:8000` | `https://your-backend.onrender.com` | `https://your-backend.onrender.com` |
+
+### Example Setup:
+```
+Name: VITE_API_URL
+Value: https://your-backend.onrender.com
+Environments: Production, Preview
+```
+
+For development:
+```
+Name: VITE_API_URL
+Value: http://localhost:8000
+Environments: Development
+```
+
+### Via Vercel CLI:
+```bash
+vercel env add VITE_API_URL
+# Then enter your backend URL when prompted
+```
+
+## Step 4: Set Your Render Backend URL
+
+Replace `https://your-backend.onrender.com` with your actual Render backend URL:
+
+**Your Render Backend:**
+```
+https://portfolio-dbq5.onrender.com
+```
+
+So in Vercel, set:
+```
+VITE_API_URL=https://portfolio-dbq5.onrender.com
+```
+
+## Step 5: Deploy
+
+1. **Automatic (Recommended):**
+   - Push to GitHub main branch
+   - Vercel automatically deploys
+
+2. **Manual:**
+   ```bash
+   vercel --prod
+   ```
+
+## Step 6: Verify Deployment
+
+1. Visit your Vercel URL: `https://your-project.vercel.app`
+2. Open browser DevTools (F12) → Network tab
+3. Test chatbot or contact form
+4. Verify API calls go to your Render backend
+
+## Environment Variables Reference
+
+### Development (Local)
+```bash
+VITE_API_URL=http://localhost:8000
+```
+
+### Production (Vercel)
+```bash
+VITE_API_URL=https://portfolio-dbq5.onrender.com
+```
+
+## Backend API Endpoints
+
+- `POST /chat/` - Chatbot messages
+- `POST /message/` - Contact form
+- `GET /start/` - Health check
+- `POST /auth/login/` - Admin login
+
+## CORS Configuration (Backend)
+
+Make sure your Django backend has CORS enabled for Vercel domain:
+
+In `backend/core/settings.py`:
+```python
+ALLOWED_HOSTS = ['*']
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "https://your-project.vercel.app",
+]
+```
+
+## Testing Your Setup
+
+### Local Testing:
+```bash
+# Terminal 1: Backend
+cd backend
+python manage.py runserver
+
+# Terminal 2: Frontend
+cd frontend
+npm run dev
+# Visit http://localhost:5173
+```
+
+### Production Testing:
+Visit your Vercel URL and test:
+- Contact form submission
+- Chatbot responses
+- View network requests to Render backend
+
+## Common Issues
+
+### ❌ Issue: "Cannot reach backend"
+**Solution:** Check that:
+- Backend is running on Render
+- `VITE_API_URL` is set correctly in Vercel
+- CORS is configured in Django settings
+
+### ❌ Issue: "Environment variable not loading"
+**Solution:**
+- Ensure variable name starts with `VITE_`
+- Redeploy after changing variables
+- Check Vercel deployment logs
+
+### ❌ Issue: "CORS error"
+**Solution:**
+- Add your Vercel domain to `CORS_ALLOWED_ORIGINS`
+- Redeploy backend
+
+## Useful Links
+
+- **Vercel Docs:** https://vercel.com/docs
+- **Vite Env Vars:** https://vitejs.dev/guide/env-and-mode.html
+- **Render Docs:** https://render.com/docs
+
+## Quick Checklist
+
+- [ ] Backend running on Render
+- [ ] Frontend pushed to GitHub
+- [ ] Connected GitHub repo to Vercel
+- [ ] Set `VITE_API_URL` in Vercel environment variables
+- [ ] Deployed to Vercel
+- [ ] Tested API endpoints in production
+- [ ] CORS configured in Django
+- [ ] All working! 🎉
+
+
+
 ## 👨‍💻 About Abel Samuel
 
 I'm a **Full Stack Developer**, **AI Engineer**, **Cybersecurity Specialist**, and **Startup Founder** based in **Ethiopia (Hawassa)** with **3+ years of professional experience** building intelligent systems and scalable digital solutions.
