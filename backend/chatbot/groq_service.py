@@ -1,3 +1,11 @@
+from groq import Groq
+import os
+
+# Initialize Groq client
+client = Groq(
+    api_key=os.getenv("GROQ_API_KEY")  # or directly put your key
+)
+
 def ask_groq(message, context):
     try:
         response = client.chat.completions.create(
@@ -42,3 +50,19 @@ Website Data:
 
     except Exception as e:
         return f"Error: {str(e)}"
+
+
+# Example usage
+if __name__ == "__main__":
+    website_data = """
+    Abel offers:
+    - Website Development
+    - ERP Systems
+    - E-commerce Solutions
+    - AI Integrations
+    """
+
+    question = "What services does Abel provide?"
+
+    answer = ask_groq(question, website_data)
+    print(answer)
