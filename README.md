@@ -114,13 +114,65 @@ npm run dev
 3. Use the contact form and chatbot to verify API responses
 4. Check browser console and Django server logs for errors
 
-## 🚀 Deployment notes
-- Host frontend on Vercel, Netlify, or plain static hosting
-- Deploy backend on Render, Railway, Heroku, or any container-enabled platform
-- Use PostgreSQL in production and secure all API keys
-- Configure `ALLOWED_HOSTS` and `DEBUG=False` in production
+## 🚀 Deployment Stack
 
-## 💡 Notes
+### Recommended Production Setup
+- **Frontend:** ![Vercel](https://img.shields.io/badge/Vercel-000000?logo=vercel&logoColor=white) — Deploy React app with automatic scaling, CDN, and HTTPS
+- **Backend:** ![Render](https://img.shields.io/badge/Render-46E3B7?logo=render&logoColor=white) — Host Django API with PostgreSQL integration
+- **Database:** ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?logo=supabase&logoColor=white) — PostgreSQL hosting with real-time updates and instant REST API
+
+### Deployment Steps
+1. **Frontend (Vercel)**
+   - Connect your GitHub repo to Vercel
+   - Set `VITE_API_URL=https://your-backend.onrender.com` in environment variables
+   - Auto-deploy on push to main branch
+
+2. **Backend (Render)**
+   - Create a Web Service on Render
+   - Connect to your GitHub repository
+   - Set environment variables for Supabase connection
+   - Deploy Django with Gunicorn
+
+3. **Database (Supabase)**
+   - Create a Supabase project
+   - Copy PostgreSQL connection string
+   - Use in Render backend environment variables
+
+---
+
+## 👨‍💻 About Abel Samuel
+
+I'm a **Full Stack Developer**, **AI Engineer**, **Cybersecurity Specialist**, and **Startup Founder** based in **Ethiopia (Hawassa)** with **3+ years of professional experience** building intelligent systems and scalable digital solutions.
+
+### 🎯 What I do
+- Build production-ready **full-stack applications** (React + Django + PostgreSQL)
+- Design and integrate **AI-powered solutions** using Groq, OpenAI, and LLMs
+- Develop **REST APIs** and microservices for enterprise systems
+- Create **e-commerce platforms, ERP systems, and business management tools**
+- Implement **cybersecurity measures** and penetration testing
+- Deploy applications on **cloud infrastructure** (Vercel, Render, Supabase, AWS)
+
+### 💡 Specializations
+- **Frontend:** React, Vite, Tailwind CSS, Three.js, Motion Design
+- **Backend:** Django, Django REST Framework, Groq AI SDK, PostgreSQL
+- **DevOps:** Docker, Gunicorn, GitHub Actions, cloud deployment
+- **AI/ML:** Chatbots, RAG systems, prompt engineering, AI automation
+- **Security:** Penetration testing, ethical hacking, vulnerability assessment
+
+### 🚀 Notable Projects
+- **Ethioglobal Digital Platform** — AI-powered chatbot integration for customer service
+- **Scalable E-Commerce Platform** — Payment processing, inventory, admin dashboard
+- **Restaurant Management System** — Digital ordering, reservations, real-time tracking
+- **Online Exam Platform** — Auto-grading, AI proctoring, analytics dashboard
+
+### 📊 By The Numbers
+- **50+ Projects** delivered
+- **120+ Satisfied Clients**
+- **98%** customer satisfaction rate
+- **3+ Years** professional experience
+- **6+ Active Repos** on GitHub
+
+---
 - Chatbot fallback logic in `backend/chatbot/views.py` returns human contact details for support-related queries
 - Contact form email sending is handled via `backend/message/views.py` and the Resend API
 - Database credentials are environment-driven in `backend/core/settings.py`
