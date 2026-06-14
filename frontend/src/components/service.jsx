@@ -193,24 +193,6 @@ const Service = () => {
       color: '#38BDF8'
     },
     {
-      id: 9,
-      name: 'Promo Video',
-      category: 'video',
-      price: '50K+',
-      tech: ['Premiere Pro', 'After Effects'],
-      icon: Film,
-      color: '#F43F5E'
-    },
-    {
-      id: 10,
-      name: 'YouTube Content',
-      category: 'video',
-      price: '35K+',
-      tech: ['DaVinci Resolve', 'CapCut'],
-      icon: Film,
-      color: '#FB7185'
-    },
-    {
       id: 11,
       name: 'Brand Identity',
       category: 'design',
