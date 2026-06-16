@@ -197,7 +197,7 @@ const Footer = () => {
 
   const socialLinks = [
     { name: 'GitHub', icon: <GitHubIcon />, url: 'https://github.com/abelsam-coder/' },
-    { name: 'LinkedIn', icon: <LinkedinIcon />, url: 'https://www.linkedin.com/in/abel-samuel-b079b7379/' },
+    { name: 'LinkedIn', icon: <LinkedinIcon />, url: 'https://www.linkedin.com/in/abelala-c/' },
     { name: 'Instagram', icon: <InstagramIcon />, url: 'https://www.instagram.com/abelala_c/' },
     { name: 'Telegram', icon: <SendIcon />, url: 'https://t.me/abelala-c' }
   ];
