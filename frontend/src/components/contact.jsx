@@ -127,7 +127,7 @@ const Contact = () => {
   // Social links using custom icon components
   const socials = [
     { name: 'GitHub', icon: <GithubIcon />, url: 'https://github.com/abelsam-coder/', hover: 'hover:bg-gray-800 dark:hover:bg-gray-700' },
-    { name: 'LinkedIn', icon: <LinkedinIcon />, url: 'https://www.linkedin.com/in/abel-samuel-b079b7379/', hover: 'hover:bg-blue-600' },
+    { name: 'LinkedIn', icon: <LinkedinIcon />, url: 'https://www.linkedin.com/in/abelala-c/', hover: 'hover:bg-blue-600' },
     { name: 'Instagram', icon: <InstagramIcon />, url: 'https://www.instagram.com/abelala_c/', hover: 'hover:bg-pink-600' },
     { name: 'Telegram', icon: <TelegramIcon />, url: 'https://t.me/abelala-c', hover: 'hover:bg-sky-500' }
   ];
